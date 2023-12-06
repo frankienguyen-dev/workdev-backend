@@ -4,6 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.user.*;
 import com.frankie.workdev.entity.User;
+import com.frankie.workdev.exception.ApiException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class UserServiceImpl implements UserService {
 
     private ModelMapper modelMapper;
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public ApiResponse<CreateUserDto> createNewUser(UserDto userDto) {
@@ -42,7 +45,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPhoneNumber(userDto.getPhoneNumber());
         newUser.setGender(userDto.getGender());
         newUser.setAge(userDto.getAge());
-        newUser.setPassword(userDto.getPassword());
+        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         User saveNewUser = userRepository.save(newUser);
         CreateUserDto createUserResponse = modelMapper
