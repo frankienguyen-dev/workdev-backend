@@ -91,4 +91,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiResponse<ErrorDetails>> handleApiException(
+            ApiException exception,
+            WebRequest request
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        ApiResponse<ErrorDetails> apiResponse = ApiResponse.error(
+                "Api Exception",
+                HttpStatus.NOT_FOUND,
+                errorDetails
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
+    }
 }
