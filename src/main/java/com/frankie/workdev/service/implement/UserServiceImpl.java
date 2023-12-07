@@ -4,7 +4,6 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.user.*;
 import com.frankie.workdev.entity.User;
-import com.frankie.workdev.exception.ApiException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.UserRepository;
@@ -82,7 +81,7 @@ public class UserServiceImpl implements UserService {
         metaData.setPageNo(users.getNumber());
         metaData.setPageSize(users.getSize());
         UserResponse userResponse = new UserResponse();
-        userResponse.setUsers(userList);
+        userResponse.setData(userList);
         userResponse.setMeta(metaData);
         return ApiResponse.success(
                 "Fetched all users successfully",

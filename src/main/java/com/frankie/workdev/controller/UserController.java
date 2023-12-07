@@ -4,6 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.user.*;
 import com.frankie.workdev.service.UserService;
 import com.frankie.workdev.util.AppConstants;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<CreateUserDto>> createNewUser(
-            @RequestBody UserDto userDto) {
+            @RequestBody @Valid UserDto userDto) {
         ApiResponse<CreateUserDto> createUser = userService.createNewUser(userDto);
         return new ResponseEntity<>(createUser, HttpStatus.CREATED);
     }
@@ -48,7 +49,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UpdateUserDto>> updateUserById(
             @PathVariable("id") String id,
-            @RequestBody UpdateUserDto updateUserDto
+            @RequestBody @Valid UpdateUserDto updateUserDto
     ) {
         ApiResponse<UpdateUserDto> updateUser = userService.updateUserById(id, updateUserDto);
         return new ResponseEntity<>(updateUser, HttpStatus.OK);
