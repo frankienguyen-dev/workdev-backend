@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.user;
+package com.frankie.workdev.dto.company;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserResponse {
+public class CompanyResponse {
     private MetaData meta;
-    private List<UserInfoDto> data;
+    private List<CompanyDto> data;
 }
