@@ -1,7 +1,7 @@
 package com.frankie.workdev.service.implement;
 
-import com.frankie.workdev.dto.Authentication.LoginDto;
-import com.frankie.workdev.dto.Authentication.LoginResponse;
+import com.frankie.workdev.dto.authentication.LoginDto;
+import com.frankie.workdev.dto.authentication.LoginResponse;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.security.JwtTokenProvider;
 import com.frankie.workdev.service.AuthenticationService;

@@ -31,11 +31,27 @@ public class User {
     private String password;
     private String gender;
 
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
 
     private LocalDateTime deletedAt;
 

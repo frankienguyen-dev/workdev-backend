@@ -1,6 +1,7 @@
-package com.frankie.workdev.dto.user;
+package com.frankie.workdev.dto.invitation;
 
 import com.frankie.workdev.dto.company.CompanyInfo;
+import com.frankie.workdev.dto.user.JwtUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,17 +13,12 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoDto {
+public class InvitationResponse {
     private String id;
-    private String fullName;
-    private String email;
-    private String address;
-    private String phoneNumber;
-    private String gender;
-    private int age;
+    private JwtUserInfo senderUser;
+    private JwtUserInfo receiverUser;
     private CompanyInfo company;
+    private String status;
+    private String content;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
-    private boolean isDeleted;
 }

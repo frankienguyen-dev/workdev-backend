@@ -8,7 +8,7 @@ public class ResourceExistingException extends RuntimeException {
 
     public ResourceExistingException(String resourceName,
                                      String fieldName, String fieldValue) {
-        super(String.format("%s not found with %s : %s",
+        super(String.format("%s exists with %s : %s",
                 resourceName, fieldName, fieldValue));
         this.resourceName = resourceName;
         this.fieldName = fieldName;

@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.Authentication;
+package com.frankie.workdev.dto.authentication;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
