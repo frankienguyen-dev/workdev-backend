@@ -7,4 +7,7 @@ public interface CompanyRepository extends JpaRepository<Company, String> {
     Company findByName(String name);
 
     Boolean existsByName(String name);
+
+
+
 }

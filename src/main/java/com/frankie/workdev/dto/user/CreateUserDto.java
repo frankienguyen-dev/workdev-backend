@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.user;
 
+import com.frankie.workdev.dto.company.CompanyInfo;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -21,5 +22,7 @@ public class CreateUserDto {
     private String phoneNumber;
     private String gender;
     private int age;
+    private CompanyInfo company;
+    private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
 }

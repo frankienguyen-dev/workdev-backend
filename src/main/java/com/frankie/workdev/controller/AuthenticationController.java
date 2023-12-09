@@ -1,7 +1,7 @@
 package com.frankie.workdev.controller;
 
-import com.frankie.workdev.dto.Authentication.LoginDto;
-import com.frankie.workdev.dto.Authentication.LoginResponse;
+import com.frankie.workdev.dto.authentication.LoginDto;
+import com.frankie.workdev.dto.authentication.LoginResponse;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.service.AuthenticationService;
 import lombok.AllArgsConstructor;

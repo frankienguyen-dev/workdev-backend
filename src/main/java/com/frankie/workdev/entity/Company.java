@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -24,6 +25,9 @@ public class Company {
     private String description;
     private String address;
     private String logo;
+
+    @OneToMany(mappedBy = "company")
+    private List<User> users;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -42,7 +46,7 @@ public class Company {
     @ManyToOne
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
-    
+
     private LocalDateTime deletedAt;
     private boolean isDeleted = false;
 

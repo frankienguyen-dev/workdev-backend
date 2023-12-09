@@ -40,6 +40,10 @@ public class CompanyServiceImpl implements CompanyService {
     public ApiResponse<CreateCompanyDto> createNewCompany(CreateCompanyDto createCompanyDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+        if(createdByUser.getCompany() != null) {
+            throw new ResourceExistingException(createdByUser.getCompany().getName(), "id",
+                    createdByUser.getCompany().getId());
+        }
         Boolean existingCompany = companyRepository.existsByName(createCompanyDto.getName());
         if (existingCompany) {
             throw new ResourceExistingException("Company", "name",
@@ -53,7 +57,9 @@ public class CompanyServiceImpl implements CompanyService {
         newCompany.setLogo(createCompanyDto.getLogo());
         newCompany.setCreatedAt(LocalDateTime.now());
         newCompany.setCreatedBy(createdByUser);
+        createdByUser.setCompany(newCompany);
         Company savedCompany = companyRepository.save(newCompany);
+        userRepository.save(createdByUser);
         CreateCompanyDto createCompany = modelMapper.map(savedCompany, CreateCompanyDto.class);
         createCompany.setCreatedBy(getUserInfoFromToken);
         createCompany.setCreatedAt(savedCompany.getCreatedAt());
