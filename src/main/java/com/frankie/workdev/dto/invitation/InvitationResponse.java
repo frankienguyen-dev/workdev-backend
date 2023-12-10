@@ -21,4 +21,6 @@ public class InvitationResponse {
     private String status;
     private String content;
     private LocalDateTime createdAt;
+    private LocalDateTime acceptedAt;
+    private LocalDateTime rejectedAt;
 }

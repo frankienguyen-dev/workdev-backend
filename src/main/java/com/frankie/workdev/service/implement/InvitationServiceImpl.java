@@ -8,6 +8,7 @@ import com.frankie.workdev.entity.Company;
 import com.frankie.workdev.entity.Invitation;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;
+import com.frankie.workdev.exception.MyNullPointerException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
@@ -42,6 +43,11 @@ public class InvitationServiceImpl implements InvitationService {
         String getUserEmail = authentication.getName();
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
         User senderUser = userRepository.findByEmail(getUserEmail);
+
+        if(senderUser.getCompany() == null) {
+            throw new MyNullPointerException("User", "company", "null");
+        }
+
         Company companySenderUser = companyRepository.findByName(
                 senderUser.getCompany().getName()
         );
@@ -147,13 +153,22 @@ public class InvitationServiceImpl implements InvitationService {
                         receiverUser.getCompany().getName()
                 );
             }
+            if(!findInvitation.getStatus().equalsIgnoreCase("PENDING")) {
+                throw new ResourceExistingException(
+                        "Invitation",
+                        "status",
+                        findInvitation.getStatus()
+                );
+            }
             if(currentUSer == receiverUser) {
                 if (acceptOrRejectRequest.isAccepted()) {
                     findInvitation.setStatus("ACCEPTED");
                     receiverUser.setCompany(findInvitation.getCompany());
+                    findInvitation.setAcceptedAt(LocalDateTime.now());
                 } else {
                     findInvitation.setStatus("REJECTED");
                     receiverUser.setCompany(null);
+                    findInvitation.setRejectedAt(LocalDateTime.now());
                 }
                 Invitation save = invitationRepository.save(findInvitation);
                 AcceptOrRejectResponse acceptOrRejectResponse = new AcceptOrRejectResponse();
@@ -161,6 +176,8 @@ public class InvitationServiceImpl implements InvitationService {
                         (acceptOrRejectRequest.isAccepted() ? "accepted" : "rejected")
                         + " successfully");
                 acceptOrRejectResponse.setStatus(save.getStatus());
+                acceptOrRejectResponse.setAcceptedAt(save.getAcceptedAt());
+                acceptOrRejectResponse.setRejectedAt(save.getRejectedAt());
                 return ApiResponse.success(
                         "Accept or reject invitation success",
                         HttpStatus.OK,
