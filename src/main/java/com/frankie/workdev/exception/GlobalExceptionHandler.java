@@ -109,4 +109,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(MyNullPointerException.class)
+    public ResponseEntity<ApiResponse<ErrorDetails>> handleMyNullPointerException(
+        MyNullPointerException exception,
+        WebRequest request
+    ) {
+        System.out.println("Handling MyNullPointerException");
+
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        ApiResponse<ErrorDetails> apiResponse = ApiResponse.error(
+                "Null pointer exception",
+                HttpStatus.BAD_REQUEST,
+                errorDetails
+
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

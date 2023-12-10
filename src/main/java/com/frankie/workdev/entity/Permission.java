@@ -6,38 +6,48 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "invitations")
-public class Invitation {
+@Table(name = "permissions")
+public class Permission {
     @Id
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_user_id")
-    private User senderUser;
+    @Column(unique = true)
+    private String name;
+    private String path;
+    private String method;
+    private String module;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_user_id")
-    private User receiverUser;
+    @JoinColumn(name = "created_by")
+    private User createdBy;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
-    private String content;
-    private String status;
     @CreationTimestamp
     private LocalDateTime createdAt;
-    private LocalDateTime acceptedAt;
-    private LocalDateTime rejectedAt;
 
+    @ManyToOne
+    @JoinColumn(name = "updated_by")
+    private User updatedBy;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
+    private LocalDateTime deletedAt;
+    private boolean isDeleted = false;
 
     @PrePersist
     private void setRandomId() {
