@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.user;
 
 import com.frankie.workdev.dto.company.CompanyInfo;
+import com.frankie.workdev.dto.role.RoleDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -32,4 +34,5 @@ public class UserDto {
     private int age;
     private CompanyInfo company;
     private JwtUserInfo createdBy;
+    private List<RoleDto> roles;
 }
