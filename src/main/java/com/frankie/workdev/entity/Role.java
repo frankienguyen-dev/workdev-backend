@@ -55,6 +55,9 @@ public class Role {
     )
     private List<Permission> permissions = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "roles")
+    private List<User> users = new ArrayList<>();
+
     @PrePersist
     private void setRandomId() {
         this.id = generateId();

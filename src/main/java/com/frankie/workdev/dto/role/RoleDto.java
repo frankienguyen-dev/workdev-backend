@@ -26,5 +26,6 @@ public class RoleDto {
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
     private boolean isDeleted;
+    private List<JwtUserInfo> users;
 
 }
