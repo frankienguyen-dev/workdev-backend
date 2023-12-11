@@ -13,22 +13,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "permissions")
-public class Permission {
+@Table(name = "roles")
+public class Role {
     @Id
     private String id;
 
     @Column(unique = true)
     private String name;
-    private String path;
-    private String method;
-    private String module;
+    private boolean isActive = true;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -47,12 +44,16 @@ public class Permission {
     @ManyToOne
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
-
     private LocalDateTime deletedAt;
     private boolean isDeleted = false;
 
-    @ManyToMany(mappedBy = "permissions")
-    private List<Role> roles = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "roles_permissions",
+            joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id")
+    )
+    private List<Permission> permissions = new ArrayList<>();
 
     @PrePersist
     private void setRandomId() {
