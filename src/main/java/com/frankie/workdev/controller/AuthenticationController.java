@@ -3,6 +3,8 @@ package com.frankie.workdev.controller;
 import com.frankie.workdev.dto.authentication.LoginDto;
 import com.frankie.workdev.dto.authentication.LoginResponse;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
+import com.frankie.workdev.dto.authentication.RegisterDto;
+import com.frankie.workdev.dto.authentication.RegisterResponse;
 import com.frankie.workdev.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,5 +25,12 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginDto loginDto) {
         ApiResponse<LoginResponse> login = authenticationService.login(loginDto);
         return new ResponseEntity<>(login, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse<RegisterResponse>> register(
+            @RequestBody RegisterDto registerDto) {
+        ApiResponse<RegisterResponse> register = authenticationService.register(registerDto);
+        return new ResponseEntity<>(register, HttpStatus.CREATED);
     }
 }
