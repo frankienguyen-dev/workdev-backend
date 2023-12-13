@@ -116,15 +116,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             (String refreshToken) {
         try {
             if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
-                String email = jwtTokenProvider.getInformationFromRefreshToken(refreshToken);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                Authentication authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-                String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+//                String email = jwtTokenProvider.getInformationFromRefreshToken(refreshToken);
+//                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+//                Authentication authentication = new UsernamePasswordAuthenticationToken(
+//                        userDetails,
+//                        null,
+//                        userDetails.getAuthorities()
+//                );
+//
+//                String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+                String accessToken = jwtTokenProvider
+                        .generateAccessTokenFromRefreshToken(refreshToken);
                 AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
                 accessTokenResponse.setAccessToken(accessToken);
                 return ApiResponse.success(
@@ -136,7 +138,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid Refresh Token");
             }
         } catch (Exception e) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "Unable to create Access Token from Refresh Token");
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Unable to create Access Token from " +
+                    "Refresh Token, Please login again");
         }
     }
 
@@ -160,9 +163,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         } catch (ExpiredJwtException e) {
             return ApiResponse.error(
-                "Unable to get refresh token, please login again",
-                HttpStatus.BAD_REQUEST,
-                null
+                    "Unable to get refresh token, please login again",
+                    HttpStatus.BAD_REQUEST,
+                    null
             );
         }
     }
