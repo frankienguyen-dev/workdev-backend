@@ -1,18 +1,12 @@
 package com.frankie.workdev.controller;
 
-import com.frankie.workdev.dto.authentication.LoginDto;
-import com.frankie.workdev.dto.authentication.LoginResponse;
+import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.authentication.RegisterDto;
-import com.frankie.workdev.dto.authentication.RegisterResponse;
 import com.frankie.workdev.service.AuthenticationService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -32,5 +26,20 @@ public class AuthenticationController {
             @RequestBody RegisterDto registerDto) {
         ApiResponse<RegisterResponse> register = authenticationService.register(registerDto);
         return new ResponseEntity<>(register, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/refresh")
+    public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(
+            @RequestHeader("Refresh-Token") String refreshToken) {
+        ApiResponse<AccessTokenResponse> accessToken = authenticationService
+                .createAccessTokenFromRefreshToken(refreshToken);
+        return new ResponseEntity<>(accessToken, HttpStatus.OK);
+    }
+
+    @GetMapping("/getRefreshToken")
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>> getRefreshToken() {
+        ApiResponse<RefreshTokenResponse> getRefreshToken = authenticationService
+                .getRefreshToken();
+        return new ResponseEntity<>(getRefreshToken, HttpStatus.OK);
     }
 }
