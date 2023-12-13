@@ -59,6 +59,8 @@ public class User {
 
     private boolean isDeleted = false;
 
+    private String refreshToken;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",

@@ -1,5 +1,6 @@
 package com.frankie.workdev.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,5 +19,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException)
             throws IOException, ServletException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
+
     }
+
 }
