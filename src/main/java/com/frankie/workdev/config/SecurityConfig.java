@@ -42,6 +42,7 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authRequest -> {
                     authRequest.requestMatchers("/api/v1/auth/**").permitAll();
+                    authRequest.requestMatchers("/api/v1/files/**").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
