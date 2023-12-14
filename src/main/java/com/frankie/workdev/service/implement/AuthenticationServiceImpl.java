@@ -60,11 +60,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             long setAgeCookie = (jwtTokenProvider
                     .getRefreshTokenExpirationMilliseconds(refreshToken) - new Date().getTime()) / 1000;
 
-            System.out.println(setAgeCookie);
             Cookie cookie = new Cookie("refreshToken", refreshToken);
             cookie.setHttpOnly(true);
             cookie.setMaxAge((int) setAgeCookie + 10);
-
             cookie.setPath("/");
             response.addCookie(cookie);
             return ApiResponse.success(
