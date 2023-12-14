@@ -3,6 +3,7 @@ package com.frankie.workdev.controller;
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.service.AuthenticationService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,9 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginDto loginDto) {
-        ApiResponse<LoginResponse> login = authenticationService.login(loginDto);
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginDto loginDto
+    , HttpServletResponse response) {
+        ApiResponse<LoginResponse> login = authenticationService.login(loginDto, response);
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
 
@@ -30,16 +32,18 @@ public class AuthenticationController {
 
     @GetMapping("/refresh")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(
-            @RequestHeader("Refresh-Token") String refreshToken) {
+            @CookieValue("refreshToken") String refreshToken
+    ) {
         ApiResponse<AccessTokenResponse> accessToken = authenticationService
                 .createAccessTokenFromRefreshToken(refreshToken);
         return new ResponseEntity<>(accessToken, HttpStatus.OK);
     }
 
     @GetMapping("/getRefreshToken")
-    public ResponseEntity<ApiResponse<RefreshTokenResponse>> getRefreshToken() {
+    public ResponseEntity<ApiResponse<RefreshTokenResponse>> getRefreshToken(
+            @CookieValue(name = "refreshToken",  required = false) String refreshToken) {
         ApiResponse<RefreshTokenResponse> getRefreshToken = authenticationService
-                .getRefreshToken();
+                .getRefreshToken(refreshToken);
         return new ResponseEntity<>(getRefreshToken, HttpStatus.OK);
     }
 }
