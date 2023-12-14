@@ -35,18 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken) && jwtTokenProvider
                 .validateAccessToken(accessToken)) {
-
-//            if (jwtTokenProvider.isAccessTokenExpired(accessToken)) {
-//                String refreshToken = getRefreshTokenFromRequest(request);
-//                if(StringUtils.hasText(refreshToken) && jwtTokenProvider
-//                        .validateRefreshToken(refreshToken)) {
-//                    String newAccessToken = jwtTokenProvider
-//                            .generateAccessTokenFromRefreshToken(refreshToken);
-//                    if(newAccessToken != null) {
-//                        accessToken = newAccessToken;
-//                    }
-//                }
-//            }
             String email = jwtTokenProvider.getInformationFromAccessToken(accessToken);
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
             if (userDetails != null) {

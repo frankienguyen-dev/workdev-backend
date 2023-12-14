@@ -6,25 +6,24 @@ import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;
 import com.frankie.workdev.exception.ResourceExistingException;
-import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
 import com.frankie.workdev.security.JwtTokenProvider;
 import com.frankie.workdev.service.AuthenticationService;
 import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -36,10 +35,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
-    private UserDetailsService userDetailsService;
+
 
     @Override
-    public ApiResponse<LoginResponse> login(LoginDto loginDto) {
+    public ApiResponse<LoginResponse> login(LoginDto loginDto, HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -57,6 +56,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 findUserLogin.setRefreshToken(refreshToken);
                 userRepository.save(findUserLogin);
             }
+
+            long setAgeCookie = (jwtTokenProvider
+                    .getRefreshTokenExpirationMilliseconds(refreshToken) - new Date().getTime()) / 1000;
+
+            System.out.println(setAgeCookie);
+            Cookie cookie = new Cookie("refreshToken", refreshToken);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge((int) setAgeCookie + 10);
+
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return ApiResponse.success(
                     "Login successfully",
                     HttpStatus.OK,
@@ -116,15 +126,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             (String refreshToken) {
         try {
             if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
-//                String email = jwtTokenProvider.getInformationFromRefreshToken(refreshToken);
-//                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-//                Authentication authentication = new UsernamePasswordAuthenticationToken(
-//                        userDetails,
-//                        null,
-//                        userDetails.getAuthorities()
-//                );
-//
-//                String accessToken = jwtTokenProvider.generateAccessToken(authentication);
+
                 String accessToken = jwtTokenProvider
                         .generateAccessTokenFromRefreshToken(refreshToken);
                 AccessTokenResponse accessTokenResponse = new AccessTokenResponse();
@@ -144,18 +146,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ApiResponse<RefreshTokenResponse> getRefreshToken() {
+    public ApiResponse<RefreshTokenResponse> getRefreshToken(String refreshToken) {
 
         try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-            User findUser = userRepository.findByEmail(email);
-            if (findUser == null) {
-                throw new ResourceNotFoundException("User", "email", email);
-            }
-
             RefreshTokenResponse refreshTokenResponse = new RefreshTokenResponse();
-            refreshTokenResponse.setRefreshToken(findUser.getRefreshToken());
+            refreshTokenResponse.setRefreshToken(refreshToken);
             return ApiResponse.success(
                     "Get refresh token successfully",
                     HttpStatus.OK,

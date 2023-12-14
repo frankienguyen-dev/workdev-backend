@@ -151,4 +151,12 @@ public class JwtTokenProvider {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid JWT Token");
         }
     }
+
+    public Long getRefreshTokenExpirationMilliseconds(String refreshToken) {
+        Claims claims = Jwts.parser().verifyWith((SecretKey) refreshTokenKey()).build()
+                .parseSignedClaims(refreshToken).getPayload();
+        Date expirationDate = claims.getExpiration();
+        return expirationDate.getTime();
+
+    }
 }
