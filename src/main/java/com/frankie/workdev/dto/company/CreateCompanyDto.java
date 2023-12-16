@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.company;
 
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class CreateCompanyDto {
     private String name;
     private String description;
     private String address;
-    private String logo;
+    private FileUploadDto logo;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
 }

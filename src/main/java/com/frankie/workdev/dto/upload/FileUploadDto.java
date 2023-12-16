@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UploadFileResponse {
+public class FileUploadDto {
     private String id;
     private String fileName;
     private String fileType;

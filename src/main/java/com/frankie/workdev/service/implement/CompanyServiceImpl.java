@@ -5,10 +5,12 @@ import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.company.*;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import com.frankie.workdev.entity.Company;
+import com.frankie.workdev.entity.FileEntity;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
+import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.repository.UserRepository;
 import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.CompanyService;
@@ -34,13 +36,14 @@ public class CompanyServiceImpl implements CompanyService {
     private UserRepository userRepository;
     private CompanyRepository companyRepository;
     private ModelMapper modelMapper;
+    private FileRepository fileRepository;
 
 
     @Override
     public ApiResponse<CreateCompanyDto> createNewCompany(CreateCompanyDto createCompanyDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        if(createdByUser.getCompany() != null) {
+        if (createdByUser.getCompany() != null) {
             throw new ResourceExistingException(createdByUser.getCompany().getName(), "id",
                     createdByUser.getCompany().getId());
         }
@@ -49,12 +52,25 @@ public class CompanyServiceImpl implements CompanyService {
             throw new ResourceExistingException("Company", "name",
                     createCompanyDto.getName());
         }
+
+
+
         Company newCompany = new Company();
         newCompany.setId(createCompanyDto.getId());
         newCompany.setName(createCompanyDto.getName());
         newCompany.setDescription(createCompanyDto.getDescription());
         newCompany.setAddress(createCompanyDto.getAddress());
-        newCompany.setLogo(createCompanyDto.getLogo());
+        if(createCompanyDto.getLogo() != null && createCompanyDto.getLogo()
+                .getId() != null) {
+            FileEntity logo = fileRepository.findById(createCompanyDto
+                    .getLogo().getId()).orElseThrow(
+                    () -> new ResourceNotFoundException("File", "id",
+                            createCompanyDto.getLogo().getId())
+            );
+            newCompany.setLogo(logo);
+        } else {
+            newCompany.setLogo(null);
+        }
         newCompany.setCreatedAt(LocalDateTime.now());
         newCompany.setCreatedBy(createdByUser);
         createdByUser.setCompany(newCompany);
@@ -125,34 +141,49 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public ApiResponse<UpdateCompanyDto> updateCompanyById(
             String id, UpdateCompanyDto updateCompanyDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
-        User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        Company findCompany = companyRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Company", "id", id)
-        );
-        if (updateCompanyDto.getName() != null
-                && !updateCompanyDto.getName().equalsIgnoreCase(findCompany.getName())) {
-            Company existingCompany = companyRepository.findByName(updateCompanyDto.getName());
-            if (existingCompany != null) {
-                throw new ResourceExistingException("Company", "name",
-                        updateCompanyDto.getName());
+        try {
+            JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+            User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+            Company findCompany = companyRepository.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("Company", "id", id)
+            );
+            if (updateCompanyDto.getName() != null
+                    && !updateCompanyDto.getName().equalsIgnoreCase(findCompany.getName())) {
+                Company existingCompany = companyRepository.findByName(updateCompanyDto.getName());
+                if (existingCompany != null) {
+                    throw new ResourceExistingException("Company", "name",
+                            updateCompanyDto.getName());
+                }
             }
+
+            findCompany.setName(updateCompanyDto.getName());
+            findCompany.setDescription(updateCompanyDto.getDescription());
+            findCompany.setAddress(updateCompanyDto.getAddress());
+            if (updateCompanyDto.getLogo() != null && updateCompanyDto
+                    .getLogo().getId() != null) {
+                FileEntity logo = fileRepository.findById(updateCompanyDto.getLogo().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("File", "id",
+                                updateCompanyDto.getLogo().getId()));
+                findCompany.setLogo(logo);
+            } else {
+                findCompany.setLogo(null);
+            }
+
+            findCompany.setUpdatedBy(updatedByUser);
+            findCompany.setUpdatedAt(LocalDateTime.now());
+            Company saveUpdate = companyRepository.save(findCompany);
+            UpdateCompanyDto updateCompany = modelMapper.map(saveUpdate, UpdateCompanyDto.class);
+            updateCompany.setUpdatedBy(getUserInfoFromToken);
+            updateCompany.setUpdatedAt(saveUpdate.getUpdatedAt());
+            return ApiResponse.success(
+                    "Company updated successfully",
+                    HttpStatus.OK,
+                    updateCompany
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        findCompany.setName(updateCompanyDto.getName());
-        findCompany.setDescription(updateCompanyDto.getDescription());
-        findCompany.setAddress(updateCompanyDto.getAddress());
-        findCompany.setLogo(updateCompanyDto.getLogo());
-        findCompany.setUpdatedBy(updatedByUser);
-        findCompany.setUpdatedAt(LocalDateTime.now());
-        Company saveUpdate = companyRepository.save(findCompany);
-        UpdateCompanyDto updateCompany = modelMapper.map(saveUpdate, UpdateCompanyDto.class);
-        updateCompany.setUpdatedBy(getUserInfoFromToken);
-        updateCompany.setUpdatedAt(saveUpdate.getUpdatedAt());
-        return ApiResponse.success(
-                "Company updated successfully",
-                HttpStatus.OK,
-                updateCompany
-        );
     }
 
     @Override

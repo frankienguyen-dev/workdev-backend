@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.company;
 
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,8 @@ public class UpdateCompanyDto {
     private String description;
     @NotEmpty(message = "Address should not be empty")
     private String address;
-    @NotEmpty(message = "Logo should not be empty")
-    private String logo;
+//    @NotEmpty(message = "Logo should not be empty")
+    private FileUploadDto logo;
     private JwtUserInfo updatedBy;
     private LocalDateTime updatedAt;
 

@@ -34,11 +34,17 @@ public class UploadFileServiceImpl implements UploadFileService {
     @Override
     public ApiResponse<UploadFileResponse> uploadFile(MultipartFile file) {
         try {
-            String uploadPath = "/Users/nguyenduongchanhtay/Desktop/WorkDev" +
-                    "/src/main/java/com/frankie/workdev/upload";
+            String uploadPath = "/Users/nguyenduongchanhtay/Desktop/WorkDev/src/main/java/com/frankie/workdev/upload";
             File uploadDirectory = new File(uploadPath);
             if (!uploadDirectory.exists()) {
                 Files.createDirectories(Paths.get(uploadPath));
+            }
+            if(file.isEmpty()) {
+                return ApiResponse.error(
+                        "Upload file failed",
+                        HttpStatus.BAD_REQUEST,
+                        null
+                );
             }
             String defaultName = file.getOriginalFilename();
             if (defaultName != null) {
@@ -63,7 +69,6 @@ public class UploadFileServiceImpl implements UploadFileService {
                 uploadFileResponse.setFileType(saveFile.getFileType());
                 uploadFileResponse.setSize(saveFile.getSize());
                 uploadFileResponse.setUploadTime(saveFile.getUploadTime());
-                uploadFileResponse.setData(saveFile.getData());
                 return ApiResponse.success(
                         "Upload file successfully",
                         HttpStatus.OK,
