@@ -25,7 +25,7 @@ public class CreateUserDto {
     private String gender;
     private int age;
     private List<RoleDto> roles;
-    private CompanyInfo company;
+//    private CompanyInfo company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
 }

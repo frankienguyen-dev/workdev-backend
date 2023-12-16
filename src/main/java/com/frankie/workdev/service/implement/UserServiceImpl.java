@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     public ApiResponse<CreateUserDto> createNewUser(UserDto userDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        Company company = companyRepository.findByName(userDto.getCompany().getName());
+//        Company company = companyRepository.findByName(userDto.getCompany().getName());
         User existingUser = userRepository.findByEmail(userDto.getEmail());
         if (existingUser != null) {
             throw new ResourceExistingException("User", "email", userDto.getEmail());
@@ -73,15 +73,15 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setCreatedBy(createdByUser);
-        newUser.setCompany(company);
+//        newUser.setCompany(company);
         newUser.setRoles(roles);
         User saveNewUser = userRepository.save(newUser);
         CreateUserDto createUserResponse = modelMapper
                 .map(saveNewUser, CreateUserDto.class);
         CompanyInfo companyInfo = new CompanyInfo();
-        companyInfo.setId(saveNewUser.getCompany().getId());
-        companyInfo.setName(saveNewUser.getCompany().getName());
-        createUserResponse.setCompany(companyInfo);
+//        companyInfo.setId(saveNewUser.getCompany().getId());
+//        companyInfo.setName(saveNewUser.getCompany().getName());
+//        createUserResponse.setCompany(companyInfo);
         List<RoleDto> roleDtoList = saveNewUser.getRoles().stream()
                 .map(role -> {
                     try {

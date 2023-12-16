@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.company;
 
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import com.frankie.workdev.dto.user.UserInfoDto;
 import lombok.AllArgsConstructor;
@@ -19,6 +20,7 @@ public class CompanyDto {
     private String name;
     private String description;
     private String address;
+    private FileUploadDto logo;
     private List<JwtUserInfo> users;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
