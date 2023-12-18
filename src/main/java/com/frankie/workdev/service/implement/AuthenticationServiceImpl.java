@@ -162,4 +162,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             );
         }
     }
+
+    @Override
+    public ApiResponse<String> logout(HttpServletResponse response) {
+       try {
+           Authentication authentication = SecurityContextHolder.getContext()
+                   .getAuthentication();
+           String getUserEmail = authentication.getName();
+           User findUserLogout = userRepository.findByEmail(getUserEmail);
+           findUserLogout.setRefreshToken(null);
+           Cookie cookie = new Cookie("refreshToken", null);
+           cookie.setHttpOnly(true);
+           cookie.setMaxAge(0);
+           cookie.setPath("/");
+           response.addCookie(cookie);
+           userRepository.save(findUserLogout);
+           return ApiResponse.success(
+                   "Logout successfully",
+                   HttpStatus.OK,
+                   "Logout successfully"
+           );
+       } catch (Exception e) {
+           e.printStackTrace();
+           throw e;
+       }
+    }
 }

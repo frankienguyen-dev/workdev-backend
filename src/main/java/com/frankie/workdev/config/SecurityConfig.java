@@ -41,7 +41,9 @@ public class SecurityConfig {
             throws Exception {
         httpSecurity.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authRequest -> {
-                    authRequest.requestMatchers("/api/v1/auth/**").permitAll();
+                    authRequest.requestMatchers("/api/v1/auth/login").permitAll();
+                    authRequest.requestMatchers("/api/v1/auth/register").permitAll();
+                    authRequest.requestMatchers("/api/v1/auth/refresh").permitAll();
                     authRequest.requestMatchers("/api/v1/files/**").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
