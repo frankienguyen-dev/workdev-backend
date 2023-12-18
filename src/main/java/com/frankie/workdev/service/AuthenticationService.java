@@ -13,4 +13,5 @@ public interface AuthenticationService {
 
     ApiResponse<RefreshTokenResponse> getRefreshToken(String refreshToken);
 
+    ApiResponse<String> logout(HttpServletResponse response);
 }
