@@ -1,16 +1,13 @@
 package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.upload.DownloadFileResponse;
 import com.frankie.workdev.dto.upload.UploadFileResponse;
 import com.frankie.workdev.entity.FileEntity;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.service.UploadFileService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,14 +89,9 @@ public class UploadFileServiceImpl implements UploadFileService {
 
     @Override
     public FileEntity downloadFile(String id) {
-        FileEntity file = fileRepository.findById(id).orElseThrow(
+        return fileRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("File", "id", id)
         );
-//       HttpHeaders headers = new HttpHeaders();
-//       headers.setContentDispositionFormData("attachment", file.getFileName());
-//       headers.setContentLength(file.getSize());
-//       return headers;
-        return file;
     }
 
     private String generateUniqueFileName(String fileExtension) {

@@ -1,9 +1,8 @@
-package com.frankie.workdev.dto.company;
+package com.frankie.workdev.dto.job;
 
-import com.frankie.workdev.dto.upload.FileUploadDto;
+import com.frankie.workdev.dto.company.CompanyDto;
+import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
-import com.frankie.workdev.dto.user.UserInfoDto;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,20 +15,24 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyDto {
+public class JobDto {
     private String id;
-
-    @NotEmpty(message = "Name should not be empty")
     private String name;
     private String description;
-    private String address;
-    private FileUploadDto logo;
-    private List<JwtUserInfo> users;
+    private String location;
+    private int quantity;
+    private Long salary;
+    private String level;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;
     private LocalDateTime updatedAt;
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
+    private CompanyDto company;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private List<SkillDto> skills;
+    private boolean isActive;
     private boolean isDeleted;
 }
