@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
@@ -115,8 +116,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         MyNullPointerException exception,
         WebRequest request
     ) {
-        System.out.println("Handling MyNullPointerException");
-
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
@@ -129,5 +128,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         );
         return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmailOrPasswordException.class)
+    public ResponseEntity<ApiResponse<ErrorDetails>> handleEmailOrPasswordException(
+            EmailOrPasswordException exception,
+            WebRequest request
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        ApiResponse<ErrorDetails> apiResponse = ApiResponse.error(
+                "Login failed",
+                HttpStatus.UNAUTHORIZED,
+                errorDetails
+
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
 }

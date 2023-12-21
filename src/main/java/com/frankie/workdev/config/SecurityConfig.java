@@ -16,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @AllArgsConstructor
@@ -37,13 +40,29 @@ public class SecurityConfig {
     }
 
     @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry
+                        .addMapping("/**")
+                        .allowedMethods(CorsConfiguration.ALL)
+                        .allowedHeaders(CorsConfiguration.ALL)
+                        .allowedOriginPatterns(CorsConfiguration.ALL);
+            }
+        };
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
             throws Exception {
         httpSecurity.csrf(csrf -> csrf.disable())
+
                 .authorizeHttpRequests(authRequest -> {
-                    authRequest.requestMatchers("/api/v1/auth/login").permitAll();
-                    authRequest.requestMatchers("/api/v1/auth/register").permitAll();
-                    authRequest.requestMatchers("/api/v1/auth/refresh").permitAll();
+//                    authRequest.requestMatchers("/api/v1/auth/login").permitAll();
+//                    authRequest.requestMatchers("/api/v1/auth/register").permitAll();
+//                    authRequest.requestMatchers("/api/v1/auth/refresh").permitAll();
+                    authRequest.requestMatchers("/api/v1/auth/**").permitAll();
                     authRequest.requestMatchers("/api/v1/files/**").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
