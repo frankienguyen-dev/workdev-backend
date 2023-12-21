@@ -5,6 +5,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;
+import com.frankie.workdev.exception.EmailOrPasswordException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
@@ -40,6 +41,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public ApiResponse<LoginResponse> login(LoginDto loginDto, HttpServletResponse response) {
         try {
+            User findUserLogin = userRepository.findByEmail(loginDto.getEmail());
+            if (findUserLogin == null || !passwordEncoder.matches(loginDto.getPassword(),
+                    findUserLogin.getPassword())) {
+                throw new EmailOrPasswordException("Email or password is incorrect");
+            }
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginDto.getEmail(),
@@ -51,7 +58,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String refreshToken = createOrUpdateRefreshToken(authentication);
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setAccessToken(accessToken);
-            User findUserLogin = userRepository.findByEmail(loginDto.getEmail());
             if (findUserLogin.getRefreshToken() == null) {
                 findUserLogin.setRefreshToken(refreshToken);
                 userRepository.save(findUserLogin);
@@ -74,6 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             e.printStackTrace();
             throw e;
         }
+
     }
 
     private String createOrUpdateRefreshToken(Authentication authentication) {
@@ -109,8 +116,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         registerUser.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         User saveRegister = userRepository.save(registerUser);
         RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setId(saveRegister.getId());
         registerResponse.setEmail(saveRegister.getEmail());
         registerResponse.setFullName(saveRegister.getFullName());
+        registerResponse.setCreatedAt(saveRegister.getCreatedAt());
         registerResponse.setRole(saveRegister.getRoles().get(0).getName());
         return ApiResponse.success(
                 "Register successfully",
@@ -165,26 +174,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ApiResponse<String> logout(HttpServletResponse response) {
-       try {
-           Authentication authentication = SecurityContextHolder.getContext()
-                   .getAuthentication();
-           String getUserEmail = authentication.getName();
-           User findUserLogout = userRepository.findByEmail(getUserEmail);
-           findUserLogout.setRefreshToken(null);
-           Cookie cookie = new Cookie("refreshToken", null);
-           cookie.setHttpOnly(true);
-           cookie.setMaxAge(0);
-           cookie.setPath("/");
-           response.addCookie(cookie);
-           userRepository.save(findUserLogout);
-           return ApiResponse.success(
-                   "Logout successfully",
-                   HttpStatus.OK,
-                   "Logout successfully"
-           );
-       } catch (Exception e) {
-           e.printStackTrace();
-           throw e;
-       }
+        try {
+            Authentication authentication = SecurityContextHolder.getContext()
+                    .getAuthentication();
+            String getUserEmail = authentication.getName();
+            User findUserLogout = userRepository.findByEmail(getUserEmail);
+            findUserLogout.setRefreshToken(null);
+            Cookie cookie = new Cookie("refreshToken", null);
+            cookie.setHttpOnly(true);
+            cookie.setMaxAge(0);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+            userRepository.save(findUserLogout);
+            return ApiResponse.success(
+                    "Logout successfully",
+                    HttpStatus.OK,
+                    "Logout successfully"
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

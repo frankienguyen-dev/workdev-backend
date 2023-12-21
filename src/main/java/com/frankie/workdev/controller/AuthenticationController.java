@@ -47,7 +47,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(getRefreshToken, HttpStatus.OK);
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response) {
          ApiResponse<String> logout =  authenticationService.logout(response);
         return new ResponseEntity<>(logout, HttpStatus.OK);
