@@ -37,4 +37,12 @@ public class UploadFileController {
         headers.setContentLength(fileData.getSize());
         return new ResponseEntity<>(fileData.getData(), headers, HttpStatus.OK);
     }
+
+    @GetMapping("/{fileName}")
+    public ResponseEntity<byte[]> getFileByName(@PathVariable String fileName) {
+        FileEntity imageData = uploadFileService.getFileByFileName(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentLength(imageData.getSize());
+        return new ResponseEntity<>(imageData.getData(), headers, HttpStatus.OK);
+    }
 }

@@ -196,6 +196,42 @@ public class JobServiceImpl implements JobService {
         );
     }
 
+    @Override
+    public ApiResponse<JobResponse> searchJob(String name, String location, Long salary, int pageNo,
+                                               int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Job> jobs = jobRepository.searchJob(name, location, salary, pageable);
+        List<Job> jobContentList = jobs.getContent();
+        List<JobDto> jobList = jobContentList.stream()
+                .map(job -> {
+                    try {
+                        return modelMapper.map(job, JobDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageNo(jobs.getNumber());
+        metaData.setPageSize(jobs.getSize());
+        metaData.setTotalElements(jobs.getTotalElements());
+        metaData.setTotalPages(jobs.getTotalPages());
+        metaData.setLastPage(jobs.isLast());
+        JobResponse jobResponse = new JobResponse();
+        jobResponse.setData(jobList);
+        jobResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Search Job fetched successfully",
+                HttpStatus.OK,
+                jobResponse
+        );
+
+    }
+
+
     private List<Skill> getSkills(List<SkillDto> skills) {
         List<Skill> skillList = new ArrayList<>();
         for (SkillDto skillDto : skills) {

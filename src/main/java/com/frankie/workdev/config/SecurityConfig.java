@@ -6,6 +6,7 @@ import com.frankie.workdev.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -59,11 +60,10 @@ public class SecurityConfig {
         httpSecurity.csrf(csrf -> csrf.disable())
 
                 .authorizeHttpRequests(authRequest -> {
-//                    authRequest.requestMatchers("/api/v1/auth/login").permitAll();
-//                    authRequest.requestMatchers("/api/v1/auth/register").permitAll();
-//                    authRequest.requestMatchers("/api/v1/auth/refresh").permitAll();
                     authRequest.requestMatchers("/api/v1/auth/**").permitAll();
                     authRequest.requestMatchers("/api/v1/files/**").permitAll();
+                    authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/**").permitAll();
+                    authRequest.requestMatchers(HttpMethod.GET, "api/v1/companies/**").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())

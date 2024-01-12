@@ -36,7 +36,7 @@ public class UploadFileServiceImpl implements UploadFileService {
             if (!uploadDirectory.exists()) {
                 Files.createDirectories(Paths.get(uploadPath));
             }
-            if(file.isEmpty()) {
+            if (file.isEmpty()) {
                 return ApiResponse.error(
                         "Upload file failed",
                         HttpStatus.BAD_REQUEST,
@@ -92,6 +92,20 @@ public class UploadFileServiceImpl implements UploadFileService {
         return fileRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("File", "id", id)
         );
+    }
+
+    @Override
+    public FileEntity getFileByFileName(String fileName) {
+        try {
+            FileEntity fileEntity = fileRepository.findByFileName(fileName);
+            if (fileEntity == null) {
+                throw new ResourceNotFoundException("File", "fileName", fileName);
+            }
+            return fileEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     private String generateUniqueFileName(String fileExtension) {

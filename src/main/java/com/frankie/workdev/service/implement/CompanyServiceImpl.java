@@ -43,7 +43,11 @@ public class CompanyServiceImpl implements CompanyService {
     public ApiResponse<CreateCompanyDto> createNewCompany(CreateCompanyDto createCompanyDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        if (createdByUser.getCompany() != null) {
+        if (createdByUser.getRoles().get(0).getName().equalsIgnoreCase("ROLE_ADMIN")) {
+
+        }
+        if (createdByUser.getCompany() != null && !createdByUser.getRoles().get(0)
+                .getName().equalsIgnoreCase("ROLE_ADMIN")) {
             throw new ResourceExistingException(createdByUser.getCompany().getName(), "id",
                     createdByUser.getCompany().getId());
         }
@@ -54,13 +58,12 @@ public class CompanyServiceImpl implements CompanyService {
         }
 
 
-
         Company newCompany = new Company();
         newCompany.setId(createCompanyDto.getId());
         newCompany.setName(createCompanyDto.getName());
         newCompany.setDescription(createCompanyDto.getDescription());
         newCompany.setAddress(createCompanyDto.getAddress());
-        if(createCompanyDto.getLogo() != null && createCompanyDto.getLogo()
+        if (createCompanyDto.getLogo() != null && createCompanyDto.getLogo()
                 .getId() != null) {
             FileEntity logo = fileRepository.findById(createCompanyDto
                     .getLogo().getId()).orElseThrow(
@@ -73,7 +76,10 @@ public class CompanyServiceImpl implements CompanyService {
         }
         newCompany.setCreatedAt(LocalDateTime.now());
         newCompany.setCreatedBy(createdByUser);
-        createdByUser.setCompany(newCompany);
+        if(!createdByUser.getRoles().get(0)
+                .getName().equalsIgnoreCase("ROLE_ADMIN")) {
+            createdByUser.setCompany(newCompany);
+        }
         Company savedCompany = companyRepository.save(newCompany);
         userRepository.save(createdByUser);
         CreateCompanyDto createCompany = modelMapper.map(savedCompany, CreateCompanyDto.class);
