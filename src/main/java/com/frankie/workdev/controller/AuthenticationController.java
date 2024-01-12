@@ -30,7 +30,7 @@ public class AuthenticationController {
         return new ResponseEntity<>(register, HttpStatus.CREATED);
     }
 
-    @GetMapping("/refresh")
+    @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<AccessTokenResponse>> refreshAccessToken(
             @CookieValue("refreshToken") String refreshToken
     ) {

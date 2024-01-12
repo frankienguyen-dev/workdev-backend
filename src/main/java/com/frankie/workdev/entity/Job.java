@@ -29,6 +29,7 @@ public class Job {
     private Long salary;
     private String level;
 
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private User createdBy;

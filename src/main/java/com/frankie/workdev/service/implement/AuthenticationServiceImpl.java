@@ -58,6 +58,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String refreshToken = createOrUpdateRefreshToken(authentication);
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setAccessToken(accessToken);
+            loginResponse.setRole(findUserLogin.getRoles().get(0).getName());
             if (findUserLogin.getRefreshToken() == null) {
                 findUserLogin.setRefreshToken(refreshToken);
                 userRepository.save(findUserLogin);
@@ -132,6 +133,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public ApiResponse<AccessTokenResponse> createAccessTokenFromRefreshToken
             (String refreshToken) {
         try {
+
             if (jwtTokenProvider.validateRefreshToken(refreshToken)) {
 
                 String accessToken = jwtTokenProvider
@@ -144,7 +146,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         accessTokenResponse
                 );
             } else {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid Refresh Token");
+                return ApiResponse.error(
+                        "Unable to create Access Token from Refresh Token",
+                        HttpStatus.BAD_REQUEST,
+                        null
+                );
             }
         } catch (Exception e) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Unable to create Access Token from " +

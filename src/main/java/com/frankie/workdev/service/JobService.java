@@ -2,6 +2,9 @@ package com.frankie.workdev.service;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.job.*;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface JobService {
     ApiResponse<CreateJobDto> createJob(CreateJobDto createJobDto);
@@ -14,4 +17,7 @@ public interface JobService {
     ApiResponse<UpdateJobDto> updateJobById(String id, UpdateJobDto updateJobDto);
 
     ApiResponse<DeleteJobDto> deleteJobById(String id);
+
+    ApiResponse<JobResponse> searchJob(String name, String location, Long salary, int pageNo, int pageSize,
+    String sortBy, String sortDir);
 }

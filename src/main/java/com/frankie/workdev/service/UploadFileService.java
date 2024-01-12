@@ -14,4 +14,6 @@ public interface UploadFileService {
     ApiResponse<UploadFileResponse> uploadFile(MultipartFile file);
 
     FileEntity downloadFile(String id);
+
+    FileEntity getFileByFileName(String fileName);
 }
