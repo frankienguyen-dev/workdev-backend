@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface JobRepository extends JpaRepository<Job, String> {
 
     @Query("SELECT j FROM Job j WHERE j.name LIKE CONCAT('%', :name, '%')" +
-            "OR j.location LIKE CONCAT('%', :location, '%') OR j.salary >= :salary")
+            "OR j.location LIKE CONCAT('%', :location, '%') OR j.salary >= :salary " +
+            "OR j.company.name LIKE CONCAT('%', :name, '%')")
     Page<Job> searchJob(String name, String location, Long salary, Pageable pageable);
 }

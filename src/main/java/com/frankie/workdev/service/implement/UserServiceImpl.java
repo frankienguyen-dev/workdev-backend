@@ -70,6 +70,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPhoneNumber(userDto.getPhoneNumber());
         newUser.setGender(userDto.getGender());
         newUser.setAge(userDto.getAge());
+        newUser.setTitle(userDto.getTitle());
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setCreatedBy(createdByUser);
@@ -78,7 +79,7 @@ public class UserServiceImpl implements UserService {
         User saveNewUser = userRepository.save(newUser);
         CreateUserDto createUserResponse = modelMapper
                 .map(saveNewUser, CreateUserDto.class);
-        CompanyInfo companyInfo = new CompanyInfo();
+//        CompanyInfo companyInfo = new CompanyInfo();
 //        companyInfo.setId(saveNewUser.getCompany().getId());
 //        companyInfo.setName(saveNewUser.getCompany().getName());
 //        createUserResponse.setCompany(companyInfo);
@@ -176,6 +177,7 @@ public class UserServiceImpl implements UserService {
             findUser.setPhoneNumber(updateUserDto.getPhoneNumber());
             findUser.setGender(updateUserDto.getGender());
             findUser.setAge(updateUserDto.getAge());
+            findUser.setTitle(updateUserDto.getTitle());
             findUser.setUpdatedAt(LocalDateTime.now());
             findUser.setUpdatedBy(updatedByUser);
             findUser.setCompany(company);
@@ -218,11 +220,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<DeleteUserDto> softDeleteUserById(String id) {
+        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         User findUser = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)
         );
         findUser.setDeletedAt(LocalDateTime.now());
         findUser.setDeleted(true);
+        findUser.setDeletedBy(updatedByUser);
         User saveDeleted = userRepository.save(findUser);
         DeleteUserDto deleteUser = modelMapper.map(saveDeleted, DeleteUserDto.class);
         return ApiResponse.success(

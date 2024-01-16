@@ -19,10 +19,14 @@ public class JobDto {
     private String id;
     private String name;
     private String description;
+    private String responsibility;
     private String location;
     private int quantity;
     private Long salary;
     private String level;
+    private String education;
+    private String jobType;
+    private String experience;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;

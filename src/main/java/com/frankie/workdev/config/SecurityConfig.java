@@ -64,6 +64,7 @@ public class SecurityConfig {
                     authRequest.requestMatchers("/api/v1/files/**").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/**").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/companies/**").permitAll();
+                    authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/search").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
                 .httpBasic(Customizer.withDefaults())
