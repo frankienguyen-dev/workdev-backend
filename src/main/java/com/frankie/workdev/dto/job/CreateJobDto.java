@@ -26,6 +26,7 @@ public class CreateJobDto {
 
     @NotEmpty(message = "Description is required")
     private String description;
+    private String responsibility;
 
     @NotEmpty(message = "Location is required")
     private String location;
@@ -35,6 +36,9 @@ public class CreateJobDto {
 
     @NotNull(message = "Salary is required")
     private Long salary;
+    private String education;
+    private String jobType;
+    private String experience;
 
     @NotEmpty(message = "Level is required")
     private String level;

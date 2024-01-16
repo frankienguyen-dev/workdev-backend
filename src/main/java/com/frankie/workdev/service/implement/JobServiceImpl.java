@@ -61,10 +61,14 @@ public class JobServiceImpl implements JobService {
             Job newJob = new Job();
             newJob.setName(createJobDto.getName());
             newJob.setDescription(createJobDto.getDescription());
+            newJob.setResponsibility(createJobDto.getResponsibility());
             newJob.setLocation(createJobDto.getLocation());
             newJob.setQuantity(createJobDto.getQuantity());
             newJob.setSalary(createJobDto.getSalary());
             newJob.setLevel(createJobDto.getLevel());
+            newJob.setEducation(createJobDto.getEducation());
+            newJob.setJobType(createJobDto.getJobType());
+            newJob.setExperience(createJobDto.getExperience());
             newJob.setCreatedBy(createdByUser);
             newJob.setCreatedAt(LocalDateTime.now());
             newJob.setCompany(findCompany);
@@ -138,7 +142,8 @@ public class JobServiceImpl implements JobService {
     public ApiResponse<UpdateJobDto> updateJobById(String id, UpdateJobDto updateJobDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
         User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        if (updatedByUser.getCompany() == null) {
+        if (updatedByUser.getCompany() == null && !updatedByUser.getRoles().get(0)
+                .getName().equals("ROLE_ADMIN")) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "User is not a company");
         }
         Job findJob = jobRepository.findById(id).orElseThrow(
@@ -152,10 +157,14 @@ public class JobServiceImpl implements JobService {
         }
         findJob.setName(updateJobDto.getName());
         findJob.setDescription(updateJobDto.getDescription());
+        findJob.setResponsibility(updateJobDto.getResponsibility());
         findJob.setLocation(updateJobDto.getLocation());
         findJob.setQuantity(updateJobDto.getQuantity());
         findJob.setSalary(updateJobDto.getSalary());
         findJob.setLevel(updateJobDto.getLevel());
+        findJob.setEducation(updateJobDto.getEducation());
+        findJob.setJobType(updateJobDto.getJobType());
+        findJob.setExperience(updateJobDto.getExperience());
         findJob.setUpdatedBy(updatedByUser);
         findJob.setUpdatedAt(LocalDateTime.now());
         findJob.setCompany(findCompany);
@@ -197,8 +206,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> searchJob(String name, String location, Long salary, int pageNo,
-                                               int pageSize, String sortBy, String sortDir) {
+    public ApiResponse<JobResponse> searchJob(String name, String location, Long salary,
+                                              int pageNo, int pageSize,
+                                              String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();

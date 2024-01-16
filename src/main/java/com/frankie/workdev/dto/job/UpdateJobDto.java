@@ -26,6 +26,7 @@ public class UpdateJobDto {
 
     @NotEmpty(message = "Description should not be empty")
     private String description;
+    private String responsibility;
 
     @NotEmpty(message = "Location should not be empty")
     private String location;
@@ -35,6 +36,9 @@ public class UpdateJobDto {
 
     @NotNull(message = "Salary should not be empty")
     private Long salary;
+    private String education;
+    private String jobType;
+    private String experience;
 
     @NotEmpty(message = "Level should not be empty")
     private String level;

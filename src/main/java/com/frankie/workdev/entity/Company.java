@@ -22,8 +22,15 @@ public class Company {
     @Id
     private String id;
     private String name;
+    private String companyType;
     private String description;
+    private String responsibility;
     private String address;
+    private String email;
+    private String phoneNumber;
+    private String website;
+    private Long teamSize;
+    private LocalDateTime foundedDate;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "logo_id", referencedColumnName = "id")

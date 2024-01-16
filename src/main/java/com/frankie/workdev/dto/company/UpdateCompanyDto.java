@@ -20,8 +20,15 @@ public class UpdateCompanyDto {
     private String name;
     @NotEmpty(message = "Description should not be empty")
     private String description;
+    private String companyType;
+    private String responsibility;
     @NotEmpty(message = "Address should not be empty")
     private String address;
+    private String email;
+    private String phoneNumber;
+    private String website;
+    private Long teamSize;
+    private LocalDateTime foundedDate;
 //    @NotEmpty(message = "Logo should not be empty")
     private FileUploadDto logo;
     private JwtUserInfo updatedBy;

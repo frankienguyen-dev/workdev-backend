@@ -24,11 +24,14 @@ public class Job {
     private String id;
     private String name;
     private String description;
+    private String responsibility;
     private String location;
     private int quantity;
     private Long salary;
     private String level;
-
+    private String education;
+    private String jobType;
+    private String experience;
 
     @ManyToOne
     @JoinColumn(name = "created_by")

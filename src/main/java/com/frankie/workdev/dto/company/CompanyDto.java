@@ -22,7 +22,14 @@ public class CompanyDto {
     @NotEmpty(message = "Name should not be empty")
     private String name;
     private String description;
+    private String companyType;
+    private String responsibility;
     private String address;
+    private String email;
+    private String phoneNumber;
+    private String website;
+    private Long teamSize;
+    private LocalDateTime foundedDate;
     private FileUploadDto logo;
     private List<JwtUserInfo> users;
     private JwtUserInfo createdBy;

@@ -21,6 +21,7 @@ public class UserInfoDto {
     private String address;
     private String phoneNumber;
     private String gender;
+    private String title;
     private int age;
     private List<RoleDto> roles;
     private CompanyInfo company;

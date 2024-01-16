@@ -73,8 +73,10 @@ public class JobController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "location", required = false) String location,
             @RequestParam(value = "salary", required = false) Long salary
+//            @RequestParam(value = "companyName", required = false) String companyName
     ) {
-            ApiResponse<JobResponse> searchJob = jobService.searchJob(name, location, salary, pageNo, pageSize, sortBy, sortDir);
+            ApiResponse<JobResponse> searchJob = jobService.searchJob(name, location, salary,
+                   pageNo, pageSize, sortBy, sortDir);
             return new ResponseEntity<>(searchJob, HttpStatus.OK);
     }
 }
