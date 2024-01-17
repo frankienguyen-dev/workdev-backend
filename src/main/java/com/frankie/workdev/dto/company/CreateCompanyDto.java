@@ -20,7 +20,8 @@ public class CreateCompanyDto {
     private String name;
     private String companyType;
     private String description;
-    private String responsibility;
+    private String companyVision;
+    private String companyBenefit;
     private String address;
     private String email;
     private String phoneNumber;
@@ -28,6 +29,7 @@ public class CreateCompanyDto {
     private Long teamSize;
     private LocalDateTime foundedDate;
     private FileUploadDto logo;
+    private FileUploadDto banner;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
 }

@@ -21,7 +21,8 @@ public class UpdateCompanyDto {
     @NotEmpty(message = "Description should not be empty")
     private String description;
     private String companyType;
-    private String responsibility;
+    private String companyVision;
+    private String companyBenefit;
     @NotEmpty(message = "Address should not be empty")
     private String address;
     private String email;
@@ -31,6 +32,7 @@ public class UpdateCompanyDto {
     private LocalDateTime foundedDate;
 //    @NotEmpty(message = "Logo should not be empty")
     private FileUploadDto logo;
+    private FileUploadDto banner;
     private JwtUserInfo updatedBy;
     private LocalDateTime updatedAt;
 

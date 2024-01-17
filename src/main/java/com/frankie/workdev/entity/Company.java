@@ -24,7 +24,8 @@ public class Company {
     private String name;
     private String companyType;
     private String description;
-    private String responsibility;
+    private String companyVision;
+    private String companyBenefit;
     private String address;
     private String email;
     private String phoneNumber;
@@ -35,6 +36,10 @@ public class Company {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "logo_id", referencedColumnName = "id")
     private FileEntity logo;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "banner_id", referencedColumnName = "id")
+    private FileEntity banner;
 
     @OneToMany(mappedBy = "company")
     private List<User> users;
