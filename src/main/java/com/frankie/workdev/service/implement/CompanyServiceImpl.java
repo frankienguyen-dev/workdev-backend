@@ -60,27 +60,36 @@ public class CompanyServiceImpl implements CompanyService {
         newCompany.setName(createCompanyDto.getName());
         newCompany.setCompanyType(createCompanyDto.getCompanyType());
         newCompany.setDescription(createCompanyDto.getDescription());
-        newCompany.setResponsibility(createCompanyDto.getResponsibility());
+        newCompany.setCompanyVision(createCompanyDto.getCompanyVision());
+        newCompany.setCompanyBenefit(createCompanyDto.getCompanyBenefit());
         newCompany.setAddress(createCompanyDto.getAddress());
         newCompany.setEmail(createCompanyDto.getEmail());
         newCompany.setPhoneNumber(createCompanyDto.getPhoneNumber());
         newCompany.setWebsite(createCompanyDto.getWebsite());
         newCompany.setTeamSize(createCompanyDto.getTeamSize());
         newCompany.setFoundedDate(createCompanyDto.getFoundedDate());
-        if (createCompanyDto.getLogo() != null && createCompanyDto.getLogo()
-                .getId() != null) {
+        if (createCompanyDto.getLogo() != null
+                && createCompanyDto.getLogo().getId() != null
+                && createCompanyDto.getBanner() != null
+                && createCompanyDto.getBanner().getId() != null) {
             FileEntity logo = fileRepository.findById(createCompanyDto
                     .getLogo().getId()).orElseThrow(
                     () -> new ResourceNotFoundException("File", "id",
                             createCompanyDto.getLogo().getId())
             );
+            FileEntity banner = fileRepository.findById(createCompanyDto
+                    .getBanner().getId()).orElseThrow(
+                    () -> new ResourceNotFoundException("File", "id", createCompanyDto
+                            .getBanner().getId()));
             newCompany.setLogo(logo);
+            newCompany.setBanner(banner);
         } else {
             newCompany.setLogo(null);
+            newCompany.setBanner(null);
         }
         newCompany.setCreatedAt(LocalDateTime.now());
         newCompany.setCreatedBy(createdByUser);
-        if(!createdByUser.getRoles().get(0)
+        if (!createdByUser.getRoles().get(0)
                 .getName().equalsIgnoreCase("ROLE_ADMIN")) {
             createdByUser.setCompany(newCompany);
         }
@@ -168,7 +177,8 @@ public class CompanyServiceImpl implements CompanyService {
 
             findCompany.setName(updateCompanyDto.getName());
             findCompany.setDescription(updateCompanyDto.getDescription());
-            findCompany.setResponsibility(updateCompanyDto.getResponsibility());
+            findCompany.setCompanyVision(updateCompanyDto.getCompanyVision());
+            findCompany.setCompanyBenefit(updateCompanyDto.getCompanyBenefit());
             findCompany.setCompanyType(updateCompanyDto.getCompanyType());
             findCompany.setAddress(updateCompanyDto.getAddress());
             findCompany.setEmail(updateCompanyDto.getEmail());
@@ -176,14 +186,21 @@ public class CompanyServiceImpl implements CompanyService {
             findCompany.setWebsite(updateCompanyDto.getWebsite());
             findCompany.setTeamSize(updateCompanyDto.getTeamSize());
             findCompany.setFoundedDate(updateCompanyDto.getFoundedDate());
-            if (updateCompanyDto.getLogo() != null && updateCompanyDto
-                    .getLogo().getId() != null) {
+            if (updateCompanyDto.getLogo() != null
+                    && updateCompanyDto.getLogo().getId() != null
+                    && updateCompanyDto.getBanner() != null
+                    && updateCompanyDto.getBanner().getId() != null) {
                 FileEntity logo = fileRepository.findById(updateCompanyDto.getLogo().getId())
                         .orElseThrow(() -> new ResourceNotFoundException("File", "id",
                                 updateCompanyDto.getLogo().getId()));
+                FileEntity banner = fileRepository.findById(updateCompanyDto.getBanner().getId())
+                        .orElseThrow(() -> new ResourceNotFoundException("File", "id",
+                                updateCompanyDto.getBanner().getId()));
                 findCompany.setLogo(logo);
+                findCompany.setBanner(banner);
             } else {
                 findCompany.setLogo(null);
+                findCompany.setBanner(null);
             }
 
             findCompany.setUpdatedBy(updatedByUser);

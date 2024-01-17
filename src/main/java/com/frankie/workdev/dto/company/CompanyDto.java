@@ -23,7 +23,8 @@ public class CompanyDto {
     private String name;
     private String description;
     private String companyType;
-    private String responsibility;
+    private String companyVision;
+    private String companyBenefit;
     private String address;
     private String email;
     private String phoneNumber;
@@ -31,6 +32,7 @@ public class CompanyDto {
     private Long teamSize;
     private LocalDateTime foundedDate;
     private FileUploadDto logo;
+    private FileUploadDto banner;
     private List<JwtUserInfo> users;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
