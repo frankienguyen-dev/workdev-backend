@@ -14,4 +14,6 @@ public interface UserService {
     ApiResponse<UpdateUserDto> updateUserById(String id, UpdateUserDto updateUserDto);
 
     ApiResponse<DeleteUserDto> softDeleteUserById(String id);
+
+    ApiResponse<UserInfoDto> getProfile();
 }
