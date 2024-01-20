@@ -61,4 +61,10 @@ public class UserController {
         ApiResponse<DeleteUserDto> softDeleteUser = userService.softDeleteUserById(id);
         return new ResponseEntity<>(softDeleteUser, HttpStatus.OK);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<UserInfoDto>> getProfile() {
+        ApiResponse<UserInfoDto> getProfile = userService.getProfile();
+        return new ResponseEntity<>(getProfile, HttpStatus.OK);
+    }
 }

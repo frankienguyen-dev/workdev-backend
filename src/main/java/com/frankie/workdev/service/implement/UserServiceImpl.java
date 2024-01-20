@@ -237,6 +237,18 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    @Override
+    public ApiResponse<UserInfoDto> getProfile() {
+        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+        UserInfoDto userInfoDto = mappingUser(findUser);
+        return ApiResponse.success(
+            "User fetched successfully",
+            HttpStatus.OK,
+            userInfoDto
+        );
+    }
+
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
