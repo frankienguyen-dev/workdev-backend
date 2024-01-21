@@ -27,6 +27,7 @@ public class JobDto {
     private String education;
     private String jobType;
     private String experience;
+    private JwtUserInfo user;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;

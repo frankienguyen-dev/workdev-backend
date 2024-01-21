@@ -2,6 +2,7 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
+import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.role.RoleDto;
 import com.frankie.workdev.dto.user.*;
@@ -28,6 +29,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -132,17 +134,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<UserInfoDto> getUserById(String id) {
-        User findUser = userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User", "id", id)
-        );
+        try {
+            User findUser = userRepository.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("User", "id", id)
+            );
 
-
-
-        return ApiResponse.success(
-                "User fetched successfully",
-                HttpStatus.OK,
-                mappingUser(findUser)
-        );
+            return ApiResponse.success(
+                    "User fetched successfully",
+                    HttpStatus.OK,
+                    mappingUser(findUser)
+            );
+        }catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
 
     }
 
@@ -259,42 +264,51 @@ public class UserServiceImpl implements UserService {
         return getUserInfo;
     }
 
+
+
     private UserInfoDto mappingUser(User user) {
-        UserInfoDto userInfoDto = new UserInfoDto();
-        userInfoDto.setId(user.getId());
-        userInfoDto.setFullName(user.getFullName());
-        userInfoDto.setEmail(user.getEmail());
-        userInfoDto.setAddress(user.getAddress());
-        userInfoDto.setPhoneNumber(user.getPhoneNumber());
-        userInfoDto.setGender(user.getGender());
-        userInfoDto.setAge(user.getAge());
-        userInfoDto.setCreatedAt(user.getCreatedAt());
-        userInfoDto.setUpdatedAt(user.getUpdatedAt());
-        userInfoDto.setDeletedAt(user.getDeletedAt());
-        TypeMap<User, UserInfoDto> userTypeMap = modelMapper
-                .typeMap(User.class, UserInfoDto.class)
-                .addMappings(mapper -> {
-                    mapper.map(User::getCreatedBy, UserInfoDto::setCreatedBy);
-                    mapper.map(User::getUpdatedBy, UserInfoDto::setUpdatedBy);
-                    mapper.map(User::getDeletedBy, UserInfoDto::setDeletedBy);
-                    mapper.map(User::getCompany, UserInfoDto::setCompany);
-                    mapper.map(User::getRoles, UserInfoDto::setRoles);
-                });
 
-        TypeMap<Role, RoleDto> roleTypeMap = modelMapper
-                .typeMap(Role.class, RoleDto.class)
-                .addMappings(mapper -> {
-                    mapper.map(src -> src.getCreatedBy().getId(), RoleDto::setCreatedBy);
-                    mapper.map(src -> src.getUpdatedBy().getId(), RoleDto::setUpdatedBy);
-                    mapper.map(src -> src.getDeletedBy().getId(), RoleDto::setDeletedBy);
-                    mapper.map(Role::getPermissions, RoleDto::setPermissions);
-                });
+           UserInfoDto userInfoDto = new UserInfoDto();
+           userInfoDto.setId(user.getId());
+           userInfoDto.setFullName(user.getFullName());
+           userInfoDto.setEmail(user.getEmail());
+           userInfoDto.setAddress(user.getAddress());
+           userInfoDto.setPhoneNumber(user.getPhoneNumber());
+           userInfoDto.setGender(user.getGender());
+           userInfoDto.setAge(user.getAge());
+           userInfoDto.setCreatedAt(user.getCreatedAt());
+           userInfoDto.setUpdatedAt(user.getUpdatedAt());
+           userInfoDto.setDeletedAt(user.getDeletedAt());
+           TypeMap<User, UserInfoDto> userTypeMap = modelMapper
+                   .typeMap(User.class, UserInfoDto.class)
+                   .addMappings(mapper -> {
+                       mapper.map(User::getCreatedBy, UserInfoDto::setCreatedBy);
+                       mapper.map(User::getUpdatedBy, UserInfoDto::setUpdatedBy);
+                       mapper.map(User::getDeletedBy, UserInfoDto::setDeletedBy);
+                       mapper.map(User::getCompany, UserInfoDto::setCompany);
+                       mapper.map(User::getRoles, UserInfoDto::setRoles);
+                       if (user.getCompany() != null) {
+                           CompanyDto companyDto = modelMapper.map(user.getCompany(), CompanyDto.class);
+                           mapper.map(src -> companyDto.getId(), UserInfoDto::setCompany);
+                           mapper.map(src -> companyDto.getName(), UserInfoDto::setCompany);
+                       }
+                   });
 
-        if (user.getRoles() != null) {
-            userTypeMap.addMappings(mapper -> mapper.map(
-                    src -> user.getRoles().stream().map(role -> roleTypeMap.map(role))
-                            .collect(Collectors.toList()), UserInfoDto::setRoles));
-        }
-        return userTypeMap.map(user);
+           TypeMap<Role, RoleDto> roleTypeMap = modelMapper
+                   .typeMap(Role.class, RoleDto.class)
+                   .addMappings(mapper -> {
+                       mapper.map(src -> src.getCreatedBy().getId(), RoleDto::setCreatedBy);
+                       mapper.map(src -> src.getUpdatedBy().getId(), RoleDto::setUpdatedBy);
+                       mapper.map(src -> src.getDeletedBy().getId(), RoleDto::setDeletedBy);
+                       mapper.map(Role::getPermissions, RoleDto::setPermissions);
+                   });
+
+           if (user.getRoles() != null) {
+               userTypeMap.addMappings(mapper -> mapper.map(
+                       src -> user.getRoles().stream().map(role -> roleTypeMap.map(role))
+                               .collect(Collectors.toList()), UserInfoDto::setRoles));
+           }
+           return userTypeMap.map(user);
+
     }
 }

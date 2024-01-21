@@ -39,6 +39,7 @@ public class CreateJobDto {
     private String education;
     private String jobType;
     private String experience;
+    private JwtUserInfo user;
 
     @NotEmpty(message = "Level is required")
     private String level;
