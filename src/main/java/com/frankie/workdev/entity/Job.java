@@ -68,6 +68,10 @@ public class Job {
     )
     private List<Skill> skills = new ArrayList<>();
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
 
     @PrePersist
     private void setRandomId() {

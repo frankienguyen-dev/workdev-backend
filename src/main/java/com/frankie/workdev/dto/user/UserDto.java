@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.user;
 
 import com.frankie.workdev.dto.company.CompanyInfo;
+import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

@@ -74,10 +74,13 @@ public class JobServiceImpl implements JobService {
             newJob.setCompany(findCompany);
             newJob.setStartDate(createJobDto.getStartDate());
             newJob.setEndDate(createJobDto.getEndDate());
+            newJob.setUser(createdByUser);
             newJob.setActive(true);
             List<Skill> skills = getSkills(createJobDto.getSkills());
             newJob.setSkills(skills);
             Job savedJob = jobRepository.save(newJob);
+            createdByUser.getJobs().add(savedJob);
+            userRepository.save(createdByUser);
             CreateJobDto createJobDtoResponse = modelMapper.map(savedJob, CreateJobDto.class);
             return ApiResponse.success(
                     "Job created successfully",
@@ -155,6 +158,10 @@ public class JobServiceImpl implements JobService {
             throw new ResourceNotFoundException("Company", "name", updateJobDto.getCompany()
                     .getName());
         }
+        if(!updatedByUser.getId().equalsIgnoreCase(findJob.getUser().getId()) &&
+        !updatedByUser.getRoles().get(0).getName().equals("ROLE_ADMIN")){
+            throw new ApiException(HttpStatus.BAD_REQUEST, "User is not authorized to update this job");
+        }
         findJob.setName(updateJobDto.getName());
         findJob.setDescription(updateJobDto.getDescription());
         findJob.setResponsibility(updateJobDto.getResponsibility());
@@ -171,6 +178,7 @@ public class JobServiceImpl implements JobService {
         findJob.setStartDate(updateJobDto.getStartDate());
         findJob.setEndDate(updateJobDto.getEndDate());
         findJob.setActive(updateJobDto.isActive());
+
         List<Skill> skills = getSkills(updateJobDto.getSkills());
         findJob.setSkills(skills);
         Job savedJob = jobRepository.save(findJob);

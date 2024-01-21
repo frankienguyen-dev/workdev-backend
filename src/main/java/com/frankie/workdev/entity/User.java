@@ -34,6 +34,10 @@ public class User {
     private String gender;
     private String title;
 
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Job> jobs = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
