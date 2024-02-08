@@ -1,10 +1,9 @@
 package com.frankie.workdev.dto.user;
 
-import com.frankie.workdev.dto.company.CompanyInfo;
+
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +24,7 @@ public class CreateUserDto {
     private String phoneNumber;
     private String gender;
     private String title;
+    private FileUploadDto logo;
     private int age;
     private List<JobDto> jobs;
     private List<RoleDto> roles;

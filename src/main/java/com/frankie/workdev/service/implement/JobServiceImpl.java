@@ -49,7 +49,8 @@ public class JobServiceImpl implements JobService {
         try {
             JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
             User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-            if (createdByUser.getCompany() == null) {
+            if (createdByUser.getCompany() == null && !createdByUser.getRoles().get(0).getName()
+                    .equals("ROLE_ADMIN")) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "User is not a company");
             }
             Company findCompany = companyRepository.findByName(createJobDto
@@ -74,7 +75,6 @@ public class JobServiceImpl implements JobService {
             newJob.setCompany(findCompany);
             newJob.setStartDate(createJobDto.getStartDate());
             newJob.setEndDate(createJobDto.getEndDate());
-            newJob.setUser(createdByUser);
             newJob.setActive(true);
             List<Skill> skills = getSkills(createJobDto.getSkills());
             newJob.setSkills(skills);
@@ -99,8 +99,10 @@ public class JobServiceImpl implements JobService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.findAll(pageable);
         List<Job> jobContentList = jobs.getContent();
         List<JobDto> jobDtoList = jobContentList.stream()
@@ -220,7 +222,9 @@ public class JobServiceImpl implements JobService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.searchJob(name, location, salary, pageable);
         List<Job> jobContentList = jobs.getContent();
         List<JobDto> jobList = jobContentList.stream()

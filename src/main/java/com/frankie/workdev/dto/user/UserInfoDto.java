@@ -1,8 +1,12 @@
 package com.frankie.workdev.dto.user;
 
+import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
+import com.frankie.workdev.dto.job.JobInfo;
 import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.upload.FileUploadDto;
+import com.frankie.workdev.entity.Job;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,13 +24,14 @@ public class UserInfoDto {
     private String fullName;
     private String email;
     private String address;
+    private FileUploadDto logo;
     private String phoneNumber;
     private String gender;
     private String title;
     private int age;
-    private List<JobDto> jobs;
+    private List<JobInfo> jobs;
     private List<RoleDto> roles;
-    private CompanyInfo company;
+    private CompanyDto company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;

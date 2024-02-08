@@ -2,6 +2,8 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
+import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.user.UserInfoDto;
 import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;
@@ -15,6 +17,8 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -36,6 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
+    private ModelMapper modelMapper;
 
 
     @Override
@@ -202,4 +208,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw e;
         }
     }
+
 }

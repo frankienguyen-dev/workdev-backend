@@ -3,6 +3,7 @@ package com.frankie.workdev.dto.user;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class UpdateUserDto {
     private String email;
     private String address;
     private String phoneNumber;
+    private FileUploadDto logo;
     private String gender;
     private String title;
     private int age;

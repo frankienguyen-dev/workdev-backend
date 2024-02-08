@@ -76,7 +76,9 @@ public class PermissionServiceImpl implements PermissionService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Permission> permissions = permissionRepository.findAll(pageable);
         List<Permission> permissionContentList = permissions.getContent();
         List<PermissionInfo> permissionResponses = permissionContentList

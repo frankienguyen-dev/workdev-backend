@@ -63,4 +63,22 @@ public class CompanyController {
                 .deletedCompanyById(id);
         return new ResponseEntity<>(deleteCompanyById, HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<CompanyResponse>> searchCompany(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false ) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false ) String sortBy,
+            @RequestParam(value = "sorDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+            required = false) String sortDir
+    ) {
+        ApiResponse<CompanyResponse> searchCompany = companyService.searchCompany(name, address,
+                pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(searchCompany, HttpStatus.OK);
+    }
 }

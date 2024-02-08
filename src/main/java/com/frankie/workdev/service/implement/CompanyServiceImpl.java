@@ -111,7 +111,10 @@ public class CompanyServiceImpl implements CompanyService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Company> companies = companyRepository.findAll(pageable);
         List<Company> companyContentList = companies.getContent();
         List<CompanyDto> companyDtoList = companyContentList.stream()
@@ -240,6 +243,43 @@ public class CompanyServiceImpl implements CompanyService {
                 HttpStatus.OK,
                 deleteCompany
         );
+    }
+
+    @Override
+    public ApiResponse<CompanyResponse> searchCompany(String name, String address,
+                                                      int pageNo, int pageSize,
+                                                      String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Company> companies = companyRepository.searchCompany(name, address, pageable);
+        List<Company> companyListContent = companies.getContent();
+        List<CompanyDto> companyDtoList = companyListContent.stream()
+                .map(company -> {
+                    try {
+                        return modelMapper.map(company, CompanyDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setLastPage(companies.isLast());
+        metaData.setPageNo(companies.getNumber());
+        metaData.setTotalPages(companies.getTotalPages());
+        metaData.setTotalElements(companies.getTotalElements());
+        metaData.setPageSize(companies.getSize());
+        CompanyResponse companyResponse = new CompanyResponse();
+        companyResponse.setData(companyDtoList);
+        companyResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Company search successfully",
+                HttpStatus.OK,
+                companyResponse
+        );
+
     }
 
     private JwtUserInfo getUserInfoFromJwtToken() {
