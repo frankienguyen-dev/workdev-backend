@@ -12,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,8 +58,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity)
             throws Exception {
-        httpSecurity.csrf(csrf -> csrf.disable())
-
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest -> {
                     authRequest.requestMatchers("/api/v1/auth/**").permitAll();
                     authRequest.requestMatchers("/api/v1/files/**").permitAll();
@@ -67,6 +67,7 @@ public class SecurityConfig {
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/search").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
+
                 .httpBasic(Customizer.withDefaults())
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(
                         jwtAuthenticationEntryPoint

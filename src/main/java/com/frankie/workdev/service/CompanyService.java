@@ -15,4 +15,7 @@ public interface CompanyService {
                                                     UpdateCompanyDto updateCompanyDto);
 
     ApiResponse<DeleteCompanyDto> deletedCompanyById(String id);
+
+    ApiResponse<CompanyResponse> searchCompany(String name, String address, int pageNo, int pageSize,
+                                               String sortBy, String sortDir);
 }

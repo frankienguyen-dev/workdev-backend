@@ -3,6 +3,7 @@ package com.frankie.workdev.dto.user;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -29,6 +30,7 @@ public class UserDto {
     @NotEmpty(message = "Password should not be empty")
     @Size(min = 6, message = "Password should be at least 6 characters")
     private String password;
+    private FileUploadDto logo;
     private String address;
     private String phoneNumber;
     private String gender;
