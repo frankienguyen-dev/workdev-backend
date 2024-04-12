@@ -25,6 +25,9 @@ public class Skill {
     @ManyToMany(mappedBy = "skills")
     private List<Job> jobs = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "skills")
+    private List<Subscriber> subscribers = new ArrayList<>();
+
     @PrePersist
     private void setRandomId() {
         this.id = generateId();

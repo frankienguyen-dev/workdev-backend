@@ -3,6 +3,8 @@ package com.frankie.workdev.service;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.user.*;
 
+import java.awt.print.Pageable;
+
 public interface UserService {
     ApiResponse<CreateUserDto> createNewUser(UserDto userDto);
 
@@ -16,4 +18,7 @@ public interface UserService {
     ApiResponse<DeleteUserDto> softDeleteUserById(String id);
 
     ApiResponse<UserInfoDto> getProfile();
+
+    ApiResponse<UserResponse> searchUser(String email, int pageNo, int pageSize,
+                                         String sortBy, String sortDir);
 }

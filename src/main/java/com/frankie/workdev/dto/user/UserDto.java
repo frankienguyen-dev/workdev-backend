@@ -30,7 +30,7 @@ public class UserDto {
     @NotEmpty(message = "Password should not be empty")
     @Size(min = 6, message = "Password should be at least 6 characters")
     private String password;
-    private FileUploadDto logo;
+    private FileUploadDto avatar;
     private String address;
     private String phoneNumber;
     private String gender;

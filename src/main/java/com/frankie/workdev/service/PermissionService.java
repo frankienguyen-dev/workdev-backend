@@ -15,4 +15,7 @@ public interface PermissionService {
             String id, UpdatePermissionDto updatePermissionDto);
 
     ApiResponse<DeletePermissionDto> softDeletePermissionById(String id);
+
+    ApiResponse<PermissionResponse> searchPermission(String name, int pageNo, int pageSize,
+                                                     String sortBy, String sortDir);
 }

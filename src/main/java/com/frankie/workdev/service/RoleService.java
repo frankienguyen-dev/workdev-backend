@@ -14,4 +14,7 @@ public interface RoleService {
     ApiResponse<UpdateRoleDto> updateRoleById(String id, UpdateRoleDto updateRoleDto);
 
     ApiResponse<DeleteRoleDto> deleteRoleById(String id);
+
+    ApiResponse<RoleResponse> searchRole(String name, int pageNo, int pageSize,
+                                         String sortBy, String sortDir);
 }

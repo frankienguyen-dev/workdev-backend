@@ -142,6 +142,7 @@ public class CompanyServiceImpl implements CompanyService {
         );
     }
 
+
     @Override
     public ApiResponse<CompanyDto> getCompanyById(String id) {
         try {

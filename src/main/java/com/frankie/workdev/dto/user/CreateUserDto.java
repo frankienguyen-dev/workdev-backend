@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.user;
 
 
+import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
 import com.frankie.workdev.dto.upload.FileUploadDto;
@@ -24,11 +25,11 @@ public class CreateUserDto {
     private String phoneNumber;
     private String gender;
     private String title;
-    private FileUploadDto logo;
+    private FileUploadDto avatar;
     private int age;
     private List<JobDto> jobs;
     private List<RoleDto> roles;
-//    private CompanyInfo company;
+    private CompanyInfo company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
 }

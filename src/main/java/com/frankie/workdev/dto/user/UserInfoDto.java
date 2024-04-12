@@ -24,14 +24,14 @@ public class UserInfoDto {
     private String fullName;
     private String email;
     private String address;
-    private FileUploadDto logo;
+    private FileUploadDto avatar;
     private String phoneNumber;
     private String gender;
     private String title;
     private int age;
     private List<JobInfo> jobs;
     private List<RoleDto> roles;
-    private CompanyDto company;
+    private CompanyInfo company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;

@@ -187,6 +187,43 @@ public class RoleServiceImpl implements RoleService {
         );
     }
 
+    @Override
+    public ApiResponse<RoleResponse> searchRole(String name, int pageNo, int pageSize,
+                                                String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Role> roles = roleRepository.searchRole(name, pageable);
+        List<Role> roleListContent = roles.getContent();
+        List<RoleDto> roleDtoList = roleListContent.stream()
+                .map(role -> {
+                    try {
+                        return modelMapper.map(role, RoleDto.class);
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setLastPage(roles.isLast());
+        metaData.setPageNo(roles.getNumber());
+        metaData.setTotalElements(roles.getTotalElements());
+        metaData.setPageSize(roles.getSize());
+        metaData.setTotalPages(roles.getTotalPages());
+        RoleResponse roleResponse = new RoleResponse();
+        roleResponse.setData(roleDtoList);
+        roleResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Search Role fetched successfully",
+                HttpStatus.OK,
+                roleResponse
+        );
+    }
+
 
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext()
