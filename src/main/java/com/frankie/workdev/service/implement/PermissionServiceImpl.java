@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -180,6 +181,42 @@ public class PermissionServiceImpl implements PermissionService {
                 HttpStatus.OK,
                 deletePermissionDtoResponse
         );
+    }
+
+    @Override
+    public ApiResponse<PermissionResponse> searchPermission(String name, int pageNo, int pageSize,
+                                                            String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Permission> permissions = permissionRepository.searchPermission(name, pageable);
+        List<Permission> permissionContentList = permissions.getContent();
+        List<PermissionInfo> permissionInfoList = permissionContentList.stream()
+                .map(permission -> {
+                    try {
+                        return modelMapper.map(permission, PermissionInfo.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageNo(permissions.getNumber());
+        metaData.setPageSize(permissions.getSize());
+        metaData.setTotalElements(permissions.getTotalElements());
+        metaData.setTotalPages(permissions.getTotalPages());
+        metaData.setLastPage(permissions.isLast());
+        PermissionResponse permissionResponse = new PermissionResponse();
+        permissionResponse.setMeta(metaData);
+        permissionResponse.setData(permissionInfoList);
+        return ApiResponse.success(
+                "Search Permission fetched successfully",
+                HttpStatus.OK,
+                permissionResponse
+        );
+
     }
 
     private JwtUserInfo getUserInfoFromToken() {

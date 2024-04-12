@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/companies")
@@ -74,11 +76,12 @@ public class CompanyController {
                     required = false ) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
                     required = false ) String sortBy,
-            @RequestParam(value = "sorDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
             required = false) String sortDir
     ) {
         ApiResponse<CompanyResponse> searchCompany = companyService.searchCompany(name, address,
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchCompany, HttpStatus.OK);
     }
+
 }

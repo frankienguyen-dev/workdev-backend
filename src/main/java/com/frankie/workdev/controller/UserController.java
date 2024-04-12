@@ -67,4 +67,21 @@ public class UserController {
         ApiResponse<UserInfoDto> getProfile = userService.getProfile();
         return new ResponseEntity<>(getProfile, HttpStatus.OK);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<UserResponse>> searchUser(
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+                    required = false) String sortDir
+    ) {
+        ApiResponse<UserResponse> searchUser = userService.searchUser(email, pageNo, pageSize,
+                sortBy, sortDir);
+        return new ResponseEntity<>(searchUser, HttpStatus.OK);
+    }
 }

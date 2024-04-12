@@ -136,6 +136,7 @@ public class JobServiceImpl implements JobService {
                 () -> new ResourceNotFoundException("Job", "id", id)
         );
         JobDto JobResponse = modelMapper.map(findJob, JobDto.class);
+
         return ApiResponse.success(
                 "Job fetched successfully",
                 HttpStatus.OK,
@@ -145,51 +146,56 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<UpdateJobDto> updateJobById(String id, UpdateJobDto updateJobDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
-        User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-        if (updatedByUser.getCompany() == null && !updatedByUser.getRoles().get(0)
-                .getName().equals("ROLE_ADMIN")) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "User is not a company");
-        }
-        Job findJob = jobRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Job", "id", id)
-        );
-        Company findCompany = companyRepository.findByName(updateJobDto.getCompany()
-                .getName());
-        if (findCompany == null) {
-            throw new ResourceNotFoundException("Company", "name", updateJobDto.getCompany()
+        try {
+            JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+            User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+            if (updatedByUser.getCompany() == null && !updatedByUser.getRoles().get(0)
+                    .getName().equals("ROLE_ADMIN")) {
+                throw new ApiException(HttpStatus.BAD_REQUEST, "User is not a company");
+            }
+            Job findJob = jobRepository.findById(id).orElseThrow(
+                    () -> new ResourceNotFoundException("Job", "id", id)
+            );
+            Company findCompany = companyRepository.findByName(updateJobDto.getCompany()
                     .getName());
-        }
-        if(!updatedByUser.getId().equalsIgnoreCase(findJob.getUser().getId()) &&
-        !updatedByUser.getRoles().get(0).getName().equals("ROLE_ADMIN")){
-            throw new ApiException(HttpStatus.BAD_REQUEST, "User is not authorized to update this job");
-        }
-        findJob.setName(updateJobDto.getName());
-        findJob.setDescription(updateJobDto.getDescription());
-        findJob.setResponsibility(updateJobDto.getResponsibility());
-        findJob.setLocation(updateJobDto.getLocation());
-        findJob.setQuantity(updateJobDto.getQuantity());
-        findJob.setSalary(updateJobDto.getSalary());
-        findJob.setLevel(updateJobDto.getLevel());
-        findJob.setEducation(updateJobDto.getEducation());
-        findJob.setJobType(updateJobDto.getJobType());
-        findJob.setExperience(updateJobDto.getExperience());
-        findJob.setUpdatedBy(updatedByUser);
-        findJob.setUpdatedAt(LocalDateTime.now());
-        findJob.setCompany(findCompany);
-        findJob.setStartDate(updateJobDto.getStartDate());
-        findJob.setEndDate(updateJobDto.getEndDate());
-        findJob.setActive(updateJobDto.isActive());
+            if (findCompany == null) {
+                throw new ResourceNotFoundException("Company", "name", updateJobDto.getCompany()
+                        .getName());
+            }
+            if(!updatedByUser.getId().equalsIgnoreCase(findJob.getCreatedBy().getId()) &&
+                    !updatedByUser.getRoles().get(0).getName().equals("ROLE_ADMIN")){
+                throw new ApiException(HttpStatus.BAD_REQUEST, "User is not authorized to update this job");
+            }
+            findJob.setName(updateJobDto.getName());
+            findJob.setDescription(updateJobDto.getDescription());
+            findJob.setResponsibility(updateJobDto.getResponsibility());
+            findJob.setLocation(updateJobDto.getLocation());
+            findJob.setQuantity(updateJobDto.getQuantity());
+            findJob.setSalary(updateJobDto.getSalary());
+            findJob.setLevel(updateJobDto.getLevel());
+            findJob.setEducation(updateJobDto.getEducation());
+            findJob.setJobType(updateJobDto.getJobType());
+            findJob.setExperience(updateJobDto.getExperience());
+            findJob.setUpdatedBy(updatedByUser);
+            findJob.setUpdatedAt(LocalDateTime.now());
+            findJob.setCompany(findCompany);
+            findJob.setStartDate(updateJobDto.getStartDate());
+            findJob.setEndDate(updateJobDto.getEndDate());
+            findJob.setActive(updateJobDto.isActive());
 
-        List<Skill> skills = getSkills(updateJobDto.getSkills());
-        findJob.setSkills(skills);
-        Job savedJob = jobRepository.save(findJob);
-        UpdateJobDto updateJobDtoResponse = modelMapper.map(savedJob, UpdateJobDto.class);
-        return ApiResponse.success(
-                "Job updated successfully",
-                HttpStatus.OK,
-                updateJobDtoResponse
-        );
+            List<Skill> skills = getSkills(updateJobDto.getSkills());
+            findJob.setSkills(skills);
+            Job savedJob = jobRepository.save(findJob);
+            UpdateJobDto updateJobDtoResponse = modelMapper.map(savedJob, UpdateJobDto.class);
+            return ApiResponse.success(
+                    "Job updated successfully",
+                    HttpStatus.OK,
+                    updateJobDtoResponse
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override

@@ -1,8 +1,4 @@
 package com.frankie.workdev.dto.job;
-
-import com.frankie.workdev.dto.company.CompanyDto;
-import com.frankie.workdev.dto.skill.SkillDto;
-import com.frankie.workdev.dto.user.JwtUserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

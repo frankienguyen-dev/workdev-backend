@@ -1,7 +1,8 @@
 package com.frankie.workdev.service;
-
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.company.*;
+
+import java.util.List;
 
 public interface CompanyService {
     ApiResponse<CreateCompanyDto> createNewCompany(CreateCompanyDto createCompanyDto);

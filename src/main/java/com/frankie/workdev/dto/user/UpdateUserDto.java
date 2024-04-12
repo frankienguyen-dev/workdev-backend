@@ -21,13 +21,12 @@ import java.util.List;
 public class UpdateUserDto {
     private String id;
     private String fullName;
-
     @Email(message = "Email should be valid")
     @NotEmpty(message = "Email should not be empty")
     private String email;
     private String address;
     private String phoneNumber;
-    private FileUploadDto logo;
+    private FileUploadDto avatar;
     private String gender;
     private String title;
     private int age;

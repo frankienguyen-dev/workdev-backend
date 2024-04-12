@@ -2,18 +2,15 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
-import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
-import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.*;
-import com.frankie.workdev.entity.Company;
-import com.frankie.workdev.entity.Job;
-import com.frankie.workdev.entity.Role;
-import com.frankie.workdev.entity.User;
+import com.frankie.workdev.entity.*;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
+import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
 import com.frankie.workdev.security.CustomUserDetails;
@@ -40,18 +37,17 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private ModelMapper modelMapper;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private CompanyRepository companyRepository;
     private RoleRepository roleRepository;
+    private FileRepository fileRepository;
 
     @Override
     public ApiResponse<CreateUserDto> createNewUser(UserDto userDto) {
         JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-//        Company company = companyRepository.findByName(userDto.getCompany().getName());
         User existingUser = userRepository.findByEmail(userDto.getEmail());
         if (existingUser != null) {
             throw new ResourceExistingException("User", "email", userDto.getEmail());
@@ -77,16 +73,36 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setCreatedBy(createdByUser);
+        if (userDto.getCompany() != null && userDto.getCompany().getName() != null) {
+            Company company = companyRepository.findByName(userDto.getCompany().getName());
+            newUser.setCompany(company);
+        } else {
+            newUser.setCompany(null);
+        }
+
+        if (userDto.getAvatar() != null && userDto.getAvatar().getId() != null) {
+            FileEntity avatar = fileRepository.findById(userDto.getAvatar().getId()).orElseThrow(
+                    () -> new ResourceNotFoundException("File", "id", userDto.getAvatar().getId())
+            );
+            newUser.setAvatar(avatar);
+        } else {
+            newUser.setAvatar(null);
+        }
 
 //        newUser.setCompany(company);
         newUser.setRoles(roles);
         User saveNewUser = userRepository.save(newUser);
         CreateUserDto createUserResponse = modelMapper
                 .map(saveNewUser, CreateUserDto.class);
-//        CompanyInfo companyInfo = new CompanyInfo();
-//        companyInfo.setId(saveNewUser.getCompany().getId());
-//        companyInfo.setName(saveNewUser.getCompany().getName());
-//        createUserResponse.setCompany(companyInfo);
+        if (saveNewUser.getCompany() != null) {
+            CompanyInfo companyInfo = new CompanyInfo();
+            companyInfo.setId(saveNewUser.getCompany().getId());
+            companyInfo.setName(saveNewUser.getCompany().getName());
+            createUserResponse.setCompany(companyInfo);
+        } else {
+            createUserResponse.setCompany(null);
+        }
+
         List<RoleDto> roleDtoList = saveNewUser.getRoles().stream()
                 .map(role -> {
                     try {
@@ -107,30 +123,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public ApiResponse<UserResponse> getAllUsers(int pageNo, int pageSize,
                                                  String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortBy).ascending()
-                : Sort.by(sortBy).descending();
-        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        try {
+            Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                    ? Sort.by(sortBy).ascending()
+                    : Sort.by(sortBy).descending();
+            int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
 
-        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
-        Page<User> users = userRepository.findAll(pageable);
-        List<User> userContentList = users.getContent();
-        List<UserInfoDto> userList = userContentList.stream()
-                .map(user -> mappingUser(user)).collect(Collectors.toList());
-        MetaData metaData = new MetaData();
-        metaData.setLastPage(users.isLast());
-        metaData.setTotalPages(users.getTotalPages());
-        metaData.setTotalElements(users.getTotalElements());
-        metaData.setPageNo(users.getNumber());
-        metaData.setPageSize(users.getSize());
-        UserResponse userResponse = new UserResponse();
-        userResponse.setData(userList);
-        userResponse.setMeta(metaData);
-        return ApiResponse.success(
-                "Fetched all users successfully",
-                HttpStatus.OK,
-                userResponse
-        );
+            Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+            Page<User> users = userRepository.findAll(pageable);
+            List<User> userContentList = users.getContent();
+            List<UserInfoDto> userList = userContentList.stream()
+                    .map(user -> mappingUser(user)).collect(Collectors.toList());
+            MetaData metaData = new MetaData();
+            metaData.setLastPage(users.isLast());
+            metaData.setTotalPages(users.getTotalPages());
+            metaData.setTotalElements(users.getTotalElements());
+            metaData.setPageNo(users.getNumber());
+            metaData.setPageSize(users.getSize());
+            UserResponse userResponse = new UserResponse();
+            userResponse.setData(userList);
+            userResponse.setMeta(metaData);
+            return ApiResponse.success(
+                    "Fetched all users successfully",
+                    HttpStatus.OK,
+                    userResponse
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
 
     }
 
@@ -159,7 +180,6 @@ public class UserServiceImpl implements UserService {
         try {
             JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
             User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-            Company company = companyRepository.findByName(updateUserDto.getCompany().getName());
             User findUser = userRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("User", "id", id)
             );
@@ -188,8 +208,21 @@ public class UserServiceImpl implements UserService {
             findUser.setTitle(updateUserDto.getTitle());
             findUser.setUpdatedAt(LocalDateTime.now());
             findUser.setUpdatedBy(updatedByUser);
-            findUser.setCompany(company);
+            if (updateUserDto.getCompany() != null && updateUserDto.getCompany().getName() != null) {
+                Company company = companyRepository.findByName(updateUserDto.getCompany().getName());
+                findUser.setCompany(company);
+            } else {
+                findUser.setCompany(null);
+            }
             findUser.setRoles(roleList);
+            if (updateUserDto.getAvatar() != null && updateUserDto.getAvatar().getId() != null) {
+                FileEntity avatar = fileRepository.findById(updateUserDto.getAvatar().getId()).orElseThrow(
+                        () -> new ResourceNotFoundException("File", "id", updatedByUser.getAvatar().getId())
+                );
+                findUser.setAvatar(avatar);
+            } else {
+                findUser.setAvatar(null);
+            }
             User saveUpdated = userRepository.save(findUser);
             UpdateUserDto updateUser = new UpdateUserDto();
             updateUser.setId(saveUpdated.getId());
@@ -201,15 +234,25 @@ public class UserServiceImpl implements UserService {
             updateUser.setAge(saveUpdated.getAge());
             updateUser.setUpdatedAt(saveUpdated.getUpdatedAt());
             updateUser.setUpdatedBy(getUserInfoFromToken);
-            CompanyInfo companyInfo = new CompanyInfo();
-            companyInfo.setId(saveUpdated.getCompany().getId());
-            companyInfo.setName(saveUpdated.getCompany().getName());
-            updateUser.setCompany(companyInfo);
+            if (saveUpdated.getAvatar() != null) {
+                updateUser.setAvatar(modelMapper.map(saveUpdated.getAvatar(), FileUploadDto.class));
+            } else {
+                updateUser.setAvatar(null);
+            }
+            if (saveUpdated.getCompany() != null) {
+                CompanyInfo companyInfo = new CompanyInfo();
+                companyInfo.setId(saveUpdated.getCompany().getId());
+                companyInfo.setName(saveUpdated.getCompany().getName());
+                updateUser.setCompany(companyInfo);
+            } else {
+                updateUser.setCompany(null);
+            }
             List<RoleDto> roleDtoList = saveUpdated.getRoles().stream()
                     .map(role -> {
                         try {
                             return modelMapper.map(role, RoleDto.class);
                         } catch (Exception e) {
+                            System.out.println("check e");
                             e.printStackTrace();
                             throw e;
                         }
@@ -221,6 +264,7 @@ public class UserServiceImpl implements UserService {
                     updateUser
             );
         } catch (Exception e) {
+            System.out.println("cehck e catch");
             e.printStackTrace();
             throw e;
         }
@@ -251,7 +295,7 @@ public class UserServiceImpl implements UserService {
             JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
             User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
             UserInfoDto userInfoDto = mappingUser(findUser);
-
+//            userInfoDto.setAvatar(modelMapper.map(findUser.getAvatar(), FileUploadDto.class));
             return ApiResponse.success(
                     "User fetched successfully",
                     HttpStatus.OK,
@@ -263,6 +307,42 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public ApiResponse<UserResponse> searchUser(String email, int pageNo, int pageSize,
+                                                String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<User> users = userRepository.searchUser(email, pageable);
+        List<User> listSearchUserContent = users.getContent();
+        List<UserInfoDto> userInfoDtoListSearch = listSearchUserContent.stream().map(
+                user -> {
+                    try {
+                        return mappingUser(user);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+        ).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageSize(users.getSize());
+        metaData.setLastPage(users.isLast());
+        metaData.setTotalElements(users.getTotalElements());
+        metaData.setPageNo(users.getNumber());
+        metaData.setTotalPages(users.getTotalPages());
+        UserResponse userResponse = new UserResponse();
+        userResponse.setData(userInfoDtoListSearch);
+        userResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Fetched all users successfully",
+                HttpStatus.OK,
+                userResponse
+        );
+    }
+
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
@@ -272,7 +352,6 @@ public class UserServiceImpl implements UserService {
         getUserInfo.setEmail(getUserEmail);
         return getUserInfo;
     }
-
 
 
     private UserInfoDto mappingUser(User user) {

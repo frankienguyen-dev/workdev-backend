@@ -2,7 +2,6 @@ package com.frankie.workdev.config;
 
 import com.frankie.workdev.security.JwtAuthenticationEntryPoint;
 import com.frankie.workdev.security.JwtAuthenticationFilter;
-import com.frankie.workdev.security.JwtTokenProvider;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +25,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @AllArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfig {
-    private JwtTokenProvider jwtTokenProvider;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -61,7 +59,7 @@ public class SecurityConfig {
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest -> {
                     authRequest.requestMatchers("/api/v1/auth/**").permitAll();
-                    authRequest.requestMatchers("/api/v1/files/**").permitAll();
+                    authRequest.requestMatchers(HttpMethod.GET, "/api/v1/files/{fileName}").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/**").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/companies/**").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/search").permitAll();
