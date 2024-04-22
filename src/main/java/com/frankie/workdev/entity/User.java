@@ -57,6 +57,9 @@ public class User {
     @JoinColumn(name = "updated_by")
     private User updatedBy;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Resume> resumes = new ArrayList<>();
+
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 

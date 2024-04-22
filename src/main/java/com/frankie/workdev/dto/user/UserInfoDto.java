@@ -4,6 +4,7 @@ import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.job.JobInfo;
+import com.frankie.workdev.dto.resume.ResumeInfoDto;
 import com.frankie.workdev.dto.role.RoleDto;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.entity.Job;
@@ -31,6 +32,7 @@ public class UserInfoDto {
     private int age;
     private List<JobInfo> jobs;
     private List<RoleDto> roles;
+    private List<ResumeInfoDto> resumes;
     private CompanyInfo company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;

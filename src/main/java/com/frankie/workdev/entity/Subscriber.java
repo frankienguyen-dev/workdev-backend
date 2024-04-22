@@ -22,7 +22,7 @@ public class Subscriber {
     private String email;
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "subscribers_skills",
             joinColumns = @JoinColumn(name = "subscriber_id", referencedColumnName = "id"),

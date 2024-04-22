@@ -27,6 +27,10 @@ public class Resume {
     private FileEntity resume;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
@@ -34,7 +38,6 @@ public class Resume {
     @JoinColumn(name = "job_id")
     private Job job;
 
-    private String email;
     private String status;
 
     @ManyToOne

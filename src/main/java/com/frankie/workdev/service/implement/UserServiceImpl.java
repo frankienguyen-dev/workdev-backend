@@ -376,6 +376,7 @@ public class UserServiceImpl implements UserService {
                     mapper.map(User::getDeletedBy, UserInfoDto::setDeletedBy);
                     mapper.map(User::getCompany, UserInfoDto::setCompany);
                     mapper.map(User::getRoles, UserInfoDto::setRoles);
+                    mapper.map(User::getResumes, UserInfoDto::setResumes);
                 });
 
         TypeMap<Role, RoleDto> roleTypeMap = modelMapper

@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,6 @@ public class ResumeServiceImpl implements ResumeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Job", "id",
                         createResumeDto.getJob().getId()));
         Resume createResume = new Resume();
-        createResume.setEmail(createdByUser.getEmail());
         createResume.setUrl(createResume.getUrl());
         createResume.setCompany(findCompany);
         createResume.setJob(findJob);
@@ -57,6 +57,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .orElseThrow(() -> new ResourceNotFoundException("File", "id",
                         createResumeDto.getResume().getId()));
         createResume.setResume(resume);
+        createResume.setUser(createdByUser);
         Resume saveResume = resumeRepository.save(createResume);
         CreateResumeDto createResumeResponse = modelMapper.map(saveResume, CreateResumeDto.class);
         createResumeResponse.setCreatedBy(getUserInfo);

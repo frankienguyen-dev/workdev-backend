@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Getter
@@ -23,7 +24,7 @@ public class ResumeInfoDto {
     private FileUploadDto resume;
     private CompanyInfo company;
     private JobDto job;
-    private String email;
+    private List<JwtUserInfo> users;
     private String status;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
