@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 public class SubscriberServiceImpl implements SubscriberService {
 
     private SubscriberRepository subscriberRepository;
-    private UserRepository userRepository;
     private SkillRepository skillRepository;
     private ModelMapper modelMapper;
 

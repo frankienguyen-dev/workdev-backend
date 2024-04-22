@@ -52,6 +52,8 @@ public class Job {
     private User deletedBy;
     private LocalDateTime deletedAt;
 
+
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
@@ -68,10 +70,12 @@ public class Job {
     )
     private List<Skill> skills = new ArrayList<>();
 
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Resume> resumes = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     @PrePersist
     private void setRandomId() {

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class CreateResumeDto {
     private String url;
     private CompanyInfo company;
     private JobInfo job;
-    private String email;
+    private List<JwtUserInfo> users;
     private String status = "PENDING";
     private LocalDateTime createdAt;
     private JwtUserInfo createdBy;
