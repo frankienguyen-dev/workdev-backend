@@ -1,11 +1,10 @@
 package com.frankie.workdev.dto.job;
 
+import com.frankie.workdev.dto.category.CategoryDto;
+import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.company.CompanyDto;
-import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
-import com.frankie.workdev.dto.user.UserDto;
-import com.frankie.workdev.dto.user.UserInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +29,7 @@ public class JobDto {
     private String education;
     private String jobType;
     private String experience;
+    private CategoryInfo category;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
     private JwtUserInfo updatedBy;

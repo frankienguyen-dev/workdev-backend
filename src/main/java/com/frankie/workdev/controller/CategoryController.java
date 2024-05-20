@@ -39,8 +39,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryInfo>> getCategoryById(@PathVariable("id") String id) {
-        ApiResponse<CategoryInfo> getCategoryById = categoryService.getCategoryById(id);
+    public ResponseEntity<ApiResponse<CategoryDto>> getCategoryById(@PathVariable("id") String id) {
+        ApiResponse<CategoryDto> getCategoryById = categoryService.getCategoryById(id);
         return new ResponseEntity<>(getCategoryById, HttpStatus.OK);
     }
 

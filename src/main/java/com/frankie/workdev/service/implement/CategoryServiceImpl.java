@@ -64,10 +64,10 @@ public class CategoryServiceImpl implements CategoryService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Category> categories = categoryRepository.findAll(pageable);
         List<Category> categoryContentList = categories.getContent();
-        List<CategoryInfo> categoryInfoList = categoryContentList.stream()
+        List<CategoryDto> categoryInfoList = categoryContentList.stream()
                 .map(category -> {
                     try {
-                        return modelMapper.map(category, CategoryInfo.class);
+                        return modelMapper.map(category, CategoryDto.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -90,12 +90,13 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ApiResponse<CategoryInfo> getCategoryById(String id) {
+    public ApiResponse<CategoryDto> getCategoryById(String id) {
         try {
             Category findCategory = categoryRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Category", "id", id)
             );
-            CategoryInfo categoryInfo = modelMapper.map(findCategory, CategoryInfo.class);
+            CategoryDto categoryInfo = modelMapper.map(findCategory, CategoryDto.class);
+
             return ApiResponse.success(
                     "Category fetched successfully",
                     HttpStatus.OK,

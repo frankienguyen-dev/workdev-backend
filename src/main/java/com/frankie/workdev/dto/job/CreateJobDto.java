@@ -1,5 +1,7 @@
 package com.frankie.workdev.dto.job;
 
+import com.frankie.workdev.dto.category.CategoryDto;
+import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
@@ -39,6 +41,7 @@ public class CreateJobDto {
     private String education;
     private String jobType;
     private String experience;
+    private CategoryInfo category;
     private JwtUserInfo user;
 
     @NotEmpty(message = "Level is required")
