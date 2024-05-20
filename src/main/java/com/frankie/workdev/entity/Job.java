@@ -81,6 +81,9 @@ public class Job {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToMany(mappedBy = "favoriteJob")
+    private List<User> userFavoriteJob = new ArrayList<>();
+
     @PrePersist
     private void setRandomId() {
         this.id = generateId();

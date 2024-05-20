@@ -178,7 +178,7 @@ public class ResumeServiceImpl implements ResumeService {
                 : Sort.by(sortBy).descending();
         int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
-        Page<Resume> resumes = resumeRepository.findByCreatedBy(user, pageable);
+        Page<Resume> resumes = resumeRepository.findResumeByUserId(user.getId(), pageable);
         List<Resume> resumeContentList = resumes.getContent();
         List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream()
                 .map(resume -> {

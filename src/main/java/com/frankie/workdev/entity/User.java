@@ -42,6 +42,14 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Job> jobs = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "users_favorite_jobs",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "job_id", referencedColumnName = "id")
+    )
+    private List<Job> favoriteJob = new ArrayList<>();
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
