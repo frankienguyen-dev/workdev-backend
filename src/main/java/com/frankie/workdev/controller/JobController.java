@@ -79,4 +79,26 @@ public class JobController {
                    pageNo, pageSize, sortBy, sortDir);
             return new ResponseEntity<>(searchJob, HttpStatus.OK);
     }
+
+    @PostMapping("/favorite/{id}")
+    public ResponseEntity<ApiResponse<JobDto>> favoriteJob(@PathVariable("id") String id) {
+        ApiResponse<JobDto> favoriteJob = jobService.favoriteJob(id);
+        return new ResponseEntity<>(favoriteJob, HttpStatus.OK);
+    }
+
+    @GetMapping("/my-favorite-job")
+    public ResponseEntity<ApiResponse<JobResponse>> getFavoriteJobs(
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+                    required = false) String sortDir
+    ) {
+        ApiResponse<JobResponse> getFavoriteJobs = jobService.getFavoriteJobs(
+                pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(getFavoriteJobs, HttpStatus.OK);
+    }
 }

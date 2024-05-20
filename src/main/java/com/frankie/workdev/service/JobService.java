@@ -18,4 +18,8 @@ public interface JobService {
 
     ApiResponse<JobResponse> searchJob(String name, String location, Long salary,
                                        int pageNo, int pageSize, String sortBy, String sortDir);
+
+    ApiResponse<JobDto> favoriteJob(String id);
+
+    ApiResponse<JobResponse> getFavoriteJobs(int pageNo, int pageSize, String sortBy, String sortDir);
 }

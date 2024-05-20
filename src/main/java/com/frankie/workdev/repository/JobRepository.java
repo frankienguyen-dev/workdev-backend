@@ -24,4 +24,7 @@ public interface JobRepository extends JpaRepository<Job, String> {
 
     @Query("SELECT DISTINCT j FROM Job j JOIN j.skills s WHERE s IN :skills")
     List<Job> findJobBySkills(List<Skill> skills);
+
+    @Query("SELECT j FROM Job j JOIN j.userFavoriteJob u WHERE u.id = :userId")
+    Page<Job> findAllFavoriteJobsByUserId(String userId, Pageable pageable);
 }

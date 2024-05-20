@@ -266,6 +266,64 @@ public class JobServiceImpl implements JobService {
 
     }
 
+    @Override
+    public ApiResponse<JobDto> favoriteJob(String id) {
+        JwtUserInfo getInfoUser = getUserInfoFromToken();
+        Job findJob = jobRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Job", "id", id)
+        );
+        User findUser = userRepository.findById(getInfoUser.getId()).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", getInfoUser.getId())
+        );
+        findUser.getFavoriteJob().add(findJob);
+        userRepository.save(findUser);
+        findJob.getUserFavoriteJob().add(findUser);
+        Job saveJob = jobRepository.save(findJob);
+        JobDto response = modelMapper.map(saveJob, JobDto.class);
+        return ApiResponse.success(
+                "Job added to favorite successfully",
+                HttpStatus.OK,
+                response
+        );
+    }
+
+    @Override
+    public ApiResponse<JobResponse> getFavoriteJobs(int pageNo, int pageSize,
+                                                    String sortBy, String sortDir) {
+        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        User user = userRepository.findByEmail(getUserInfo.getEmail());
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Job> jobs = jobRepository.findAllFavoriteJobsByUserId(user.getId(), pageable);
+        List<Job> jobContentList = jobs.getContent();
+        List<JobDto> jobList = jobContentList.stream()
+                .map(job -> {
+                    try {
+                        return modelMapper.map(job, JobDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageNo(jobs.getNumber());
+        metaData.setPageSize(jobs.getSize());
+        metaData.setTotalElements(jobs.getTotalElements());
+        metaData.setTotalPages(jobs.getTotalPages());
+        metaData.setLastPage(jobs.isLast());
+        JobResponse jobResponse = new JobResponse();
+        jobResponse.setData(jobList);
+        jobResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Favorite Job fetched successfully",
+                HttpStatus.OK,
+                jobResponse
+        );
+    }
+
 
     private List<Skill> getSkills(List<SkillDto> skills) {
         List<Skill> skillList = new ArrayList<>();
