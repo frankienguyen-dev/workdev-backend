@@ -1,4 +1,5 @@
 package com.frankie.workdev.dto.job;
+import com.frankie.workdev.dto.category.CategoryInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

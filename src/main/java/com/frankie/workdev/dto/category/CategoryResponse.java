@@ -14,5 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryResponse {
     private MetaData metaData;
-    private List<CategoryInfo> data;
+    private List<CategoryDto> data;
 }

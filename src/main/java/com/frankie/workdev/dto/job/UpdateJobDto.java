@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.job;
 
+import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
@@ -39,6 +40,7 @@ public class UpdateJobDto {
     private String education;
     private String jobType;
     private String experience;
+    private CategoryInfo category;
 
     @NotEmpty(message = "Level should not be empty")
     private String level;

@@ -8,7 +8,7 @@ public interface CategoryService {
 
     ApiResponse<CategoryResponse> getAllCategories(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    ApiResponse<CategoryInfo> getCategoryById(String id);
+    ApiResponse<CategoryDto> getCategoryById(String id);
 
     ApiResponse<UpdateCategoryDto> updateCategoryById(UpdateCategoryDto updateCategoryDto, String id);
 

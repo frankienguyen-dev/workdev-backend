@@ -2,19 +2,14 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
+import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.job.*;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
-import com.frankie.workdev.entity.Company;
-import com.frankie.workdev.entity.Job;
-import com.frankie.workdev.entity.Skill;
-import com.frankie.workdev.entity.User;
+import com.frankie.workdev.entity.*;
 import com.frankie.workdev.exception.ApiException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
-import com.frankie.workdev.repository.CompanyRepository;
-import com.frankie.workdev.repository.JobRepository;
-import com.frankie.workdev.repository.SkillRepository;
-import com.frankie.workdev.repository.UserRepository;
+import com.frankie.workdev.repository.*;
 import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.JobService;
 import lombok.AllArgsConstructor;
@@ -42,6 +37,7 @@ public class JobServiceImpl implements JobService {
     private JobRepository jobRepository;
     private UserRepository userRepository;
     private CompanyRepository companyRepository;
+    private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
 
     @Override
@@ -59,6 +55,10 @@ public class JobServiceImpl implements JobService {
                 throw new ResourceNotFoundException("Company", "name", createJobDto.getCompany()
                         .getName());
             }
+            Category findCategory = categoryRepository.findById(createJobDto.getCategory().getId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Category", "id", createJobDto.getCategory().getId())
+                    );
             Job newJob = new Job();
             newJob.setName(createJobDto.getName());
             newJob.setDescription(createJobDto.getDescription());
@@ -70,6 +70,7 @@ public class JobServiceImpl implements JobService {
             newJob.setEducation(createJobDto.getEducation());
             newJob.setJobType(createJobDto.getJobType());
             newJob.setExperience(createJobDto.getExperience());
+            newJob.setCategory(findCategory);
             newJob.setCreatedBy(createdByUser);
             newJob.setCreatedAt(LocalDateTime.now());
             newJob.setCompany(findCompany);
@@ -156,14 +157,19 @@ public class JobServiceImpl implements JobService {
             Job findJob = jobRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Job", "id", id)
             );
+            Category findCategory = categoryRepository.findById(updateJobDto.getCategory().getId())
+                    .orElseThrow(
+                            () -> new ResourceNotFoundException("Category",
+                                    "id", updateJobDto.getCategory().getId())
+                    );
             Company findCompany = companyRepository.findByName(updateJobDto.getCompany()
                     .getName());
             if (findCompany == null) {
                 throw new ResourceNotFoundException("Company", "name", updateJobDto.getCompany()
                         .getName());
             }
-            if(!updatedByUser.getId().equalsIgnoreCase(findJob.getCreatedBy().getId()) &&
-                    !updatedByUser.getRoles().get(0).getName().equals("ROLE_ADMIN")){
+            if (!updatedByUser.getId().equalsIgnoreCase(findJob.getCreatedBy().getId()) &&
+                    !updatedByUser.getRoles().get(0).getName().equals("ROLE_ADMIN")) {
                 throw new ApiException(HttpStatus.BAD_REQUEST, "User is not authorized to update this job");
             }
             findJob.setName(updateJobDto.getName());
@@ -176,6 +182,7 @@ public class JobServiceImpl implements JobService {
             findJob.setEducation(updateJobDto.getEducation());
             findJob.setJobType(updateJobDto.getJobType());
             findJob.setExperience(updateJobDto.getExperience());
+            findJob.setCategory(findCategory);
             findJob.setUpdatedBy(updatedByUser);
             findJob.setUpdatedAt(LocalDateTime.now());
             findJob.setCompany(findCompany);
