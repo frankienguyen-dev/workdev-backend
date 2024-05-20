@@ -25,7 +25,7 @@ public class CreateResumeDto {
     private String url;
     private CompanyInfo company;
     private JobInfo job;
-    private List<JwtUserInfo> users;
+    private JwtUserInfo user;
     private String status = "PENDING";
     private LocalDateTime createdAt;
     private JwtUserInfo createdBy;

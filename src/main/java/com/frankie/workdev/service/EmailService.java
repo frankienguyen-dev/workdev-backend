@@ -6,4 +6,6 @@ public interface EmailService {
     void sendEmail(String to, String subject, String text) throws MessagingException;
 
     void scheduleEmail() throws MessagingException;
+
+    void sendEmailResetPassword() throws MessagingException;
 }

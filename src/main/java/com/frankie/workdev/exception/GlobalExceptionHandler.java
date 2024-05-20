@@ -113,8 +113,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(MyNullPointerException.class)
     public ResponseEntity<ApiResponse<ErrorDetails>> handleMyNullPointerException(
-        MyNullPointerException exception,
-        WebRequest request
+            MyNullPointerException exception,
+            WebRequest request
     ) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
@@ -149,5 +149,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiResponse, HttpStatus.UNAUTHORIZED);
     }
 
-
+    @ExceptionHandler(ChangePasswordException.class)
+    public ResponseEntity<ApiResponse<ErrorDetails>> handleChangePasswordException(
+            ChangePasswordException exception,
+            WebRequest request
+    ) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                request.getDescription(false)
+        );
+        ApiResponse<ErrorDetails> apiResponse = ApiResponse.error(
+                "Change password failed",
+                HttpStatus.BAD_REQUEST,
+                errorDetails
+        );
+        return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+    }
 }

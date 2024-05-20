@@ -21,4 +21,6 @@ public class EmailContentBuilder {
         context.setVariable("jobs", jobs);
         return templateEngine.process("templateEmailSubscriber", context);
     }
+
+
 }

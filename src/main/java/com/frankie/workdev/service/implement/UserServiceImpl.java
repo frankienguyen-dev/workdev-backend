@@ -7,6 +7,7 @@ import com.frankie.workdev.dto.role.RoleDto;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.*;
 import com.frankie.workdev.entity.*;
+import com.frankie.workdev.exception.EmailOrPasswordException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
@@ -343,6 +344,8 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+
+
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
@@ -376,7 +379,7 @@ public class UserServiceImpl implements UserService {
                     mapper.map(User::getDeletedBy, UserInfoDto::setDeletedBy);
                     mapper.map(User::getCompany, UserInfoDto::setCompany);
                     mapper.map(User::getRoles, UserInfoDto::setRoles);
-                    mapper.map(User::getResumes, UserInfoDto::setResumes);
+//                    mapper.map(User::getResumes, UserInfoDto::setResumes);
                 });
 
         TypeMap<Role, RoleDto> roleTypeMap = modelMapper

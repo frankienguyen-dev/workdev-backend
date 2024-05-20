@@ -16,4 +16,5 @@ public interface ResumeService {
     ApiResponse<DeleteResumeDto> deleteResumeById(String id);
 
     ApiResponse<ResumeResponse> getResumeByUser(int pageNo, int pageSize, String sortBy, String sortDir);
+
 }

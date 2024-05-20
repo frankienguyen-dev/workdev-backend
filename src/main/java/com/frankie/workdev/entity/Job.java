@@ -74,6 +74,10 @@ public class Job {
     private List<Resume> resumes = new ArrayList<>();
 
     @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -2,6 +2,7 @@ package com.frankie.workdev.controller;
 
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
+import com.frankie.workdev.dto.user.ChangePasswordDto;
 import com.frankie.workdev.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -18,7 +19,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginDto loginDto
-    , HttpServletResponse response) {
+            , HttpServletResponse response) {
         ApiResponse<LoginResponse> login = authenticationService.login(loginDto, response);
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
@@ -41,7 +42,7 @@ public class AuthenticationController {
 
     @GetMapping("/getRefreshToken")
     public ResponseEntity<ApiResponse<RefreshTokenResponse>> getRefreshToken(
-            @CookieValue(name = "refreshToken",  required = false) String refreshToken) {
+            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
         ApiResponse<RefreshTokenResponse> getRefreshToken = authenticationService
                 .getRefreshToken(refreshToken);
         return new ResponseEntity<>(getRefreshToken, HttpStatus.OK);
@@ -49,7 +50,15 @@ public class AuthenticationController {
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout(HttpServletResponse response) {
-         ApiResponse<String> logout =  authenticationService.logout(response);
+        ApiResponse<String> logout = authenticationService.logout(response);
         return new ResponseEntity<>(logout, HttpStatus.OK);
+    }
+
+    @PatchMapping("/change-password")
+    public ResponseEntity<ApiResponse<ChangePasswordDto>> changePassword(
+            @RequestBody ChangePasswordDto changePasswordDto) {
+        ApiResponse<ChangePasswordDto> changePassword = authenticationService
+                .changePassword(changePasswordDto);
+        return new ResponseEntity<>(changePassword, HttpStatus.OK);
     }
 }

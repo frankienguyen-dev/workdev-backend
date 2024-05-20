@@ -2,7 +2,6 @@ package com.frankie.workdev.exception;
 
 public class ResourceExistingException extends RuntimeException {
     private String resourceName;
-    ;
     private String fieldName;
     private String fieldValue;
 

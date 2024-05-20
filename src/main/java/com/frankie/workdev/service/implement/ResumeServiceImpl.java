@@ -61,6 +61,7 @@ public class ResumeServiceImpl implements ResumeService {
         Resume saveResume = resumeRepository.save(createResume);
         CreateResumeDto createResumeResponse = modelMapper.map(saveResume, CreateResumeDto.class);
         createResumeResponse.setCreatedBy(getUserInfo);
+        createResumeResponse.setUser(getUserInfo);
         createResumeResponse.setCreatedAt(saveResume.getCreatedAt());
         return ApiResponse.success(
                 "Create new resume successfully",
@@ -82,6 +83,14 @@ public class ResumeServiceImpl implements ResumeService {
         List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream()
                 .map(resume -> {
                     try {
+//                        User user = resume.getUser();
+//                        JwtUserInfo jwtUserInfo = new JwtUserInfo();
+//                        jwtUserInfo.setId(user.getId());
+//                        jwtUserInfo.setEmail(user.getEmail());
+//                        ResumeInfoDto resumeInfoDto = modelMapper.map(resume, ResumeInfoDto.class);
+//                        resumeInfoDto.setUser(jwtUserInfo);
+//                        return resumeInfoDto;
+
                         return modelMapper.map(resume, ResumeInfoDto.class);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -175,7 +184,7 @@ public class ResumeServiceImpl implements ResumeService {
                 .map(resume -> {
                     try {
                         return modelMapper.map(resume, ResumeInfoDto.class);
-                    }catch (Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
 
@@ -196,7 +205,6 @@ public class ResumeServiceImpl implements ResumeService {
                 resumeResponse
         );
     }
-
 
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

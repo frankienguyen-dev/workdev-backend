@@ -32,7 +32,6 @@ public class UserInfoDto {
     private int age;
     private List<JobInfo> jobs;
     private List<RoleDto> roles;
-    private List<ResumeInfoDto> resumes;
     private CompanyInfo company;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;

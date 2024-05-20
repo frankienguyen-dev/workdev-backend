@@ -3,14 +3,18 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.role.RoleDto;
+import com.frankie.workdev.dto.user.ChangePasswordDto;
+import com.frankie.workdev.dto.user.JwtUserInfo;
 import com.frankie.workdev.dto.user.UserInfoDto;
 import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;
+import com.frankie.workdev.exception.ChangePasswordException;
 import com.frankie.workdev.exception.EmailOrPasswordException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
+import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.security.JwtTokenProvider;
 import com.frankie.workdev.service.AuthenticationService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -207,6 +211,40 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    @Override
+    public ApiResponse<ChangePasswordDto> changePassword(ChangePasswordDto changePasswordDto) {
+        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+        String currentPassword = changePasswordDto.getCurrentPassword();
+        String newPassword = changePasswordDto.getNewPassword();
+        String confirmPassword = changePasswordDto.getConfirmPassword();
+        if (passwordEncoder.matches(currentPassword, findUser.getPassword())) {
+            if (!newPassword.matches(confirmPassword)) {
+                throw new ChangePasswordException("Password does not match.");
+            } else {
+                findUser.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(findUser);
+                return ApiResponse.success(
+                        "Password changed successfully",
+                        HttpStatus.OK,
+                        changePasswordDto
+                );
+            }
+        } else {
+            throw new ChangePasswordException("Current password is incorrect.");
+        }
+    }
+
+    private JwtUserInfo getUserInfoFromToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
+        String getUserEmail = authentication.getName();
+        JwtUserInfo getUserInfo = new JwtUserInfo();
+        getUserInfo.setId(getUserId);
+        getUserInfo.setEmail(getUserEmail);
+        return getUserInfo;
     }
 
 }
