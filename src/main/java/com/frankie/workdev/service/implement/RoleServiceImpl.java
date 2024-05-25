@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role newRole = new Role();
         newRole.setName(createRoleDto.getName());
-        newRole.setActive(true);
+        newRole.setActive(createRoleDto.isActive());
         newRole.setCreatedBy(createdByUser);
         newRole.setCreatedAt(LocalDateTime.now());
         List<Permission> permissions = getListPermission(createRoleDto.getPermissions());
@@ -81,7 +81,6 @@ public class RoleServiceImpl implements RoleService {
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
         int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
-
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Role> roles = roleRepository.findAll(pageable);
         List<Role> roleContentList = roles.getContent();
@@ -193,9 +192,7 @@ public class RoleServiceImpl implements RoleService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
-
         int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
-
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Role> roles = roleRepository.searchRole(name, pageable);
         List<Role> roleListContent = roles.getContent();

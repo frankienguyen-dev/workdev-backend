@@ -60,8 +60,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     public ApiResponse<SubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
                                                             String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
-                ? Sort.by(sortBy).descending()
-                : Sort.by(sortBy).ascending();
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
         int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Subscriber> subscribers = subscriberRepository.findAll(pageable);
@@ -76,10 +76,11 @@ public class SubscriberServiceImpl implements SubscriberService {
                     }
                 }).collect(Collectors.toList());
         MetaData metaData = new MetaData();
-        metaData.setPageNo(subscribers.getNumber() + 1);
+        metaData.setPageNo(subscribers.getNumber());
         metaData.setPageSize(subscribers.getSize());
         metaData.setTotalElements(subscribers.getTotalElements());
         metaData.setTotalPages(subscribers.getTotalPages());
+        metaData.setLastPage(subscribers.isLast());
         SubscriberResponse subscriberResponse = new SubscriberResponse();
         subscriberResponse.setData(subscriberDtos);
         subscriberResponse.setMeta(metaData);
@@ -132,6 +133,43 @@ public class SubscriberServiceImpl implements SubscriberService {
                 "Subscriber deleted successfully",
                 HttpStatus.OK,
                 null
+        );
+    }
+
+    @Override
+    public ApiResponse<SubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+                                                                   int pageSize, String sortBy,
+                                                                   String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Subscriber> subscribers = subscriberRepository.searchSubscriberByEmail(email, pageable);
+        List<Subscriber> subscriberContentList = subscribers.getContent();
+        List<SubscriberDto> subscriberDtoList = subscriberContentList.stream().map(
+                subscriber -> {
+                    try {
+                        return modelMapper.map(subscriber, SubscriberDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+        ).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageNo(subscribers.getNumber());
+        metaData.setPageSize(subscribers.getSize());
+        metaData.setTotalElements(subscribers.getTotalElements());
+        metaData.setTotalPages(subscribers.getTotalPages());
+        metaData.setLastPage(subscribers.isLast());
+        SubscriberResponse subscriberResponse = new SubscriberResponse();
+        subscriberResponse.setData(subscriberDtoList);
+        subscriberResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Search subscriber fetched successfully",
+                HttpStatus.OK,
+                subscriberResponse
         );
     }
 

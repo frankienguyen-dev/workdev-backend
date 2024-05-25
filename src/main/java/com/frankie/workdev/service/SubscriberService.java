@@ -19,4 +19,7 @@ public interface SubscriberService {
                                                          UpdateSubscriberDto updateSubscriberDto);
 
     ApiResponse<String> deleteSubscriberById(String id);
+
+    ApiResponse<SubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+                                                            int pageSize, String sortBy, String sortDir);
 }
