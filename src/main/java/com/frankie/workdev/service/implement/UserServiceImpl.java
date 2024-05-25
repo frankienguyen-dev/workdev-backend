@@ -129,7 +129,6 @@ public class UserServiceImpl implements UserService {
                     ? Sort.by(sortBy).ascending()
                     : Sort.by(sortBy).descending();
             int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
-
             Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
             Page<User> users = userRepository.findAll(pageable);
             List<User> userContentList = users.getContent();

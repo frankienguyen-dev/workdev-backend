@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private UserService userService;
 
+    @PreAuthorize("hasAuthority('CREATE_USER')")
     @PostMapping
     public ResponseEntity<ApiResponse<CreateUserDto>> createNewUser(
             @RequestBody @Valid UserDto userDto) {

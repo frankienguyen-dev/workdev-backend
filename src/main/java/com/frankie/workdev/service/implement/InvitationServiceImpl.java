@@ -66,15 +66,15 @@ public class InvitationServiceImpl implements InvitationService {
             }
             throw new ApiException(HttpStatus.BAD_REQUEST, "User already exists company");
         }
-        boolean existsInvitationByReceiverUser = invitationRepository
-                .existsInvitationByReceiverUser(receiverUser);
-        if (existsInvitationByReceiverUser) {
-            throw new ResourceExistingException(
-                    "Invitation",
-                    "receiverUser",
-                    invitationDto.getReceiverUserEmail()
-            );
-        }
+//        boolean existsInvitationByReceiverUser = invitationRepository
+//                .existsInvitationByReceiverUser(receiverUser);
+//        if (existsInvitationByReceiverUser) {
+//            throw new ResourceExistingException(
+//                    "Invitation",
+//                    "receiverUser",
+//                    invitationDto.getReceiverUserEmail()
+//            );
+//        }
         Invitation invitation = new Invitation();
         invitation.setCompany(companySenderUser);
         invitation.setContent(invitationDto.getContent());

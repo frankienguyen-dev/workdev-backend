@@ -25,7 +25,7 @@ public class Role {
 
     @Column(unique = true)
     private String name;
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     @ManyToOne
     @JoinColumn(name = "created_by")

@@ -53,8 +53,6 @@ public class CompanyServiceImpl implements CompanyService {
             throw new ResourceExistingException("Company", "name",
                     createCompanyDto.getName());
         }
-
-
         Company newCompany = new Company();
         newCompany.setId(createCompanyDto.getId());
         newCompany.setName(createCompanyDto.getName());

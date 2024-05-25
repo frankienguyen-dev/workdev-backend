@@ -1,5 +1,6 @@
 package com.frankie.workdev.config;
 
+import com.frankie.workdev.exception.GlobalExceptionHandler;
 import com.frankie.workdev.security.JwtAuthenticationEntryPoint;
 import com.frankie.workdev.security.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
