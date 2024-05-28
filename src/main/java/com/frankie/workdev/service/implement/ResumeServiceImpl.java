@@ -206,6 +206,43 @@ public class ResumeServiceImpl implements ResumeService {
         );
     }
 
+    @Override
+    public ApiResponse<ResumeResponse> searchResumeByEmail
+            (String email, int pageNo, int pageSize,
+             String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Resume> resumes = resumeRepository.searchResumeByEmail(email, pageable);
+        List<Resume> resumeContentList = resumes.getContent();
+        List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream().map(
+                resume -> {
+                    try {
+                        return modelMapper.map(resume, ResumeInfoDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+        ).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setTotalPages(resumes.getTotalPages());
+        metaData.setTotalElements(resumes.getTotalElements());
+        metaData.setPageSize(resumes.getSize());
+        metaData.setPageNo(resumes.getNumber());
+        metaData.setLastPage(resumes.isLast());
+        ResumeResponse resumeResponse = new ResumeResponse();
+        resumeResponse.setData(resumeInfoDtoList);
+        resumeResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Search resume successfully!",
+                HttpStatus.OK,
+                resumeResponse
+        );
+    }
+
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserEmail = authentication.getName();

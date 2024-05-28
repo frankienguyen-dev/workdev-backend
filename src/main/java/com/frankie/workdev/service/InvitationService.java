@@ -12,4 +12,10 @@ public interface InvitationService {
 
     ApiResponse<AcceptOrRejectResponse> acceptOrRejectInvitation(
             String id, AcceptOrRejectRequest acceptOrRejectRequest);
+
+    ApiResponse<InvitationListResponse> getAllInvitations(int pageNo, int pageSize,
+                                                          String sortBy, String sortDir);
+
+    ApiResponse<InvitationListResponse> searchInvitation(String email, int pageNo, int pageSize,
+                                                         String sortBy, String sortDir);
 }

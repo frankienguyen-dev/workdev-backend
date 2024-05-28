@@ -17,4 +17,8 @@ public interface ResumeService {
 
     ApiResponse<ResumeResponse> getResumeByUser(int pageNo, int pageSize, String sortBy, String sortDir);
 
+    ApiResponse<ResumeResponse> searchResumeByEmail(String email,
+                                                    int pageNo, int pageSize,
+                                                    String sortBy, String sortDir);
+
 }

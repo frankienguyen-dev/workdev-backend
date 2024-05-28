@@ -25,13 +25,13 @@ public class ResumeController {
     @GetMapping
     public ResponseEntity<ApiResponse<ResumeResponse>> getAllResumes(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
-            required = false) int pageNo,
+                    required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
-            required = false) int pageSize,
+                    required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
-            required = false) String sortBy,
+                    required = false) String sortBy,
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
-            required = false) String sortDir
+                    required = false) String sortDir
     ) {
         ApiResponse<ResumeResponse> getAllResumes = resumeService
                 .getAllResumes(pageNo, pageSize, sortBy, sortDir);
@@ -72,5 +72,22 @@ public class ResumeController {
         ApiResponse<ResumeResponse> getResumeByUser = resumeService
                 .getResumeByUser(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getResumeByUser, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<ResumeResponse>> searchResumeByEmail(
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+                    required = false) String sortDir
+    ) {
+        ApiResponse<ResumeResponse> searchResume = resumeService
+                .searchResumeByEmail(email, pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(searchResume, HttpStatus.OK);
     }
 }

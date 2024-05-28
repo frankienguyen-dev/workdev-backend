@@ -10,6 +10,7 @@ import com.frankie.workdev.dto.subscriber.UpdateSubscriberDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import com.frankie.workdev.entity.Skill;
 import com.frankie.workdev.entity.Subscriber;
+import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.SkillRepository;
 import com.frankie.workdev.repository.SubscriberRepository;
@@ -41,6 +42,10 @@ public class SubscriberServiceImpl implements SubscriberService {
 
     @Override
     public ApiResponse<CreateSubscriberDto> createSubscriber(CreateSubscriberDto subscriberDto) {
+        Subscriber findSubscriber = subscriberRepository.findByEmail(subscriberDto.getEmail());
+        if (findSubscriber != null) {
+            throw new ResourceExistingException("Subscriber", "email", subscriberDto.getEmail());
+        }
         Subscriber subscriber = new Subscriber();
         subscriber.setEmail(subscriberDto.getEmail());
         subscriber.setName(subscriberDto.getName());
@@ -110,6 +115,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         Subscriber findSubscriber = subscriberRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Subscriber", "id", id)
         );
+        Subscriber existingSubscriber = subscriberRepository.findByEmail(updateSubscriberDto.getEmail());
+        if (existingSubscriber != null && !existingSubscriber.getId().equals(findSubscriber.getId())) {
+            throw new ResourceExistingException("Subscriber", "email", updateSubscriberDto.getEmail());
+        }
         findSubscriber.setName(updateSubscriberDto.getName());
         findSubscriber.setEmail(updateSubscriberDto.getEmail());
         List<Skill> skills = getSkills(updateSubscriberDto.getSkills());

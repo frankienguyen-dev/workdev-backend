@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
         metaData.setTotalElements(categories.getTotalElements());
         metaData.setTotalPages(categories.getTotalPages());
         CategoryResponse categoryResponse = new CategoryResponse();
-        categoryResponse.setMetaData(metaData);
+        categoryResponse.setMeta(metaData);
         categoryResponse.setData(categoryInfoList);
         return ApiResponse.success(
                 "Fetched all categories successfully",
@@ -148,6 +148,43 @@ public class CategoryServiceImpl implements CategoryService {
                 "Delete category successfully",
                 HttpStatus.OK,
                 response
+        );
+    }
+
+    @Override
+    public ApiResponse<CategoryResponse> searchCategoryByName(String name, int pageNo,
+                                                              int pageSize, String sortBy,
+                                                              String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Category> categories = categoryRepository.searchCategoryByName(name, pageable);
+        List<Category> categoryContentList = categories.getContent();
+        List<CategoryDto> categoryDtoList = categoryContentList.stream().map(
+                category -> {
+                    try {
+                        return modelMapper.map(category, CategoryDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+        ).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setLastPage(categories.isLast());
+        metaData.setPageNo(categories.getNumber());
+        metaData.setTotalPages(categories.getTotalPages());
+        metaData.setTotalElements(categories.getTotalElements());
+        metaData.setPageSize(categories.getSize());
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setMeta(metaData);
+        categoryResponse.setData(categoryDtoList);
+        return ApiResponse.success(
+                "Search category successfully",
+                HttpStatus.OK,
+                categoryResponse
         );
     }
 

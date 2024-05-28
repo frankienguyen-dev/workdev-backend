@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.category;
+package com.frankie.workdev.dto.invitation;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryResponse {
+public class InvitationListResponse {
     private MetaData meta;
-    private List<CategoryDto> data;
+    private List<InvitationResponse> data;
 }
