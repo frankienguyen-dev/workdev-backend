@@ -3,6 +3,8 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.entity.Job;
 import com.frankie.workdev.entity.Skill;
 import com.frankie.workdev.entity.Subscriber;
+import com.frankie.workdev.entity.User;
+import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.repository.JobRepository;
 import com.frankie.workdev.repository.SubscriberRepository;
 import com.frankie.workdev.service.EmailService;
@@ -50,6 +52,7 @@ public class EmailServiceImpl implements EmailService {
             context.setVariable("userName", subscriber.getName());
             String emailContent = emailContentBuilder.builderEmailContent(jobs, context);
             sendEmail(subscriber.getEmail(), "Work Dev Job Alerts", emailContent);
+
         }
     }
 

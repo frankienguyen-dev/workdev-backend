@@ -1,6 +1,7 @@
 package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
+import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.invitation.*;
 import com.frankie.workdev.dto.user.JwtUserInfo;
@@ -18,6 +19,10 @@ import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.InvitationService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,7 +49,7 @@ public class InvitationServiceImpl implements InvitationService {
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
         User senderUser = userRepository.findByEmail(getUserEmail);
 
-        if(senderUser.getCompany() == null) {
+        if (senderUser.getCompany() == null) {
             throw new MyNullPointerException("User", "company", "null");
         }
 
@@ -153,14 +158,14 @@ public class InvitationServiceImpl implements InvitationService {
                         receiverUser.getCompany().getName()
                 );
             }
-            if(!findInvitation.getStatus().equalsIgnoreCase("PENDING")) {
+            if (!findInvitation.getStatus().equalsIgnoreCase("PENDING")) {
                 throw new ResourceExistingException(
                         "Invitation",
                         "status",
                         findInvitation.getStatus()
                 );
             }
-            if(currentUSer == receiverUser) {
+            if (currentUSer == receiverUser) {
                 if (acceptOrRejectRequest.isAccepted()) {
                     findInvitation.setStatus("ACCEPTED");
                     receiverUser.setCompany(findInvitation.getCompany());
@@ -183,8 +188,7 @@ public class InvitationServiceImpl implements InvitationService {
                         HttpStatus.OK,
                         acceptOrRejectResponse
                 );
-            }
-            else {
+            } else {
                 return ApiResponse.error(
                         "You are not receiver user",
                         HttpStatus.BAD_REQUEST,
@@ -195,5 +199,75 @@ public class InvitationServiceImpl implements InvitationService {
             e.printStackTrace();
             throw e;
         }
+    }
+
+    @Override
+    public ApiResponse<InvitationListResponse> getAllInvitations(int pageNo, int pageSize,
+                                                                 String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Invitation> invitations = invitationRepository.findAll(pageable);
+        List<Invitation> invitationContentList = invitations.getContent();
+        List<InvitationResponse> invitationInfoDtoList = invitationContentList.stream()
+                .map(invitation -> {
+                    try {
+                        return modelMapper.map(invitation, InvitationResponse.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setTotalPages(invitations.getTotalPages());
+        metaData.setTotalElements(invitations.getTotalElements());
+        metaData.setPageSize(invitations.getSize());
+        metaData.setLastPage(invitations.isLast());
+        metaData.setPageNo(invitations.getNumber());
+        InvitationListResponse invitationListResponse = new InvitationListResponse();
+        invitationListResponse.setData(invitationInfoDtoList);
+        invitationListResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Get all invitations success",
+                HttpStatus.OK,
+                invitationListResponse
+        );
+    }
+
+    @Override
+    public ApiResponse<InvitationListResponse> searchInvitation(String email, int pageNo,
+                                                                int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Invitation> invitations = invitationRepository.searchInvitationByEmail(email, pageable);
+        List<Invitation> invitationContentList = invitations.getContent();
+        List<InvitationResponse> invitationInfoDtoList = invitationContentList.stream()
+                .map(invitation -> {
+                    try {
+                        return modelMapper.map(invitation, InvitationResponse.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setTotalPages(invitations.getTotalPages());
+        metaData.setTotalElements(invitations.getTotalElements());
+        metaData.setPageSize(invitations.getSize());
+        metaData.setLastPage(invitations.isLast());
+        metaData.setPageNo(invitations.getNumber());
+        InvitationListResponse invitationListResponse = new InvitationListResponse();
+        invitationListResponse.setData(invitationInfoDtoList);
+        invitationListResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "Search invitation success",
+                HttpStatus.OK,
+                invitationListResponse
+        );
     }
 }

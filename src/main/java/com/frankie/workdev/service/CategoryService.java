@@ -13,4 +13,7 @@ public interface CategoryService {
     ApiResponse<UpdateCategoryDto> updateCategoryById(UpdateCategoryDto updateCategoryDto, String id);
 
     ApiResponse<DeleteCategoryDto> deleteCategoryById(String id);
+
+    ApiResponse<CategoryResponse> searchCategoryByName(String name, int pageNo, int pageSize,
+                                                       String sortBy, String sortDir);
 }
