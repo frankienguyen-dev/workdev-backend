@@ -19,4 +19,7 @@ public interface CompanyService {
 
     ApiResponse<CompanyResponse> searchCompany(String name, String address, int pageNo, int pageSize,
                                                String sortBy, String sortDir);
+
+    ApiResponse<CompanyDto> getMyCompanyInfo();
+
 }

@@ -281,6 +281,23 @@ public class CompanyServiceImpl implements CompanyService {
 
     }
 
+    @Override
+    public ApiResponse<CompanyDto> getMyCompanyInfo() {
+        JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+        User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
+        Company findCompany = findUser.getCompany();
+        if (findCompany == null) {
+            throw new ResourceNotFoundException("Company", "user id", findUser.getId());
+        }
+        CompanyDto companyDto = modelMapper.map(findCompany, CompanyDto.class);
+        return ApiResponse.success(
+                "Company fetched successfully",
+                HttpStatus.OK,
+                companyDto
+        );
+    }
+
+
     private JwtUserInfo getUserInfoFromJwtToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserEmail = authentication.getName();
