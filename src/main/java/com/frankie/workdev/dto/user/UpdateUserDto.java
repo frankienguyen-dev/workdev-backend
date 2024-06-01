@@ -28,6 +28,8 @@ public class UpdateUserDto {
     private String phoneNumber;
     private FileUploadDto avatar;
     private String gender;
+    private String education;
+    private String experience;
     private String title;
     private int age;
     private List<JobDto> jobs;

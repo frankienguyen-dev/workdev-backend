@@ -101,4 +101,20 @@ public class JobController {
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getFavoriteJobs, HttpStatus.OK);
     }
+
+    @GetMapping("/my-list-job")
+    public ResponseEntity<ApiResponse<JobResponse>> getJobListByUser(
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false) String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+                    required = false) String sortDir
+    ) {
+        ApiResponse<JobResponse> myJobList = jobService.getJobListByUser(
+                pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(myJobList, HttpStatus.OK);
+    }
 }

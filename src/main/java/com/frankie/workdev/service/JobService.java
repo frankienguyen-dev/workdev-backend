@@ -22,4 +22,8 @@ public interface JobService {
     ApiResponse<JobDto> favoriteJob(String id);
 
     ApiResponse<JobResponse> getFavoriteJobs(int pageNo, int pageSize, String sortBy, String sortDir);
+
+    ApiResponse<JobResponse> getJobListByUser(int pageNo,
+                                              int pageSize, String sortBy,
+                                              String sortDir);
 }

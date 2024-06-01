@@ -14,6 +14,8 @@ import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.JobService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class JobServiceImpl implements JobService {
 
+    private static final Logger log = LoggerFactory.getLogger(JobServiceImpl.class);
     private SkillRepository skillRepository;
     private JobRepository jobRepository;
     private UserRepository userRepository;
@@ -77,11 +80,14 @@ public class JobServiceImpl implements JobService {
             newJob.setStartDate(createJobDto.getStartDate());
             newJob.setEndDate(createJobDto.getEndDate());
             newJob.setActive(true);
+            newJob.setUser(createdByUser);
+            System.out.println("check: " + newJob.getUser());
             List<Skill> skills = getSkills(createJobDto.getSkills());
             newJob.setSkills(skills);
+            createdByUser.getJobs().add(newJob);
             Job savedJob = jobRepository.save(newJob);
-            createdByUser.getJobs().add(savedJob);
-            userRepository.save(createdByUser);
+            User usereheh = userRepository.save(createdByUser);
+            System.out.println("check user: " + usereheh);
             CreateJobDto createJobDtoResponse = modelMapper.map(savedJob, CreateJobDto.class);
             return ApiResponse.success(
                     "Job created successfully",
@@ -187,7 +193,6 @@ public class JobServiceImpl implements JobService {
             findJob.setStartDate(updateJobDto.getStartDate());
             findJob.setEndDate(updateJobDto.getEndDate());
             findJob.setActive(updateJobDto.isActive());
-
             List<Skill> skills = getSkills(updateJobDto.getSkills());
             findJob.setSkills(skills);
             Job savedJob = jobRepository.save(findJob);
@@ -273,16 +278,30 @@ public class JobServiceImpl implements JobService {
         User findUser = userRepository.findById(getInfoUser.getId()).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", getInfoUser.getId())
         );
-        findUser.getFavoriteJob().add(findJob);
-        userRepository.save(findUser);
-        findJob.getUserFavoriteJob().add(findUser);
-        Job saveJob = jobRepository.save(findJob);
-        JobDto response = modelMapper.map(saveJob, JobDto.class);
-        return ApiResponse.success(
-                "Job added to favorite successfully",
-                HttpStatus.OK,
-                response
-        );
+        if (findUser.getFavoriteJob().contains(findJob)) {
+            findUser.getFavoriteJob().remove(findJob);
+            findJob.getUserFavoriteJob().remove(findUser);
+            userRepository.save(findUser);
+            jobRepository.save(findJob);
+            JobDto response = modelMapper.map(findJob, JobDto.class);
+            return ApiResponse.success(
+                    "Job removed from favorite successfully",
+                    HttpStatus.OK,
+                    response
+            );
+        } else {
+            findUser.getFavoriteJob().add(findJob);
+            userRepository.save(findUser);
+            findJob.getUserFavoriteJob().add(findUser);
+            Job saveJob = jobRepository.save(findJob);
+            JobDto response = modelMapper.map(saveJob, JobDto.class);
+            return ApiResponse.success(
+                    "Job added to favorite successfully",
+                    HttpStatus.OK,
+                    response
+            );
+        }
+
     }
 
     @Override
@@ -317,6 +336,43 @@ public class JobServiceImpl implements JobService {
         jobResponse.setMeta(metaData);
         return ApiResponse.success(
                 "Favorite Job fetched successfully",
+                HttpStatus.OK,
+                jobResponse
+        );
+    }
+
+    @Override
+    public ApiResponse<JobResponse> getJobListByUser(int pageNo, int pageSize,
+                                                     String sortBy, String sortDir) {
+        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        User user = userRepository.findByEmail(getUserInfo.getEmail());
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<Job> jobs = jobRepository.findListJobByUserId(user.getId(), pageable);
+        List<Job> jobContentList = jobs.getContent();
+        List<JobDto> jobList = jobContentList.stream()
+                .map(job -> {
+                    try {
+                        return modelMapper.map(job, JobDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setPageNo(jobs.getNumber());
+        metaData.setPageSize(jobs.getSize());
+        metaData.setTotalElements(jobs.getTotalElements());
+        metaData.setTotalPages(jobs.getTotalPages());
+        metaData.setLastPage(jobs.isLast());
+        JobResponse jobResponse = new JobResponse();
+        jobResponse.setData(jobList);
+        jobResponse.setMeta(metaData);
+        return ApiResponse.success(
+                "List Job fetched successfully",
                 HttpStatus.OK,
                 jobResponse
         );

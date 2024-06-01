@@ -74,6 +74,8 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
         newUser.setCreatedBy(createdByUser);
+        newUser.setEducation(userDto.getEducation());
+        newUser.setExperience(userDto.getExperience());
         if (userDto.getCompany() != null && userDto.getCompany().getName() != null) {
             Company company = companyRepository.findByName(userDto.getCompany().getName());
             newUser.setCompany(company);
@@ -208,6 +210,8 @@ public class UserServiceImpl implements UserService {
             findUser.setTitle(updateUserDto.getTitle());
             findUser.setUpdatedAt(LocalDateTime.now());
             findUser.setUpdatedBy(updatedByUser);
+            findUser.setExperience(updateUserDto.getExperience());
+            findUser.setEducation(updateUserDto.getEducation());
             if (updateUserDto.getCompany() != null && updateUserDto.getCompany().getName() != null) {
                 Company company = companyRepository.findByName(updateUserDto.getCompany().getName());
                 findUser.setCompany(company);
@@ -233,6 +237,9 @@ public class UserServiceImpl implements UserService {
             updateUser.setGender(saveUpdated.getGender());
             updateUser.setAge(saveUpdated.getAge());
             updateUser.setUpdatedAt(saveUpdated.getUpdatedAt());
+            updateUser.setTitle(saveUpdated.getTitle());
+            updateUser.setExperience(saveUpdated.getExperience());
+            updateUser.setEducation(saveUpdated.getEducation());
             updateUser.setUpdatedBy(getUserInfoFromToken);
             if (saveUpdated.getAvatar() != null) {
                 updateUser.setAvatar(modelMapper.map(saveUpdated.getAvatar(), FileUploadDto.class));
@@ -344,7 +351,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     private JwtUserInfo getUserInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
@@ -366,6 +372,10 @@ public class UserServiceImpl implements UserService {
         userInfoDto.setPhoneNumber(user.getPhoneNumber());
         userInfoDto.setGender(user.getGender());
         userInfoDto.setAge(user.getAge());
+//        userInfoDto.setEducation(user.getEducation());
+//        userInfoDto.setTitle(user.getTitle());
+//        userInfoDto.setExperience(user.getExperience());
+//        userInfoDto.setAvatar(modelMapper.map(user.getAvatar(), FileUploadDto.class));
         userInfoDto.setCreatedAt(user.getCreatedAt());
         userInfoDto.setUpdatedAt(user.getUpdatedAt());
         userInfoDto.setDeletedAt(user.getDeletedAt());

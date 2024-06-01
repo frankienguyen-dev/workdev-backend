@@ -27,4 +27,8 @@ public interface JobRepository extends JpaRepository<Job, String> {
 
     @Query("SELECT j FROM Job j JOIN j.userFavoriteJob u WHERE u.id = :userId")
     Page<Job> findAllFavoriteJobsByUserId(String userId, Pageable pageable);
+
+    @Query("SELECT j FROM Job j WHERE j.user.id = :userId")
+    Page<Job> findListJobByUserId(String userId, Pageable pageable);
+
 }

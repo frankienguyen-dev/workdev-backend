@@ -90,4 +90,24 @@ public class ResumeController {
                 .searchResumeByEmail(email, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchResume, HttpStatus.OK);
     }
+
+    @GetMapping("/all-resumes/{id}")
+    public ResponseEntity<ApiResponse<ResumeResponse>> getAllResumeByJobId(
+            @PathVariable("id") String id,
+            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
+                    required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
+                    required = false)
+            int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY,
+                    required = false)
+            String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
+                    required = false)
+            String sortDir
+    ) {
+        ApiResponse<ResumeResponse> getAllResumeByJobId = resumeService
+                .getAllResumesByJobId(id, pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(getAllResumeByJobId, HttpStatus.OK);
+    }
 }

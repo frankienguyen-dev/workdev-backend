@@ -68,6 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String refreshToken = createOrUpdateRefreshToken(authentication);
             LoginResponse loginResponse = new LoginResponse();
             loginResponse.setAccessToken(accessToken);
+            loginResponse.setRefreshToken(refreshToken);
             loginResponse.setRole(findUserLogin.getRoles().get(0).getName());
             if (findUserLogin.getRefreshToken() == null) {
                 findUserLogin.setRefreshToken(refreshToken);
