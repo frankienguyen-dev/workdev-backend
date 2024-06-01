@@ -26,6 +26,8 @@ public class UserInfoDto {
     private String email;
     private String address;
     private FileUploadDto avatar;
+    private String education;
+    private String experience;
     private String phoneNumber;
     private String gender;
     private String title;

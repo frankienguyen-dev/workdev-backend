@@ -21,4 +21,7 @@ public interface ResumeService {
                                                     int pageNo, int pageSize,
                                                     String sortBy, String sortDir);
 
+    ApiResponse<ResumeResponse> getAllResumesByJobId(String jobId, int pageNo, int pageSize,
+                                                    String sortBy, String sortDir);
+
 }

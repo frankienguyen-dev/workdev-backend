@@ -31,6 +31,8 @@ public class User {
     private int age;
     private String phoneNumber;
     private String password;
+    private String education;
+    private String experience;
     private String gender;
     private String title;
 

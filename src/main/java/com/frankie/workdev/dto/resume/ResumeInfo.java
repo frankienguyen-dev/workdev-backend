@@ -1,9 +1,6 @@
 package com.frankie.workdev.dto.resume;
 
-import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
-import com.frankie.workdev.dto.job.JobDto;
-import com.frankie.workdev.dto.job.JobInfo;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
 import lombok.AllArgsConstructor;
@@ -12,19 +9,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResumeInfoDto {
+public class ResumeInfo {
     private String id;
     private String url;
     private FileUploadDto resume;
     private CompanyInfo company;
-    private JobInfo job;
+//    private JobDto job;
     private JwtUserInfo user;
     private String status;
     private JwtUserInfo createdBy;

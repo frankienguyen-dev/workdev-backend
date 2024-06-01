@@ -26,7 +26,8 @@ public class UserDto {
     @Email(message = "Email should be valid")
     @NotEmpty(message = "Email should not be empty")
     private String email;
-
+    private String education;
+    private String experience;
     @NotEmpty(message = "Password should not be empty")
     @Size(min = 6, message = "Password should be at least 6 characters")
     private String password;

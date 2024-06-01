@@ -25,6 +25,8 @@ public class CreateUserDto {
     private String phoneNumber;
     private String gender;
     private String title;
+    private String education;
+    private String experience;
     private FileUploadDto avatar;
     private int age;
     private List<JobDto> jobs;

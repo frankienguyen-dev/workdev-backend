@@ -21,4 +21,7 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
 
     @Query("SELECT r FROM Resume r WHERE (:email IS NULL OR r.user.email LIKE CONCAT('%', :email, '%')) ")
     Page<Resume> searchResumeByEmail(String email, Pageable pageable);
+
+    @Query("SELECT r FROM Resume r WHERE r.job.id = :jobId")
+    Page<Resume> getAllResumeByJobId(String jobId, Pageable pageable);
 }
