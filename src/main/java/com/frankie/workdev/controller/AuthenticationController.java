@@ -2,7 +2,7 @@ package com.frankie.workdev.controller;
 
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.user.ChangePasswordDto;
+import com.frankie.workdev.dto.authentication.ChangePasswordDto;
 import com.frankie.workdev.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
@@ -55,9 +55,9 @@ public class AuthenticationController {
     }
 
     @PatchMapping("/change-password")
-    public ResponseEntity<ApiResponse<ChangePasswordDto>> changePassword(
+    public ResponseEntity<ApiResponse<ChangePasswordResponse>> changePassword(
             @RequestBody ChangePasswordDto changePasswordDto) {
-        ApiResponse<ChangePasswordDto> changePassword = authenticationService
+        ApiResponse<ChangePasswordResponse> changePassword = authenticationService
                 .changePassword(changePasswordDto);
         return new ResponseEntity<>(changePassword, HttpStatus.OK);
     }

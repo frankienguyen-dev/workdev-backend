@@ -32,6 +32,8 @@ public class UserInfoDto {
     private String gender;
     private String title;
     private int age;
+    private String biography;
+    private String coverLetter;
     private List<JobInfo> jobs;
     private List<RoleDto> roles;
     private CompanyInfo company;

@@ -26,4 +26,7 @@ public interface JobService {
     ApiResponse<JobResponse> getJobListByUser(int pageNo,
                                               int pageSize, String sortBy,
                                               String sortDir);
+
+    ApiResponse<JobResponse> getAllJobByCompanyId(String companyId, int pageNo,
+                                                  int pageSize, String sortBy, String sortDir);
 }

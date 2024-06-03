@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.user;
+package com.frankie.workdev.dto.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

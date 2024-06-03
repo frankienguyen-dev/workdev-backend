@@ -24,4 +24,5 @@ public interface ResumeRepository extends JpaRepository<Resume, String> {
 
     @Query("SELECT r FROM Resume r WHERE r.job.id = :jobId")
     Page<Resume> getAllResumeByJobId(String jobId, Pageable pageable);
+
 }
