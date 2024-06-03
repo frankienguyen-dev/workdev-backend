@@ -2,7 +2,7 @@ package com.frankie.workdev.service;
 
 import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.user.ChangePasswordDto;
+import com.frankie.workdev.dto.authentication.ChangePasswordDto;
 import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthenticationService {
@@ -16,6 +16,6 @@ public interface AuthenticationService {
 
     ApiResponse<String> logout(HttpServletResponse response);
 
-    ApiResponse<ChangePasswordDto> changePassword(ChangePasswordDto changePasswordDto);
+    ApiResponse<ChangePasswordResponse> changePassword(ChangePasswordDto changePasswordDto);
 
 }

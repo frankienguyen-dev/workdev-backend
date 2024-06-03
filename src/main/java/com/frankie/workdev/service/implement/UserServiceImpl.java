@@ -73,6 +73,8 @@ public class UserServiceImpl implements UserService {
         newUser.setTitle(userDto.getTitle());
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setCreatedAt(LocalDateTime.now());
+        newUser.setBiography(userDto.getBiography());
+        newUser.setCoverLetter(userDto.getCoverLetter());
         newUser.setCreatedBy(createdByUser);
         newUser.setEducation(userDto.getEducation());
         newUser.setExperience(userDto.getExperience());
@@ -212,6 +214,8 @@ public class UserServiceImpl implements UserService {
             findUser.setUpdatedBy(updatedByUser);
             findUser.setExperience(updateUserDto.getExperience());
             findUser.setEducation(updateUserDto.getEducation());
+            findUser.setCoverLetter(updateUserDto.getCoverLetter());
+            findUser.setBiography(updateUserDto.getBiography());
             if (updateUserDto.getCompany() != null && updateUserDto.getCompany().getName() != null) {
                 Company company = companyRepository.findByName(updateUserDto.getCompany().getName());
                 findUser.setCompany(company);

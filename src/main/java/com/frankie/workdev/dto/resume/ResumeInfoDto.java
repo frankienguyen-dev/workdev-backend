@@ -1,11 +1,13 @@
 package com.frankie.workdev.dto.resume;
 
+import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.company.CompanyDto;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.job.JobInfo;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.UserResumeInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,7 +27,8 @@ public class ResumeInfoDto {
     private FileUploadDto resume;
     private CompanyInfo company;
     private JobInfo job;
-    private JwtUserInfo user;
+//    private JwtUserInfo user;;
+    private UserResumeInfo user;
     private String status;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;

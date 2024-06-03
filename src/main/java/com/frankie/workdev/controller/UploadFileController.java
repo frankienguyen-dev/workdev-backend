@@ -7,6 +7,7 @@ import com.frankie.workdev.service.UploadFileService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +36,8 @@ public class UploadFileController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", fileData.getFileName());
         headers.setContentLength(fileData.getSize());
+//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentType(MediaType.parseMediaType(fileData.getFileType()));
         return new ResponseEntity<>(fileData.getData(), headers, HttpStatus.OK);
     }
 

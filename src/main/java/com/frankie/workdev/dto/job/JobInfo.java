@@ -1,4 +1,5 @@
 package com.frankie.workdev.dto.job;
+import com.frankie.workdev.dto.category.CategoryDto;
 import com.frankie.workdev.dto.category.CategoryInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class JobInfo {
     private String location;
     private int quantity;
     private Long salary;
+//    private CategoryDto category;
     private String level;
     private String education;
     private String jobType;

@@ -31,6 +31,8 @@ public class UpdateUserDto {
     private String education;
     private String experience;
     private String title;
+    private String biography;
+    private String coverLetter;
     private int age;
     private List<JobDto> jobs;
     private List<RoleDto> roles;

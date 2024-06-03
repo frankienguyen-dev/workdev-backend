@@ -28,6 +28,8 @@ public class CreateUserDto {
     private String education;
     private String experience;
     private FileUploadDto avatar;
+    private String biography;
+    private String coverLetter;
     private int age;
     private List<JobDto> jobs;
     private List<RoleDto> roles;

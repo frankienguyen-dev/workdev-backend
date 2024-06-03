@@ -83,6 +83,8 @@ public class User {
 
     private String refreshToken;
 
+    private String biography;
+    private String coverLetter;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_roles",

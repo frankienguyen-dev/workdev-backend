@@ -36,6 +36,8 @@ public class UserDto {
     private String phoneNumber;
     private String gender;
     private String title;
+    private String biography;
+    private String coverLetter;
     private int age;
     private CompanyInfo company;
     private JwtUserInfo createdBy;
