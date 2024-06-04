@@ -67,22 +67,23 @@ public class CompanyServiceImpl implements CompanyService {
         newCompany.setTeamSize(createCompanyDto.getTeamSize());
         newCompany.setFoundedDate(createCompanyDto.getFoundedDate());
         if (createCompanyDto.getLogo() != null
-                && createCompanyDto.getLogo().getId() != null
-                && createCompanyDto.getBanner() != null
-                && createCompanyDto.getBanner().getId() != null) {
-            FileEntity logo = fileRepository.findById(createCompanyDto
-                    .getLogo().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException("File", "id",
-                            createCompanyDto.getLogo().getId())
-            );
-            FileEntity banner = fileRepository.findById(createCompanyDto
-                    .getBanner().getId()).orElseThrow(
-                    () -> new ResourceNotFoundException("File", "id", createCompanyDto
-                            .getBanner().getId()));
+                && createCompanyDto.getLogo().getId() != null) {
+            FileEntity logo = fileRepository.findById(createCompanyDto.getLogo().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("File", "id",
+                            createCompanyDto.getLogo().getId()));
             newCompany.setLogo(logo);
-            newCompany.setBanner(banner);
+
         } else {
             newCompany.setLogo(null);
+
+        }
+        if( createCompanyDto.getBanner() != null
+                && createCompanyDto.getBanner().getId() != null) {
+            FileEntity banner = fileRepository.findById(createCompanyDto.getBanner().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("File", "id",
+                            createCompanyDto.getBanner().getId()));
+            newCompany.setBanner(banner);
+        } else {
             newCompany.setBanner(null);
         }
         newCompany.setCreatedAt(LocalDateTime.now());
@@ -189,19 +190,23 @@ public class CompanyServiceImpl implements CompanyService {
             findCompany.setTeamSize(updateCompanyDto.getTeamSize());
             findCompany.setFoundedDate(updateCompanyDto.getFoundedDate());
             if (updateCompanyDto.getLogo() != null
-                    && updateCompanyDto.getLogo().getId() != null
-                    && updateCompanyDto.getBanner() != null
-                    && updateCompanyDto.getBanner().getId() != null) {
+                    && updateCompanyDto.getLogo().getId() != null) {
                 FileEntity logo = fileRepository.findById(updateCompanyDto.getLogo().getId())
                         .orElseThrow(() -> new ResourceNotFoundException("File", "id",
                                 updateCompanyDto.getLogo().getId()));
+                findCompany.setLogo(logo);
+
+            } else {
+                findCompany.setLogo(null);
+
+            }
+            if( updateCompanyDto.getBanner() != null
+                    && updateCompanyDto.getBanner().getId() != null) {
                 FileEntity banner = fileRepository.findById(updateCompanyDto.getBanner().getId())
                         .orElseThrow(() -> new ResourceNotFoundException("File", "id",
                                 updateCompanyDto.getBanner().getId()));
-                findCompany.setLogo(logo);
                 findCompany.setBanner(banner);
             } else {
-                findCompany.setLogo(null);
                 findCompany.setBanner(null);
             }
 
