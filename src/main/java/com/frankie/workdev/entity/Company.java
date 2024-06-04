@@ -23,8 +23,14 @@ public class Company {
     private String id;
     private String name;
     private String companyType;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "TEXT")
     private String companyVision;
+
+    @Column(columnDefinition = "TEXT")
     private String companyBenefit;
     private String address;
     private String email;
