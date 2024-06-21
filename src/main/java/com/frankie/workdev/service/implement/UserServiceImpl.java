@@ -289,7 +289,7 @@ public class UserServiceImpl implements UserService {
                 () -> new ResourceNotFoundException("User", "id", id)
         );
         findUser.setDeletedAt(LocalDateTime.now());
-        findUser.setDeleted(true);
+        findUser.setIsDeleted(true);
         findUser.setDeletedBy(updatedByUser);
         User saveDeleted = userRepository.save(findUser);
         DeleteUserDto deleteUser = modelMapper.map(saveDeleted, DeleteUserDto.class);

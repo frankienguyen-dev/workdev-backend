@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.category;
 
 import com.frankie.workdev.dto.user.JwtUserInfo;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class CreateCategoryDto {
     private String id;
+
+    @NotEmpty(message = "Category name should not be empty")
     private String name;
+
+    @NotEmpty(message = "Category description should not be empty")
     private String description;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;

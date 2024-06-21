@@ -51,7 +51,7 @@ public class RoleServiceImpl implements RoleService {
 
         Role newRole = new Role();
         newRole.setName(createRoleDto.getName());
-        newRole.setActive(createRoleDto.isActive());
+        newRole.setIsActive(createRoleDto.getIsActive());
         newRole.setCreatedBy(createdByUser);
         newRole.setCreatedAt(LocalDateTime.now());
         List<Permission> permissions = getListPermission(createRoleDto.getPermissions());
@@ -60,7 +60,7 @@ public class RoleServiceImpl implements RoleService {
         CreateRoleDto createRoleResponse = new CreateRoleDto();
         createRoleResponse.setId(saveNewRole.getId());
         createRoleResponse.setName(saveNewRole.getName());
-        createRoleResponse.setActive(saveNewRole.isActive());
+        createRoleResponse.setIsActive(saveNewRole.getIsActive());
         createRoleResponse.setCreatedBy(getUserInfoFromToken);
         createRoleResponse.setCreatedAt(saveNewRole.getCreatedAt());
         List<PermissionInfo> permissionInfoList = permissions.stream()
@@ -134,7 +134,7 @@ public class RoleServiceImpl implements RoleService {
                 () -> new ResourceNotFoundException("Role", "id", id)
         );
         findRole.setName(updateRoleDto.getName());
-        findRole.setActive(updateRoleDto.isActive());
+        findRole.setIsActive(updateRoleDto.getIsActive());
         findRole.setUpdatedBy(updatedByUser);
         findRole.setUpdatedAt(LocalDateTime.now());
         List<Permission> permissions = getListPermission(updateRoleDto.getPermissions());
@@ -143,7 +143,7 @@ public class RoleServiceImpl implements RoleService {
         UpdateRoleDto updateRoleDtoResponse = new UpdateRoleDto();
         updateRoleDtoResponse.setId(saveUpdateRole.getId());
         updateRoleDtoResponse.setName(saveUpdateRole.getName());
-        updateRoleDtoResponse.setActive(saveUpdateRole.isActive());
+        updateRoleDtoResponse.setIsActive(saveUpdateRole.getIsActive());
         updateRoleDtoResponse.setUpdatedBy(getUserInfoFromToken);
         updateRoleDtoResponse.setUpdatedAt(saveUpdateRole.getUpdatedAt());
         List<PermissionInfo> permissionInfoList = permissions.stream()
@@ -172,13 +172,13 @@ public class RoleServiceImpl implements RoleService {
         );
         findRole.setDeletedBy(deletedByUser);
         findRole.setDeletedAt(LocalDateTime.now());
-        findRole.setDeleted(true);
+        findRole.setIsDeleted(true);
         Role saveDeleteRole = roleRepository.save(findRole);
         DeleteRoleDto deleteRoleDtoResponse = new DeleteRoleDto();
         deleteRoleDtoResponse.setId(saveDeleteRole.getId());
         deleteRoleDtoResponse.setDeletedBy(getUserInfoFromToken);
         deleteRoleDtoResponse.setDeletedAt(saveDeleteRole.getDeletedAt());
-        deleteRoleDtoResponse.setDeleted(saveDeleteRole.isDeleted());
+        deleteRoleDtoResponse.setIsDeleted(saveDeleteRole.getIsDeleted());
         return ApiResponse.success(
                 "Delete role by id successfully",
                 HttpStatus.OK,

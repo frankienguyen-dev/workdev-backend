@@ -168,13 +168,13 @@ public class PermissionServiceImpl implements PermissionService {
         );
         findPermission.setDeletedBy(deletedByUser);
         findPermission.setDeletedAt(LocalDateTime.now());
-        findPermission.setDeleted(true);
+        findPermission.setIsDeleted(true);
         Permission saveDelete = permissionRepository.save(findPermission);
         DeletePermissionDto deletePermissionDtoResponse = new DeletePermissionDto();
         deletePermissionDtoResponse.setId(saveDelete.getId());
         deletePermissionDtoResponse.setDeletedBy(getUserInfoFromToken);
         deletePermissionDtoResponse.setDeletedAt(saveDelete.getDeletedAt());
-        deletePermissionDtoResponse.setDeleted(saveDelete.isDeleted());
+        deletePermissionDtoResponse.setIsDeleted(saveDelete.getIsDeleted());
         return ApiResponse.success(
                 "Delete permission by id successfully",
                 HttpStatus.OK,

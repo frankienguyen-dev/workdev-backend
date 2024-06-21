@@ -16,5 +16,7 @@ public class InvitationDto {
     private String id;
     @NotEmpty(message = "receiverUserEmail is required")
     private String receiverUserEmail;
+
+    @NotEmpty(message = "content is required")
     private String content;
 }

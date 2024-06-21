@@ -27,6 +27,8 @@ public class UpdateJobDto {
 
     @NotEmpty(message = "Description should not be empty")
     private String description;
+
+    @NotEmpty(message = "Responsibility should not be empty")
     private String responsibility;
 
     @NotEmpty(message = "Location should not be empty")
@@ -37,9 +39,18 @@ public class UpdateJobDto {
 
     @NotNull(message = "Salary should not be empty")
     private Long salary;
+
+    @NotEmpty(message = "Education should not be empty")
     private String education;
+
+    @NotEmpty(message = "Job type should not be empty")
     private String jobType;
+
+    @NotEmpty(message = "Experience should not be empty")
     private String experience;
+
+    @NotNull(message = "Category should not be empty")
+    @Valid
     private CategoryInfo category;
 
     @NotEmpty(message = "Level should not be empty")
@@ -48,6 +59,7 @@ public class UpdateJobDto {
     private LocalDateTime updatedAt;
 
     @Valid
+    @NotNull(message = "Company should not be empty")
     private CompanyDto company;
 
     @NotNull(message = "Start date should not be empty")
@@ -56,7 +68,10 @@ public class UpdateJobDto {
     @NotNull(message = "End date should not be empty")
     private LocalDateTime endDate;
 
+    @NotNull(message = "Skills should not be empty")
     @Valid
     private List<SkillDto> skills;
-    private boolean isActive;
+
+    @NotNull(message = "Job status is required")
+    private Boolean isActive;
 }

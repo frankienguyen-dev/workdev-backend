@@ -49,8 +49,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         Subscriber subscriber = new Subscriber();
         subscriber.setEmail(subscriberDto.getEmail());
         subscriber.setName(subscriberDto.getName());
-        List<Skill> skills = getSkills(subscriberDto.getSkills());
-        subscriber.setSkills(skills);
+        if (subscriberDto.getSkills() != null) {
+            List<Skill> skills = getSkills(subscriberDto.getSkills());
+            subscriber.setSkills(skills);
+        }
         Subscriber savedSubscriber = subscriberRepository.save(subscriber);
         CreateSubscriberDto createSubscriberDto = modelMapper
                 .map(savedSubscriber, CreateSubscriberDto.class);

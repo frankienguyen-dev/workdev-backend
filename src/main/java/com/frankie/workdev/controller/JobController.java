@@ -48,7 +48,7 @@ public class JobController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UpdateJobDto>> updateJobById(
-            @PathVariable("id") String id, @RequestBody UpdateJobDto updateJobDto) {
+            @PathVariable("id") String id, @RequestBody @Valid UpdateJobDto updateJobDto) {
         ApiResponse<UpdateJobDto> updateJob = jobService.updateJobById(id, updateJobDto);
         return new ResponseEntity<>(updateJob, HttpStatus.OK);
     }
@@ -75,9 +75,9 @@ public class JobController {
             @RequestParam(value = "salary", required = false) Long salary
 //            @RequestParam(value = "companyName", required = false) String companyName
     ) {
-            ApiResponse<JobResponse> searchJob = jobService.searchJob(name, location, salary,
-                   pageNo, pageSize, sortBy, sortDir);
-            return new ResponseEntity<>(searchJob, HttpStatus.OK);
+        ApiResponse<JobResponse> searchJob = jobService.searchJob(name, location, salary,
+                pageNo, pageSize, sortBy, sortDir);
+        return new ResponseEntity<>(searchJob, HttpStatus.OK);
     }
 
     @PostMapping("/favorite/{id}")

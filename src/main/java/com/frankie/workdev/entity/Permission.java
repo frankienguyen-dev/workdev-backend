@@ -49,7 +49,7 @@ public class Permission {
     private User deletedBy;
 
     private LocalDateTime deletedAt;
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @ManyToMany(mappedBy = "permissions")
     private List<Role> roles = new ArrayList<>();

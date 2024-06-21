@@ -79,15 +79,14 @@ public class JobServiceImpl implements JobService {
             newJob.setCompany(findCompany);
             newJob.setStartDate(createJobDto.getStartDate());
             newJob.setEndDate(createJobDto.getEndDate());
-            newJob.setActive(true);
+            newJob.setIsActive(true);
             newJob.setUser(createdByUser);
             System.out.println("check: " + newJob.getUser());
             List<Skill> skills = getSkills(createJobDto.getSkills());
             newJob.setSkills(skills);
             createdByUser.getJobs().add(newJob);
             Job savedJob = jobRepository.save(newJob);
-            User usereheh = userRepository.save(createdByUser);
-            System.out.println("check user: " + usereheh);
+//            User userTest = userRepository.save(createdByUser);
             CreateJobDto createJobDtoResponse = modelMapper.map(savedJob, CreateJobDto.class);
             return ApiResponse.success(
                     "Job created successfully",
@@ -192,7 +191,7 @@ public class JobServiceImpl implements JobService {
             findJob.setCompany(findCompany);
             findJob.setStartDate(updateJobDto.getStartDate());
             findJob.setEndDate(updateJobDto.getEndDate());
-            findJob.setActive(updateJobDto.isActive());
+            findJob.setIsActive(updateJobDto.getIsActive());
             List<Skill> skills = getSkills(updateJobDto.getSkills());
             findJob.setSkills(skills);
             Job savedJob = jobRepository.save(findJob);
@@ -218,8 +217,8 @@ public class JobServiceImpl implements JobService {
         Job findJob = jobRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Job", "id", id)
         );
-        findJob.setDeleted(true);
-        findJob.setActive(false);
+        findJob.setIsActive(false);
+        findJob.setIsDeleted(true);
         findJob.setDeletedBy(deletedByUser);
         findJob.setDeletedAt(LocalDateTime.now());
         Job saveDelete = jobRepository.save(findJob);

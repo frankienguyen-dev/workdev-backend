@@ -17,7 +17,7 @@ import java.util.List;
 public class RoleDto {
     private String id;
     private String name;
-    private boolean isActive;
+    private Boolean isActive;
     private List<PermissionInfo> permissions;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
@@ -25,7 +25,7 @@ public class RoleDto {
     private LocalDateTime updatedAt;
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
     private List<JwtUserInfo> users;
 
 }

@@ -16,6 +16,6 @@ public class DeleteRoleDto {
     private String id;
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
 }

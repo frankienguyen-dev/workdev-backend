@@ -154,7 +154,7 @@ public class ResumeServiceImpl implements ResumeService {
         Resume findResume = resumeRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Resume", "id", id)
         );
-        findResume.setDeleted(true);
+        findResume.setIsDeleted(true);
         findResume.setDeletedBy(deletedByUser);
         findResume.setDeletedAt(LocalDateTime.now());
         Resume saveDelete = resumeRepository.save(findResume);

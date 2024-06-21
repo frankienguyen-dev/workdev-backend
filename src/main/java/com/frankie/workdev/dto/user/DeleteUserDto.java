@@ -15,5 +15,5 @@ public class DeleteUserDto {
     private String id;
     private LocalDateTime deletedAt;
     private JwtUserInfo deletedBy;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 }

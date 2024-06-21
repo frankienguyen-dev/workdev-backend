@@ -28,9 +28,6 @@ public class Company {
     private String description;
 
     @Column(columnDefinition = "TEXT")
-    private String companyVision;
-
-    @Column(columnDefinition = "TEXT")
     private String companyBenefit;
     private String address;
     private String email;
@@ -69,7 +66,7 @@ public class Company {
     private User deletedBy;
 
     private LocalDateTime deletedAt;
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 
     @PrePersist
