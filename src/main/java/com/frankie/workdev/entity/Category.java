@@ -47,7 +47,7 @@ public class Category {
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @PrePersist
     private void randomId() {

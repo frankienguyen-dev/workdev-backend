@@ -43,6 +43,6 @@ public class JobDto {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<SkillDto> skills;
-    private boolean isActive;
-    private boolean isDeleted;
+    private Boolean isActive;
+    private Boolean isDeleted;
 }

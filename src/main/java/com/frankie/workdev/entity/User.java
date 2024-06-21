@@ -79,7 +79,7 @@ public class User {
 
     private LocalDateTime deletedAt;
 
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     private String refreshToken;
 

@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.upload;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FileUploadDto {
+    @NotEmpty(message = "File id should not be empty")
     private String id;
     private String fileName;
     private String fileType;

@@ -23,7 +23,6 @@ public class CompanyDto {
     private String name;
     private String description;
     private String companyType;
-    private String companyVision;
     private String companyBenefit;
     private String address;
     private String email;
@@ -40,5 +39,5 @@ public class CompanyDto {
     private LocalDateTime updatedAt;
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 }

@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.job;
 import com.frankie.workdev.dto.category.CategoryDto;
 import com.frankie.workdev.dto.category.CategoryInfo;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobInfo {
+    @NotEmpty(message = "Id should not be empty")
     private String id;
     private String name;
     private String description;
@@ -28,6 +30,6 @@ public class JobInfo {
     private String experience;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private boolean isActive;
-    private boolean isDeleted;
+    private Boolean isActive;
+    private Boolean isDeleted;
 }

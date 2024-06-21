@@ -166,7 +166,7 @@ public class InvitationServiceImpl implements InvitationService {
                 );
             }
             if (currentUSer == receiverUser) {
-                if (acceptOrRejectRequest.isAccepted()) {
+                if (acceptOrRejectRequest.getAccepted()) {
                     findInvitation.setStatus("ACCEPTED");
                     receiverUser.setCompany(findInvitation.getCompany());
                     findInvitation.setAcceptedAt(LocalDateTime.now());
@@ -178,7 +178,7 @@ public class InvitationServiceImpl implements InvitationService {
                 Invitation save = invitationRepository.save(findInvitation);
                 AcceptOrRejectResponse acceptOrRejectResponse = new AcceptOrRejectResponse();
                 acceptOrRejectResponse.setMessage("Invitation " +
-                        (acceptOrRejectRequest.isAccepted() ? "accepted" : "rejected")
+                        (acceptOrRejectRequest.getAccepted() ? "accepted" : "rejected")
                         + " successfully");
                 acceptOrRejectResponse.setStatus(save.getStatus());
                 acceptOrRejectResponse.setAcceptedAt(save.getAcceptedAt());

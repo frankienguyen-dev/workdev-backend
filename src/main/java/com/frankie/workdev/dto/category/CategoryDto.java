@@ -26,5 +26,5 @@ public class CategoryDto {
     private LocalDateTime updatedAt;
     private JwtUserInfo deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted;
+    private Boolean isDeleted;
 }

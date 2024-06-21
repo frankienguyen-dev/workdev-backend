@@ -5,6 +5,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.authentication.ChangePasswordDto;
 import com.frankie.workdev.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginDto loginDto
+    public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody @Valid LoginDto loginDto
             , HttpServletResponse response) {
         ApiResponse<LoginResponse> login = authenticationService.login(loginDto, response);
         return new ResponseEntity<>(login, HttpStatus.OK);
@@ -26,7 +27,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<RegisterResponse>> register(
-            @RequestBody RegisterDto registerDto) {
+            @RequestBody @Valid RegisterDto registerDto) {
         ApiResponse<RegisterResponse> register = authenticationService.register(registerDto);
         return new ResponseEntity<>(register, HttpStatus.CREATED);
     }
@@ -56,7 +57,7 @@ public class AuthenticationController {
 
     @PatchMapping("/change-password")
     public ResponseEntity<ApiResponse<ChangePasswordResponse>> changePassword(
-            @RequestBody ChangePasswordDto changePasswordDto) {
+            @RequestBody @Valid ChangePasswordDto changePasswordDto) {
         ApiResponse<ChangePasswordResponse> changePassword = authenticationService
                 .changePassword(changePasswordDto);
         return new ResponseEntity<>(changePassword, HttpStatus.OK);

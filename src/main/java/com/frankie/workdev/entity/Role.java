@@ -25,7 +25,7 @@ public class Role {
 
     @Column(unique = true)
     private String name;
-    private boolean isActive = false;
+    private Boolean isActive = false;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
@@ -45,7 +45,7 @@ public class Role {
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
     private LocalDateTime deletedAt;
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(

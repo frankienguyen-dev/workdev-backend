@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.resume;
 
 import com.frankie.workdev.dto.user.JwtUserInfo;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class UpdateResumeDto {
     private String id;
+
+    @NotEmpty(message = "Resume should not be empty")
     private String status;
     private JwtUserInfo updatedBy;
     private LocalDateTime updatedAt;

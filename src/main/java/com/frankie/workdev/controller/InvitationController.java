@@ -38,7 +38,7 @@ public class InvitationController {
     @PostMapping("/{id}")
     public ResponseEntity<ApiResponse<AcceptOrRejectResponse>> acceptOrRejectInvitation(
             @PathVariable("id") String id,
-            @RequestBody AcceptOrRejectRequest acceptOrRejectRequest
+            @RequestBody @Valid AcceptOrRejectRequest acceptOrRejectRequest
     ) {
         ApiResponse<AcceptOrRejectResponse> acceptOrRejectInvitation = invitationService
                 .acceptOrRejectInvitation(id, acceptOrRejectRequest);

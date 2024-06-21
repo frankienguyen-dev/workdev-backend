@@ -4,6 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.category.*;
 import com.frankie.workdev.service.CategoryService;
 import com.frankie.workdev.util.AppConstants;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<CreateCategoryDto>> createCategory(
-            @RequestBody CreateCategoryDto createCategoryDto) {
+            @RequestBody @Valid CreateCategoryDto createCategoryDto) {
         ApiResponse<CreateCategoryDto> create = categoryService.createCategory(createCategoryDto);
         return new ResponseEntity<>(create, HttpStatus.CREATED);
     }
@@ -46,7 +47,7 @@ public class CategoryController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UpdateCategoryDto>> updateCategoryById(
-            @RequestBody UpdateCategoryDto updateCategoryDto, @PathVariable("id") String id) {
+            @RequestBody @Valid UpdateCategoryDto updateCategoryDto, @PathVariable("id") String id) {
         ApiResponse<UpdateCategoryDto> updateCategoryById = categoryService
                 .updateCategoryById(updateCategoryDto, id);
         return new ResponseEntity<>(updateCategoryById, HttpStatus.OK);

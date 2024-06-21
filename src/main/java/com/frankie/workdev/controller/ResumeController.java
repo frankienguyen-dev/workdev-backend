@@ -4,6 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.resume.*;
 import com.frankie.workdev.service.ResumeService;
 import com.frankie.workdev.util.AppConstants;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,7 @@ public class ResumeController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<CreateResumeDto>> createResume(
-            @RequestBody CreateResumeDto createResumeDto) {
+            @RequestBody @Valid CreateResumeDto createResumeDto) {
         ApiResponse<CreateResumeDto> createReumse = resumeService.createResume(createResumeDto);
         return new ResponseEntity<>(createReumse, HttpStatus.CREATED);
     }
@@ -46,7 +47,7 @@ public class ResumeController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UpdateResumeDto>> updateResumeById(
-            @PathVariable("id") String id, @RequestBody UpdateResumeDto updateResumeDto) {
+            @PathVariable("id") String id, @RequestBody @Valid UpdateResumeDto updateResumeDto) {
         ApiResponse<UpdateResumeDto> updateResume = resumeService.updateResumeById(id, updateResumeDto);
         return new ResponseEntity<>(updateResume, HttpStatus.OK);
     }

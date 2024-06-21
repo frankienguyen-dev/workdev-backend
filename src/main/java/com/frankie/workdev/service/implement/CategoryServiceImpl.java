@@ -137,7 +137,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category findCategory = categoryRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Category", "id", id)
         );
-        findCategory.setDeleted(true);
+        findCategory.setIsDeleted(true);
         findCategory.setDeletedBy(deletedByUser);
         findCategory.setDeletedAt(LocalDateTime.now());
         Category saved = categoryRepository.save(findCategory);

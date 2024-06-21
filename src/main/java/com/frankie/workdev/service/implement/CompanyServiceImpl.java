@@ -58,7 +58,6 @@ public class CompanyServiceImpl implements CompanyService {
         newCompany.setName(createCompanyDto.getName());
         newCompany.setCompanyType(createCompanyDto.getCompanyType());
         newCompany.setDescription(createCompanyDto.getDescription());
-        newCompany.setCompanyVision(createCompanyDto.getCompanyVision());
         newCompany.setCompanyBenefit(createCompanyDto.getCompanyBenefit());
         newCompany.setAddress(createCompanyDto.getAddress());
         newCompany.setEmail(createCompanyDto.getEmail());
@@ -180,7 +179,6 @@ public class CompanyServiceImpl implements CompanyService {
 
             findCompany.setName(updateCompanyDto.getName());
             findCompany.setDescription(updateCompanyDto.getDescription());
-            findCompany.setCompanyVision(updateCompanyDto.getCompanyVision());
             findCompany.setCompanyBenefit(updateCompanyDto.getCompanyBenefit());
             findCompany.setCompanyType(updateCompanyDto.getCompanyType());
             findCompany.setAddress(updateCompanyDto.getAddress());
@@ -234,14 +232,14 @@ public class CompanyServiceImpl implements CompanyService {
         Company findCompany = companyRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Company", "id", id)
         );
-        findCompany.setDeleted(true);
+        findCompany.setIsDeleted(true);
         findCompany.setDeletedAt(LocalDateTime.now());
         findCompany.setDeletedBy(deletedByUser);
         Company saveDelete = companyRepository.save(findCompany);
         DeleteCompanyDto deleteCompany = modelMapper.map(saveDelete, DeleteCompanyDto.class);
         deleteCompany.setDeletedBy(getUserInfoFromToken);
         deleteCompany.setDeletedAt(saveDelete.getDeletedAt());
-        deleteCompany.setDeleted(saveDelete.isDeleted());
+        deleteCompany.setIsDeleted(saveDelete.getIsDeleted());
         return ApiResponse.success(
                 "Company deleted successfully",
                 HttpStatus.OK,

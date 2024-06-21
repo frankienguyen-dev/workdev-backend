@@ -57,8 +57,8 @@ public class Job {
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-    private boolean isActive = true;
-    private boolean isDeleted = false;
+    private Boolean isActive = true;
+    private Boolean isDeleted = false;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 

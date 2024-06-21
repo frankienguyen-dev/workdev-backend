@@ -7,6 +7,7 @@ import com.frankie.workdev.dto.subscriber.SubscriberResponse;
 import com.frankie.workdev.dto.subscriber.UpdateSubscriberDto;
 import com.frankie.workdev.service.SubscriberService;
 import com.frankie.workdev.util.AppConstants;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class SubscriberController {
 
     @PostMapping
     public ResponseEntity<ApiResponse<CreateSubscriberDto>> createSubscriber
-            (@RequestBody CreateSubscriberDto subscriberDto) {
+            (@RequestBody @Valid CreateSubscriberDto subscriberDto) {
         ApiResponse<CreateSubscriberDto> createSubscriber = subscriberService.createSubscriber(subscriberDto);
         return new ResponseEntity<>(createSubscriber, HttpStatus.CREATED);
     }
@@ -50,7 +51,7 @@ public class SubscriberController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<UpdateSubscriberDto>> updateSubscriberById(
-            @PathVariable("id") String id, @RequestBody UpdateSubscriberDto updateSubscriberDto
+            @PathVariable("id") String id, @RequestBody @Valid UpdateSubscriberDto updateSubscriberDto
     ) {
         ApiResponse<UpdateSubscriberDto> updateSubscriber = subscriberService
                 .updateSubcriberById(id, updateSubscriberDto);

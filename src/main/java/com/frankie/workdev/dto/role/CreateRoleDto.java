@@ -20,8 +20,11 @@ public class CreateRoleDto {
 
     @NotEmpty(message = "Name should not be empty")
     private String name;
-    private boolean isActive;
 
+    @NotEmpty(message = "Role status should not be empty")
+    private Boolean isActive;
+
+    @NotEmpty(message = "Permissions should not be empty")
     private List<PermissionInfo> permissions;
     private JwtUserInfo createdBy;
     private LocalDateTime createdAt;
