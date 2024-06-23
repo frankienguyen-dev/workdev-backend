@@ -50,10 +50,8 @@ public class UserDto {
     @NotEmpty(message = "Title should not be empty")
     private String title;
 
-    @NotEmpty(message = "Biography should not be empty")
     private String biography;
 
-    @NotEmpty(message = "Cover letter should not be empty")
     private String coverLetter;
 
     @NotNull(message = "Age should not be empty")

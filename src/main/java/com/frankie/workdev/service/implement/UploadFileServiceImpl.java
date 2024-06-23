@@ -1,13 +1,23 @@
 package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
+import com.frankie.workdev.dto.apiResponse.MetaData;
+import com.frankie.workdev.dto.upload.FileUploadDto;
+import com.frankie.workdev.dto.upload.FileUploadResponse;
 import com.frankie.workdev.dto.upload.UploadFileResponse;
 import com.frankie.workdev.entity.FileEntity;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.service.UploadFileService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,18 +30,21 @@ import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class UploadFileServiceImpl implements UploadFileService {
-
+    private final ModelMapper modelMapper;
     private FileRepository fileRepository;
 
     @Override
     public ApiResponse<UploadFileResponse> uploadFile(MultipartFile file) {
         try {
-            String uploadPath = "/Users/nguyenduongchanhtay/Desktop/WorkDev/src/main/java/com/frankie/workdev/upload";
+
+            String uploadPath = "/Users/nguyenduongchanhtay/Desktop/workdev-backend/src/main/java/com/frankie/workdev/upload";
             File uploadDirectory = new File(uploadPath);
             if (!uploadDirectory.exists()) {
                 Files.createDirectories(Paths.get(uploadPath));
@@ -102,6 +115,59 @@ public class UploadFileServiceImpl implements UploadFileService {
                 throw new ResourceNotFoundException("File", "fileName", fileName);
             }
             return fileEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+    @Override
+    public ApiResponse<FileUploadResponse> getOrphanFiles(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        int adjustedPageNo = pageNo > 0 ? pageNo - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
+        Page<FileEntity> files = fileRepository.getOrphanFiles(pageable);
+        List<FileEntity> fileEntities = files.getContent();
+        List<FileUploadDto> fileUploadDtoList = fileEntities.stream().map(
+                file -> {
+                    try {
+                        return modelMapper.map(file, FileUploadDto.class);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        throw e;
+                    }
+                }
+        ).collect(Collectors.toList());
+        MetaData metaData = new MetaData();
+        metaData.setLastPage(files.isLast());
+        metaData.setPageNo(files.getNumber());
+        metaData.setTotalElements(files.getTotalElements());
+        metaData.setPageSize(files.getSize());
+        metaData.setTotalPages(files.getTotalPages());
+        FileUploadResponse fileUploadResponse = new FileUploadResponse();
+        fileUploadResponse.setMeta(metaData);
+        fileUploadResponse.setData(fileUploadDtoList);
+        return ApiResponse.success(
+                "Get all files successfully",
+                HttpStatus.OK,
+                fileUploadResponse
+        );
+    }
+
+
+    @Override
+    @Scheduled(cron = "0 0 7 * * ?")
+//    @Scheduled(fixedRate = 30000)
+    public void deleteOrphanFiles() throws IOException {
+        try {
+            List<FileEntity> fileEntities = fileRepository.findOrphanFiles();
+            for (FileEntity file : fileEntities) {
+                String filePath = "/Users/nguyenduongchanhtay/Desktop/workdev-backend/src/main/java/com/frankie/workdev/upload" + file.getFileName();
+                Files.deleteIfExists(Paths.get(filePath));
+                fileRepository.delete(file);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw e;
