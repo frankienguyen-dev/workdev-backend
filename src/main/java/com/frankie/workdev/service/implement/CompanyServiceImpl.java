@@ -76,7 +76,7 @@ public class CompanyServiceImpl implements CompanyService {
             newCompany.setLogo(null);
 
         }
-        if( createCompanyDto.getBanner() != null
+        if (createCompanyDto.getBanner() != null
                 && createCompanyDto.getBanner().getId() != null) {
             FileEntity banner = fileRepository.findById(createCompanyDto.getBanner().getId())
                     .orElseThrow(() -> new ResourceNotFoundException("File", "id",
@@ -177,16 +177,6 @@ public class CompanyServiceImpl implements CompanyService {
                 }
             }
 
-            findCompany.setName(updateCompanyDto.getName());
-            findCompany.setDescription(updateCompanyDto.getDescription());
-            findCompany.setCompanyBenefit(updateCompanyDto.getCompanyBenefit());
-            findCompany.setCompanyType(updateCompanyDto.getCompanyType());
-            findCompany.setAddress(updateCompanyDto.getAddress());
-            findCompany.setEmail(updateCompanyDto.getEmail());
-            findCompany.setPhoneNumber(updateCompanyDto.getPhoneNumber());
-            findCompany.setWebsite(updateCompanyDto.getWebsite());
-            findCompany.setTeamSize(updateCompanyDto.getTeamSize());
-            findCompany.setFoundedDate(updateCompanyDto.getFoundedDate());
             if (updateCompanyDto.getLogo() != null
                     && updateCompanyDto.getLogo().getId() != null) {
                 FileEntity logo = fileRepository.findById(updateCompanyDto.getLogo().getId())
@@ -208,6 +198,16 @@ public class CompanyServiceImpl implements CompanyService {
                 findCompany.setBanner(null);
             }
 
+            findCompany.setName(updateCompanyDto.getName());
+            findCompany.setDescription(updateCompanyDto.getDescription());
+            findCompany.setCompanyBenefit(updateCompanyDto.getCompanyBenefit());
+            findCompany.setCompanyType(updateCompanyDto.getCompanyType());
+            findCompany.setAddress(updateCompanyDto.getAddress());
+            findCompany.setEmail(updateCompanyDto.getEmail());
+            findCompany.setPhoneNumber(updateCompanyDto.getPhoneNumber());
+            findCompany.setWebsite(updateCompanyDto.getWebsite());
+            findCompany.setTeamSize(updateCompanyDto.getTeamSize());
+            findCompany.setFoundedDate(updateCompanyDto.getFoundedDate());
             findCompany.setUpdatedBy(updatedByUser);
             findCompany.setUpdatedAt(LocalDateTime.now());
             Company saveUpdate = companyRepository.save(findCompany);

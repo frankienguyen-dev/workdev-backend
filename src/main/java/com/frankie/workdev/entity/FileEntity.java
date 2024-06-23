@@ -22,13 +22,13 @@ public class FileEntity {
     private String fileName;
     private String fileType;
     private long size;
-
     @CreationTimestamp
     private LocalDateTime uploadTime;
 
     @Lob()
     @Column(length = 10000000)
     private byte[] data;
+
 
     @PrePersist
     private void setRandomId() {
