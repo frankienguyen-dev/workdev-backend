@@ -3,19 +3,18 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.skill.SkillDto;
-import com.frankie.workdev.dto.subscriber.CreateSubscriberDto;
-import com.frankie.workdev.dto.subscriber.SubscriberDto;
-import com.frankie.workdev.dto.subscriber.SubscriberResponse;
-import com.frankie.workdev.dto.subscriber.UpdateSubscriberDto;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.subscriber.request.CreateSubscriberDto;
+import com.frankie.workdev.dto.subscriber.request.UpdateSubscriberDto;
+import com.frankie.workdev.dto.subscriber.response.CreateSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.ListSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.SubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 import com.frankie.workdev.entity.Skill;
 import com.frankie.workdev.entity.Subscriber;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.SkillRepository;
 import com.frankie.workdev.repository.SubscriberRepository;
-import com.frankie.workdev.repository.UserRepository;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.SubscriberService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,8 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,7 +38,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     private ModelMapper modelMapper;
 
     @Override
-    public ApiResponse<CreateSubscriberDto> createSubscriber(CreateSubscriberDto subscriberDto) {
+    public ApiResponse<CreateSubscriberResponse> createSubscriber(CreateSubscriberDto subscriberDto) {
         Subscriber findSubscriber = subscriberRepository.findByEmail(subscriberDto.getEmail());
         if (findSubscriber != null) {
             throw new ResourceExistingException("Subscriber", "email", subscriberDto.getEmail());
@@ -54,8 +51,8 @@ public class SubscriberServiceImpl implements SubscriberService {
             subscriber.setSkills(skills);
         }
         Subscriber savedSubscriber = subscriberRepository.save(subscriber);
-        CreateSubscriberDto createSubscriberDto = modelMapper
-                .map(savedSubscriber, CreateSubscriberDto.class);
+        CreateSubscriberResponse createSubscriberDto = modelMapper
+                .map(savedSubscriber, CreateSubscriberResponse.class);
         return ApiResponse.success(
                 "Subscriber created successfully",
                 HttpStatus.CREATED,
@@ -64,8 +61,8 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<SubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
-                                                            String sortBy, String sortDir) {
+    public ApiResponse<ListSubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
+                                                                String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -73,10 +70,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Subscriber> subscribers = subscriberRepository.findAll(pageable);
         List<Subscriber> subscriberContentList = subscribers.getContent();
-        List<SubscriberDto> subscriberDtos = subscriberContentList.stream()
+        List<SubscriberResponse> subscriberDtos = subscriberContentList.stream()
                 .map(subscriber -> {
                     try {
-                        return modelMapper.map(subscriber, SubscriberDto.class);
+                        return modelMapper.map(subscriber, SubscriberResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -88,7 +85,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         metaData.setTotalElements(subscribers.getTotalElements());
         metaData.setTotalPages(subscribers.getTotalPages());
         metaData.setLastPage(subscribers.isLast());
-        SubscriberResponse subscriberResponse = new SubscriberResponse();
+        ListSubscriberResponse subscriberResponse = new ListSubscriberResponse();
         subscriberResponse.setData(subscriberDtos);
         subscriberResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -99,11 +96,11 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<SubscriberDto> getSubsciberById(String id) {
+    public ApiResponse<SubscriberResponse> getSubscriberById(String id) {
         Subscriber findSubscriber = subscriberRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Subscriber", "id", id)
         );
-        SubscriberDto subscriberDto = modelMapper.map(findSubscriber, SubscriberDto.class);
+        SubscriberResponse subscriberDto = modelMapper.map(findSubscriber, SubscriberResponse.class);
         return ApiResponse.success(
                 "Subscriber fetched successfully",
                 HttpStatus.OK,
@@ -112,7 +109,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<UpdateSubscriberDto> updateSubcriberById(
+    public ApiResponse<UpdateSubscriberResponse> updateSubscriberById(
             String id, UpdateSubscriberDto updateSubscriberDto) {
         Subscriber findSubscriber = subscriberRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Subscriber", "id", id)
@@ -126,7 +123,8 @@ public class SubscriberServiceImpl implements SubscriberService {
         List<Skill> skills = getSkills(updateSubscriberDto.getSkills());
         findSubscriber.setSkills(skills);
         Subscriber savaUpdate = subscriberRepository.save(findSubscriber);
-        UpdateSubscriberDto updateSubscriber = modelMapper.map(savaUpdate, UpdateSubscriberDto.class);
+        UpdateSubscriberResponse updateSubscriber = modelMapper
+                .map(savaUpdate, UpdateSubscriberResponse.class);
         return ApiResponse.success(
                 "Updated subscriber successfully",
                 HttpStatus.OK,
@@ -135,12 +133,12 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<String> deleteSubscriberById(String id) {
+    public void deleteSubscriberById(String id) {
         Subscriber findSubscriber = subscriberRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Subscriber", "id", id)
         );
         subscriberRepository.delete(findSubscriber);
-        return ApiResponse.success(
+        ApiResponse.success(
                 "Subscriber deleted successfully",
                 HttpStatus.OK,
                 null
@@ -148,9 +146,9 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<SubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
-                                                                   int pageSize, String sortBy,
-                                                                   String sortDir) {
+    public ApiResponse<ListSubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+                                                                       int pageSize, String sortBy,
+                                                                       String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -158,10 +156,10 @@ public class SubscriberServiceImpl implements SubscriberService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Subscriber> subscribers = subscriberRepository.searchSubscriberByEmail(email, pageable);
         List<Subscriber> subscriberContentList = subscribers.getContent();
-        List<SubscriberDto> subscriberDtoList = subscriberContentList.stream().map(
+        List<SubscriberResponse> subscriberDtoList = subscriberContentList.stream().map(
                 subscriber -> {
                     try {
-                        return modelMapper.map(subscriber, SubscriberDto.class);
+                        return modelMapper.map(subscriber, SubscriberResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -174,7 +172,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         metaData.setTotalElements(subscribers.getTotalElements());
         metaData.setTotalPages(subscribers.getTotalPages());
         metaData.setLastPage(subscribers.isLast());
-        SubscriberResponse subscriberResponse = new SubscriberResponse();
+        ListSubscriberResponse subscriberResponse = new ListSubscriberResponse();
         subscriberResponse.setData(subscriberDtoList);
         subscriberResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -182,17 +180,6 @@ public class SubscriberServiceImpl implements SubscriberService {
                 HttpStatus.OK,
                 subscriberResponse
         );
-    }
-
-
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        String getUserEmail = authentication.getName();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
     }
 
     private List<Skill> getSkills(List<SkillDto> skills) {

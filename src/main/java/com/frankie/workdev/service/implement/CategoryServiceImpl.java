@@ -3,7 +3,7 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.category.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Category;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ResourceNotFoundException;

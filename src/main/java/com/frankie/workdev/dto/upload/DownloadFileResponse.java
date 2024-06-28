@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.upload;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +12,21 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Download File Response")
 public class DownloadFileResponse {
+
+    @Schema(description = "File Id")
     private String id;
+
+    @Schema(description = "File Name")
     private String fileName;
+
+    @Schema(description = "File Type")
     private String fileType;
+
+    @Schema(description = "File Size")
     private long size;
+
+    @Schema(description = "File Download Time")
     private LocalDateTime downloadTime;
 }

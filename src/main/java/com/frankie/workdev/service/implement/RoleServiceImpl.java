@@ -3,8 +3,15 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.permission.PermissionInfo;
-import com.frankie.workdev.dto.role.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.permission.PermissionResponse;
+import com.frankie.workdev.dto.role.request.CreateRoleDto;
+import com.frankie.workdev.dto.role.request.DeleteRoleDto;
+import com.frankie.workdev.dto.role.request.UpdateRoleDto;
+import com.frankie.workdev.dto.role.response.CreateRoleResponse;
+import com.frankie.workdev.dto.role.response.ListRoleResponse;
+import com.frankie.workdev.dto.role.response.RoleResponse;
+import com.frankie.workdev.dto.role.response.UpdateRoleResponse;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Permission;
 import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
@@ -13,8 +20,8 @@ import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.PermissionRepository;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.RoleService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -22,8 +29,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -39,10 +44,11 @@ public class RoleServiceImpl implements RoleService {
     private RoleRepository roleRepository;
     private PermissionRepository permissionRepository;
     private ModelMapper modelMapper;
+    private UserInfoUtils userInfoUtils;
 
     @Override
-    public ApiResponse<CreateRoleDto> createNewRole(CreateRoleDto createRoleDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+    public ApiResponse<CreateRoleResponse> createNewRole(CreateRoleDto createRoleDto) {
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Role existingRoleName = roleRepository.findByName(createRoleDto.getName());
         if (existingRoleName != null) {
@@ -57,14 +63,14 @@ public class RoleServiceImpl implements RoleService {
         List<Permission> permissions = getListPermission(createRoleDto.getPermissions());
         newRole.setPermissions(permissions);
         Role saveNewRole = roleRepository.save(newRole);
-        CreateRoleDto createRoleResponse = new CreateRoleDto();
+        CreateRoleResponse createRoleResponse = new CreateRoleResponse();
         createRoleResponse.setId(saveNewRole.getId());
         createRoleResponse.setName(saveNewRole.getName());
         createRoleResponse.setIsActive(saveNewRole.getIsActive());
         createRoleResponse.setCreatedBy(getUserInfoFromToken);
         createRoleResponse.setCreatedAt(saveNewRole.getCreatedAt());
-        List<PermissionInfo> permissionInfoList = permissions.stream()
-                .map(permission -> modelMapper.map(permission, PermissionInfo.class))
+        List<PermissionResponse> permissionInfoList = permissions.stream()
+                .map(permission -> modelMapper.map(permission, PermissionResponse.class))
                 .collect(Collectors.toList());
         createRoleResponse.setPermissions(permissionInfoList);
         return ApiResponse.success(
@@ -75,8 +81,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<RoleResponse> getAllRoles(int pageNo, int pageSize, String sortBy,
-                                                 String sortDir) {
+    public ApiResponse<ListRoleResponse> getAllRoles(int pageNo, int pageSize, String sortBy,
+                                                     String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -84,10 +90,10 @@ public class RoleServiceImpl implements RoleService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Role> roles = roleRepository.findAll(pageable);
         List<Role> roleContentList = roles.getContent();
-        List<RoleDto> roleDtoList = roleContentList.stream()
+        List<RoleResponse> roleDtoList = roleContentList.stream()
                 .map(role -> {
                     try {
-                        return modelMapper.map(role, RoleDto.class);
+                        return modelMapper.map(role, RoleResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -99,7 +105,7 @@ public class RoleServiceImpl implements RoleService {
         metaData.setTotalPages(roles.getTotalPages());
         metaData.setPageSize(roles.getSize());
         metaData.setPageNo(roles.getNumber());
-        RoleResponse roleResponse = new RoleResponse();
+        ListRoleResponse roleResponse = new ListRoleResponse();
         roleResponse.setMeta(metaData);
         roleResponse.setData(roleDtoList);
         return ApiResponse.success(
@@ -110,11 +116,11 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<RoleDto> getRoleById(String id) {
+    public ApiResponse<RoleResponse> getRoleById(String id) {
         Role findRole = roleRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Role", "id", id)
         );
-        RoleDto getRole = modelMapper.map(findRole, RoleDto.class);
+        RoleResponse getRole = modelMapper.map(findRole, RoleResponse.class);
         return ApiResponse.success(
                 "Get role by id successfully",
                 HttpStatus.OK,
@@ -123,8 +129,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<UpdateRoleDto> updateRoleById(String id, UpdateRoleDto updateRoleDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+    public ApiResponse<UpdateRoleResponse> updateRoleById(String id, UpdateRoleDto updateRoleDto) {
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Role existingRoleName = roleRepository.findByName(updateRoleDto.getName());
         if (existingRoleName != null && !existingRoleName.getId().equals(id)) {
@@ -140,16 +146,16 @@ public class RoleServiceImpl implements RoleService {
         List<Permission> permissions = getListPermission(updateRoleDto.getPermissions());
         findRole.setPermissions(permissions);
         Role saveUpdateRole = roleRepository.save(findRole);
-        UpdateRoleDto updateRoleDtoResponse = new UpdateRoleDto();
+        UpdateRoleResponse updateRoleDtoResponse = new UpdateRoleResponse();
         updateRoleDtoResponse.setId(saveUpdateRole.getId());
         updateRoleDtoResponse.setName(saveUpdateRole.getName());
         updateRoleDtoResponse.setIsActive(saveUpdateRole.getIsActive());
         updateRoleDtoResponse.setUpdatedBy(getUserInfoFromToken);
         updateRoleDtoResponse.setUpdatedAt(saveUpdateRole.getUpdatedAt());
-        List<PermissionInfo> permissionInfoList = permissions.stream()
+        List<PermissionResponse> permissionInfoList = permissions.stream()
                 .map(permission -> {
                     try {
-                        return modelMapper.map(permission, PermissionInfo.class);
+                        return modelMapper.map(permission, PermissionResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -165,7 +171,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ApiResponse<DeleteRoleDto> deleteRoleById(String id) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User deletedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Role findRole = roleRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Role", "id", id)
@@ -187,8 +193,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<RoleResponse> searchRole(String name, int pageNo, int pageSize,
-                                                String sortBy, String sortDir) {
+    public ApiResponse<ListRoleResponse> searchRole(String name, int pageNo, int pageSize,
+                                                    String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -196,10 +202,10 @@ public class RoleServiceImpl implements RoleService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Role> roles = roleRepository.searchRole(name, pageable);
         List<Role> roleListContent = roles.getContent();
-        List<RoleDto> roleDtoList = roleListContent.stream()
+        List<RoleResponse> roleDtoList = roleListContent.stream()
                 .map(role -> {
                     try {
-                        return modelMapper.map(role, RoleDto.class);
+                        return modelMapper.map(role, RoleResponse.class);
                     }catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -211,7 +217,7 @@ public class RoleServiceImpl implements RoleService {
         metaData.setTotalElements(roles.getTotalElements());
         metaData.setPageSize(roles.getSize());
         metaData.setTotalPages(roles.getTotalPages());
-        RoleResponse roleResponse = new RoleResponse();
+        ListRoleResponse roleResponse = new ListRoleResponse();
         roleResponse.setData(roleDtoList);
         roleResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -219,18 +225,6 @@ public class RoleServiceImpl implements RoleService {
                 HttpStatus.OK,
                 roleResponse
         );
-    }
-
-
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        String getUserEmail = authentication.getName();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
     }
 
     private List<Permission> getListPermission(List<PermissionInfo> permissionInfos) {
@@ -245,6 +239,4 @@ public class RoleServiceImpl implements RoleService {
         }
         return permissions;
     }
-
-
 }

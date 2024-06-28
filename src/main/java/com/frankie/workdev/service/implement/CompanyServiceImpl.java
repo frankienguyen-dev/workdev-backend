@@ -3,7 +3,7 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.company.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Company;
 import com.frankie.workdev.entity.FileEntity;
 import com.frankie.workdev.entity.User;
@@ -12,8 +12,8 @@ import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
 import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.repository.UserRepository;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.CompanyService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -21,8 +21,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -37,11 +35,11 @@ public class CompanyServiceImpl implements CompanyService {
     private CompanyRepository companyRepository;
     private ModelMapper modelMapper;
     private FileRepository fileRepository;
-
+    private UserInfoUtils userInfoUtils;
 
     @Override
     public ApiResponse<CreateCompanyDto> createNewCompany(CreateCompanyDto createCompanyDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         if (createdByUser.getCompany() != null && !createdByUser.getRoles().get(0)
                 .getName().equalsIgnoreCase("ROLE_ADMIN")) {
@@ -163,7 +161,7 @@ public class CompanyServiceImpl implements CompanyService {
     public ApiResponse<UpdateCompanyDto> updateCompanyById(
             String id, UpdateCompanyDto updateCompanyDto) {
         try {
-            JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+            JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
             Company findCompany = companyRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Company", "id", id)
@@ -227,7 +225,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public ApiResponse<DeleteCompanyDto> deletedCompanyById(String id) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User deletedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Company findCompany = companyRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Company", "id", id)
@@ -286,7 +284,7 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public ApiResponse<CompanyDto> getMyCompanyInfo() {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromJwtToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Company findCompany = findUser.getCompany();
         if (findCompany == null) {
@@ -298,16 +296,5 @@ public class CompanyServiceImpl implements CompanyService {
                 HttpStatus.OK,
                 companyDto
         );
-    }
-
-
-    private JwtUserInfo getUserInfoFromJwtToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String getUserEmail = authentication.getName();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
     }
 }

@@ -1,6 +1,7 @@
-package com.frankie.workdev.dto.user;
+package com.frankie.workdev.dto.user.response;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "User Response")
 public class UserResponse {
+
+    @Schema(description = "User metadata")
     private MetaData meta;
-    private List<UserInfoDto> data;
+
+    @Schema(description = "User Data")
+    private List<UserInfoResponse> data;
 }

@@ -4,7 +4,7 @@ import com.frankie.workdev.dto.authentication.*;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.authentication.ChangePasswordDto;
 import com.frankie.workdev.dto.authentication.ChangePasswordResponse;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Role;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ApiException;

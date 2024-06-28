@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.resume;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,11 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Resume Response")
 public class ResumeResponse {
+    @Schema(description = "Resume metadata")
     private MetaData meta;
+
+    @Schema(description = "Resume data")
     private List<ResumeInfoDto> data;
 }

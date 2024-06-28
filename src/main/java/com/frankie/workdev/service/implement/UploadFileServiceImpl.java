@@ -158,13 +158,13 @@ public class UploadFileServiceImpl implements UploadFileService {
 
 
     @Override
-    @Scheduled(cron = "0 0 7 * * ?")
+    @Scheduled(cron = "0 0 7 ? * SAT")
 //    @Scheduled(fixedRate = 30000)
     public void deleteOrphanFiles() throws IOException {
         try {
             List<FileEntity> fileEntities = fileRepository.findOrphanFiles();
             for (FileEntity file : fileEntities) {
-                String filePath = "/Users/nguyenduongchanhtay/Desktop/workdev-backend/src/main/java/com/frankie/workdev/upload" + file.getFileName();
+                String filePath = "/Users/nguyenduongchanhtay/Desktop/workdev-backend/src/main/java/com/frankie/workdev/upload/" + file.getFileName();
                 Files.deleteIfExists(Paths.get(filePath));
                 fileRepository.delete(file);
             }

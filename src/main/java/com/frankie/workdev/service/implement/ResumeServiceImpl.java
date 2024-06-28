@@ -3,12 +3,12 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.resume.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.*;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.*;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.ResumeService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -16,12 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,10 +32,11 @@ public class ResumeServiceImpl implements ResumeService {
     private JobRepository jobRepository;
     private FileRepository fileRepository;
     private ModelMapper modelMapper;
+    private UserInfoUtils userInfoUtils;
 
     @Override
     public ApiResponse<CreateResumeDto> createResume(CreateResumeDto createResumeDto) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfo.getEmail());
         Company findCompany = companyRepository.findById(createResumeDto.getCompany().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Company", "id",
@@ -128,7 +126,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public ApiResponse<UpdateResumeDto> updateResumeById(String id, UpdateResumeDto updateResumeDto) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfo.getEmail());
         Resume findResume = resumeRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Resume", "id", id)
@@ -149,7 +147,7 @@ public class ResumeServiceImpl implements ResumeService {
 
     @Override
     public ApiResponse<DeleteResumeDto> deleteResumeById(String id) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User deletedByUser = userRepository.findByEmail(getUserInfo.getEmail());
         Resume findResume = resumeRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Resume", "id", id)
@@ -171,7 +169,7 @@ public class ResumeServiceImpl implements ResumeService {
     @Override
     public ApiResponse<ResumeResponse> getResumeByUser(int pageNo, int pageSize,
                                                        String sortBy, String sortDir) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -277,15 +275,5 @@ public class ResumeServiceImpl implements ResumeService {
                 HttpStatus.OK,
                 resumeResponse
         );
-    }
-
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String getUserEmail = authentication.getName();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
     }
 }

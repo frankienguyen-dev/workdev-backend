@@ -3,6 +3,8 @@ package com.frankie.workdev.config;
 import com.frankie.workdev.exception.GlobalExceptionHandler;
 import com.frankie.workdev.security.JwtAuthenticationEntryPoint;
 import com.frankie.workdev.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @AllArgsConstructor
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -65,6 +73,8 @@ public class SecurityConfig {
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/companies/**").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/jobs/search").permitAll();
                     authRequest.requestMatchers(HttpMethod.GET, "api/v1/categories/**").permitAll();
+                    authRequest.requestMatchers("/swagger-ui/**").permitAll();
+                    authRequest.requestMatchers("/v3/api-docs/**").permitAll();
                     authRequest.anyRequest().authenticated();
                 })
 

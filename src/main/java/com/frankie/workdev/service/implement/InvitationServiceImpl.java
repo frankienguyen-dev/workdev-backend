@@ -4,7 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.invitation.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Company;
 import com.frankie.workdev.entity.Invitation;
 import com.frankie.workdev.entity.User;
