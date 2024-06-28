@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.category;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,9 +12,16 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Category info")
 public class CategoryInfo {
+
+    @Schema(description = "Category id")
     @NotEmpty(message = "Category id is required")
     private String id;
+
+    @Schema(description = "Category name")
     private String name;
+
+    @Schema(description = "Category description")
     private String description;
 }

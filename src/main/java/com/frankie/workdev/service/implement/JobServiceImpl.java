@@ -2,16 +2,15 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
-import com.frankie.workdev.dto.category.CategoryInfo;
 import com.frankie.workdev.dto.job.*;
 import com.frankie.workdev.dto.skill.SkillDto;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.*;
 import com.frankie.workdev.exception.ApiException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.*;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.JobService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -21,8 +20,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,11 +39,12 @@ public class JobServiceImpl implements JobService {
     private CompanyRepository companyRepository;
     private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
+    private UserInfoUtils userInfoUtils;
 
     @Override
     public ApiResponse<CreateJobDto> createJob(CreateJobDto createJobDto) {
         try {
-            JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+            JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
             if (createdByUser.getCompany() == null && !createdByUser.getRoles().get(0).getName()
                     .equals("ROLE_ADMIN")) {
@@ -81,7 +79,6 @@ public class JobServiceImpl implements JobService {
             newJob.setEndDate(createJobDto.getEndDate());
             newJob.setIsActive(true);
             newJob.setUser(createdByUser);
-            System.out.println("check: " + newJob.getUser());
             List<Skill> skills = getSkills(createJobDto.getSkills());
             newJob.setSkills(skills);
             createdByUser.getJobs().add(newJob);
@@ -151,7 +148,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<UpdateJobDto> updateJobById(String id, UpdateJobDto updateJobDto) {
         try {
-            JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+            JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
             if (updatedByUser.getCompany() == null && !updatedByUser.getRoles().get(0)
                     .getName().equals("ROLE_ADMIN")) {
@@ -209,7 +206,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<DeleteJobDto> deleteJobById(String id) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User deletedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         if (deletedByUser.getCompany() == null) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "User is not a company");
@@ -270,7 +267,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public ApiResponse<JobDto> favoriteJob(String id) {
-        JwtUserInfo getInfoUser = getUserInfoFromToken();
+        JwtUserInfo getInfoUser = userInfoUtils.getJwtUserInfo();
         Job findJob = jobRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Job", "id", id)
         );
@@ -306,7 +303,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<JobResponse> getFavoriteJobs(int pageNo, int pageSize,
                                                     String sortBy, String sortDir) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -343,7 +340,7 @@ public class JobServiceImpl implements JobService {
     @Override
     public ApiResponse<JobResponse> getJobListByUser(int pageNo, int pageSize,
                                                      String sortBy, String sortDir) {
-        JwtUserInfo getUserInfo = getUserInfoFromToken();
+        JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -429,17 +426,5 @@ public class JobServiceImpl implements JobService {
             }
         }
         return skillList;
-    }
-
-
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        String getUserEmail = authentication.getName();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
     }
 }

@@ -1,25 +1,27 @@
 package com.frankie.workdev.service;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.subscriber.CreateSubscriberDto;
-import com.frankie.workdev.dto.subscriber.SubscriberDto;
-import com.frankie.workdev.dto.subscriber.SubscriberResponse;
-import com.frankie.workdev.dto.subscriber.UpdateSubscriberDto;
+import com.frankie.workdev.dto.subscriber.request.CreateSubscriberDto;
+import com.frankie.workdev.dto.subscriber.request.UpdateSubscriberDto;
+import com.frankie.workdev.dto.subscriber.response.CreateSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.ListSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.SubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 
 
 public interface SubscriberService {
-    ApiResponse<CreateSubscriberDto> createSubscriber(CreateSubscriberDto subscriberDto);
+    ApiResponse<CreateSubscriberResponse> createSubscriber(CreateSubscriberDto subscriberDto);
 
-    ApiResponse<SubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
-                                                     String sortBy, String sortDir);
+    ApiResponse<ListSubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
+                                                         String sortBy, String sortDir);
 
-    ApiResponse<SubscriberDto> getSubsciberById(String id);
+    ApiResponse<SubscriberResponse> getSubscriberById(String id);
 
-    ApiResponse<UpdateSubscriberDto> updateSubcriberById(String id,
-                                                         UpdateSubscriberDto updateSubscriberDto);
+    ApiResponse<UpdateSubscriberResponse> updateSubscriberById(String id,
+                                                               UpdateSubscriberDto updateSubscriberDto);
 
-    ApiResponse<String> deleteSubscriberById(String id);
+    void deleteSubscriberById(String id);
 
-    ApiResponse<SubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
-                                                            int pageSize, String sortBy, String sortDir);
+    ApiResponse<ListSubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+                                                                int pageSize, String sortBy, String sortDir);
 }

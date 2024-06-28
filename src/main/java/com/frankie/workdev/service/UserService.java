@@ -1,23 +1,27 @@
 package com.frankie.workdev.service;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
-import com.frankie.workdev.dto.user.*;
-
-import java.awt.print.Pageable;
+import com.frankie.workdev.dto.user.request.DeleteUserDto;
+import com.frankie.workdev.dto.user.request.UpdateUserDto;
+import com.frankie.workdev.dto.user.request.UserDto;
+import com.frankie.workdev.dto.user.response.CreateUserResponse;
+import com.frankie.workdev.dto.user.response.UpdateUserResponse;
+import com.frankie.workdev.dto.user.response.UserInfoResponse;
+import com.frankie.workdev.dto.user.response.UserResponse;
 
 public interface UserService {
-    ApiResponse<CreateUserDto> createNewUser(UserDto userDto);
+    ApiResponse<CreateUserResponse> createNewUser(UserDto userDto);
 
     ApiResponse<UserResponse> getAllUsers(int pageNo, int pageSize,
                                           String sortBy, String sortDir);
 
-    ApiResponse<UserInfoDto> getUserById(String id);
+    ApiResponse<UserInfoResponse> getUserById(String id);
 
-    ApiResponse<UpdateUserDto> updateUserById(String id, UpdateUserDto updateUserDto);
+    ApiResponse<UpdateUserResponse> updateUserById(String id, UpdateUserDto updateUserDto);
 
     ApiResponse<DeleteUserDto> softDeleteUserById(String id);
 
-    ApiResponse<UserInfoDto> getProfile();
+    ApiResponse<UserInfoResponse> getProfile();
 
     ApiResponse<UserResponse> searchUser(String email, int pageNo, int pageSize,
                                          String sortBy, String sortDir);

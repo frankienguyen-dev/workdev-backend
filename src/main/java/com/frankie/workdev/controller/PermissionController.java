@@ -26,7 +26,7 @@ public class PermissionController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<PermissionResponse>> getAllPermissions(
+    public ResponseEntity<ApiResponse<ListPermissionResponse>> getAllPermissions(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -36,7 +36,7 @@ public class PermissionController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<PermissionResponse> getAllPermissions = permissionService
+        ApiResponse<ListPermissionResponse> getAllPermissions = permissionService
                 .getAllPermissions(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllPermissions, HttpStatus.OK);
     }
@@ -66,7 +66,7 @@ public class PermissionController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<PermissionResponse>> searchPermission(
+    public ResponseEntity<ApiResponse<ListPermissionResponse>> searchPermission(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -77,7 +77,7 @@ public class PermissionController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<PermissionResponse> searchPermission = permissionService
+        ApiResponse<ListPermissionResponse> searchPermission = permissionService
                 .searchPermission(name, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchPermission, HttpStatus.OK);
     }

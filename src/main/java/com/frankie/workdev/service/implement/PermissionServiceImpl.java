@@ -3,15 +3,15 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.permission.*;
-import com.frankie.workdev.dto.user.JwtUserInfo;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import com.frankie.workdev.entity.Permission;
 import com.frankie.workdev.entity.User;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.PermissionRepository;
 import com.frankie.workdev.repository.UserRepository;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.PermissionService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -19,9 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,11 +32,12 @@ public class PermissionServiceImpl implements PermissionService {
     private PermissionRepository permissionRepository;
     private UserRepository userRepository;
     private ModelMapper modelMapper;
+    private UserInfoUtils userInfoUtils;
 
     @Override
     public ApiResponse<CreatePermissionDto> createNewPermission(
             CreatePermissionDto createPermissionDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Permission existingPermission = permissionRepository.findByName(
                 createPermissionDto.getName()
@@ -72,8 +70,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<PermissionResponse> getAllPermissions(int pageNo, int pageSize,
-                                                             String sortBy, String sortDir) {
+    public ApiResponse<ListPermissionResponse> getAllPermissions(int pageNo, int pageSize,
+                                                                 String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -96,7 +94,7 @@ public class PermissionServiceImpl implements PermissionService {
         metaData.setTotalElements(permissions.getTotalElements());
         metaData.setTotalPages(permissions.getTotalPages());
         metaData.setLastPage(permissions.isLast());
-        PermissionResponse permissionResponse = new PermissionResponse();
+        ListPermissionResponse permissionResponse = new ListPermissionResponse();
         permissionResponse.setMeta(metaData);
         permissionResponse.setData(permissionResponses);
         return ApiResponse.success(
@@ -122,7 +120,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public ApiResponse<UpdatePermissionDto> updatePermissionById(
             String id, UpdatePermissionDto updatePermissionDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Permission existingPermissionByName = permissionRepository.findByName(
                 updatePermissionDto.getName()
@@ -161,7 +159,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public ApiResponse<DeletePermissionDto> softDeletePermissionById(String id) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User deletedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Permission findPermission = permissionRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Permission", "id", id)
@@ -183,8 +181,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<PermissionResponse> searchPermission(String name, int pageNo, int pageSize,
-                                                            String sortBy, String sortDir) {
+    public ApiResponse<ListPermissionResponse> searchPermission(String name, int pageNo, int pageSize,
+                                                                String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -207,7 +205,7 @@ public class PermissionServiceImpl implements PermissionService {
         metaData.setTotalElements(permissions.getTotalElements());
         metaData.setTotalPages(permissions.getTotalPages());
         metaData.setLastPage(permissions.isLast());
-        PermissionResponse permissionResponse = new PermissionResponse();
+        ListPermissionResponse permissionResponse = new ListPermissionResponse();
         permissionResponse.setMeta(metaData);
         permissionResponse.setData(permissionInfoList);
         return ApiResponse.success(
@@ -216,16 +214,5 @@ public class PermissionServiceImpl implements PermissionService {
                 permissionResponse
         );
 
-    }
-
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        ;
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        String getUserEmail = authentication.getName();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setEmail(getUserEmail);
-        getUserInfo.setId(getUserId);
-        return getUserInfo;
     }
 }

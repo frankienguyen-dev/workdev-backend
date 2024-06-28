@@ -1,5 +1,6 @@
 package com.frankie.workdev.dto.invitation;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,9 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "Invitation Info")
 public class InvitationInfo {
+
+    @Schema(description = "Invitation List")
     private List<InvitationResponse> invitations;
 }

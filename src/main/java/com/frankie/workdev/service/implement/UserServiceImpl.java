@@ -2,20 +2,23 @@ package com.frankie.workdev.service.implement;
 
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
-import com.frankie.workdev.dto.company.CompanyInfo;
-import com.frankie.workdev.dto.role.RoleDto;
-import com.frankie.workdev.dto.upload.FileUploadDto;
-import com.frankie.workdev.dto.user.*;
+import com.frankie.workdev.dto.company.CompanyInfoResponse;
+import com.frankie.workdev.dto.role.request.RoleDto;
+import com.frankie.workdev.dto.role.response.RoleResponse;
+import com.frankie.workdev.dto.upload.UploadFileResponse;
+import com.frankie.workdev.dto.user.request.DeleteUserDto;
+import com.frankie.workdev.dto.user.request.UpdateUserDto;
+import com.frankie.workdev.dto.user.request.UserDto;
+import com.frankie.workdev.dto.user.response.*;
 import com.frankie.workdev.entity.*;
-import com.frankie.workdev.exception.EmailOrPasswordException;
 import com.frankie.workdev.exception.ResourceExistingException;
 import com.frankie.workdev.exception.ResourceNotFoundException;
 import com.frankie.workdev.repository.CompanyRepository;
 import com.frankie.workdev.repository.FileRepository;
 import com.frankie.workdev.repository.RoleRepository;
 import com.frankie.workdev.repository.UserRepository;
-import com.frankie.workdev.security.CustomUserDetails;
 import com.frankie.workdev.service.UserService;
+import com.frankie.workdev.util.UserInfoUtils;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
@@ -24,8 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,10 +45,11 @@ public class UserServiceImpl implements UserService {
     private CompanyRepository companyRepository;
     private RoleRepository roleRepository;
     private FileRepository fileRepository;
+    private UserInfoUtils userInfoUtils;
 
     @Override
-    public ApiResponse<CreateUserDto> createNewUser(UserDto userDto) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+    public ApiResponse<CreateUserResponse> createNewUser(UserDto userDto) {
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         User existingUser = userRepository.findByEmail(userDto.getEmail());
         if (existingUser != null) {
@@ -97,10 +99,10 @@ public class UserServiceImpl implements UserService {
 //        newUser.setCompany(company);
         newUser.setRoles(roles);
         User saveNewUser = userRepository.save(newUser);
-        CreateUserDto createUserResponse = modelMapper
-                .map(saveNewUser, CreateUserDto.class);
+        CreateUserResponse createUserResponse = modelMapper
+                .map(saveNewUser, CreateUserResponse.class);
         if (saveNewUser.getCompany() != null) {
-            CompanyInfo companyInfo = new CompanyInfo();
+            CompanyInfoResponse companyInfo = new CompanyInfoResponse();
             companyInfo.setId(saveNewUser.getCompany().getId());
             companyInfo.setName(saveNewUser.getCompany().getName());
             createUserResponse.setCompany(companyInfo);
@@ -108,10 +110,10 @@ public class UserServiceImpl implements UserService {
             createUserResponse.setCompany(null);
         }
 
-        List<RoleDto> roleDtoList = saveNewUser.getRoles().stream()
+        List<RoleResponse> roleDtoList = saveNewUser.getRoles().stream()
                 .map(role -> {
                     try {
-                        return modelMapper.map(role, RoleDto.class);
+                        return modelMapper.map(role, RoleResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -136,8 +138,8 @@ public class UserServiceImpl implements UserService {
             Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
             Page<User> users = userRepository.findAll(pageable);
             List<User> userContentList = users.getContent();
-            List<UserInfoDto> userList = userContentList.stream()
-                    .map(user -> mappingUser(user)).collect(Collectors.toList());
+            List<UserInfoResponse> userList = userContentList.stream()
+                    .map(this::mappingUser).collect(Collectors.toList());
             MetaData metaData = new MetaData();
             metaData.setLastPage(users.isLast());
             metaData.setTotalPages(users.getTotalPages());
@@ -159,9 +161,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
     @Override
-    public ApiResponse<UserInfoDto> getUserById(String id) {
+    public ApiResponse<UserInfoResponse> getUserById(String id) {
         try {
             User findUser = userRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("User", "id", id)
@@ -180,9 +181,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UpdateUserDto> updateUserById(String id, UpdateUserDto updateUserDto) {
+    public ApiResponse<UpdateUserResponse> updateUserById(String id, UpdateUserDto updateUserDto) {
         try {
-            JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+            JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
             User findUser = userRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("User", "id", id)
@@ -232,7 +233,7 @@ public class UserServiceImpl implements UserService {
                 findUser.setAvatar(null);
             }
             User saveUpdated = userRepository.save(findUser);
-            UpdateUserDto updateUser = new UpdateUserDto();
+            UpdateUserResponse updateUser = new UpdateUserResponse();
             updateUser.setId(saveUpdated.getId());
             updateUser.setFullName(saveUpdated.getFullName());
             updateUser.setEmail(saveUpdated.getEmail());
@@ -246,22 +247,22 @@ public class UserServiceImpl implements UserService {
             updateUser.setEducation(saveUpdated.getEducation());
             updateUser.setUpdatedBy(getUserInfoFromToken);
             if (saveUpdated.getAvatar() != null) {
-                updateUser.setAvatar(modelMapper.map(saveUpdated.getAvatar(), FileUploadDto.class));
+                updateUser.setAvatar(modelMapper.map(saveUpdated.getAvatar(), UploadFileResponse.class));
             } else {
                 updateUser.setAvatar(null);
             }
             if (saveUpdated.getCompany() != null) {
-                CompanyInfo companyInfo = new CompanyInfo();
+                CompanyInfoResponse companyInfo = new CompanyInfoResponse();
                 companyInfo.setId(saveUpdated.getCompany().getId());
                 companyInfo.setName(saveUpdated.getCompany().getName());
                 updateUser.setCompany(companyInfo);
             } else {
                 updateUser.setCompany(null);
             }
-            List<RoleDto> roleDtoList = saveUpdated.getRoles().stream()
+            List<RoleResponse> roleDtoList = saveUpdated.getRoles().stream()
                     .map(role -> {
                         try {
-                            return modelMapper.map(role, RoleDto.class);
+                            return modelMapper.map(role, RoleResponse.class);
                         } catch (Exception e) {
                             System.out.println("check e");
                             e.printStackTrace();
@@ -283,7 +284,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ApiResponse<DeleteUserDto> softDeleteUserById(String id) {
-        JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+        JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         User findUser = userRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("User", "id", id)
@@ -301,11 +302,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserInfoDto> getProfile() {
+    public ApiResponse<UserInfoResponse> getProfile() {
         try {
-            JwtUserInfo getUserInfoFromToken = getUserInfoFromToken();
+            JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
-            UserInfoDto userInfoDto = mappingUser(findUser);
+            UserInfoResponse userInfoDto = mappingUser(findUser);
 //            userInfoDto.setAvatar(modelMapper.map(findUser.getAvatar(), FileUploadDto.class));
             return ApiResponse.success(
                     "User fetched successfully",
@@ -328,7 +329,7 @@ public class UserServiceImpl implements UserService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<User> users = userRepository.searchUser(email, pageable);
         List<User> listSearchUserContent = users.getContent();
-        List<UserInfoDto> userInfoDtoListSearch = listSearchUserContent.stream().map(
+        List<UserInfoResponse> userInfoDtoListSearch = listSearchUserContent.stream().map(
                 user -> {
                     try {
                         return mappingUser(user);
@@ -354,21 +355,9 @@ public class UserServiceImpl implements UserService {
         );
     }
 
+    private UserInfoResponse mappingUser(User user) {
 
-    private JwtUserInfo getUserInfoFromToken() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String getUserId = ((CustomUserDetails) authentication.getPrincipal()).getId();
-        String getUserEmail = authentication.getName();
-        JwtUserInfo getUserInfo = new JwtUserInfo();
-        getUserInfo.setId(getUserId);
-        getUserInfo.setEmail(getUserEmail);
-        return getUserInfo;
-    }
-
-
-    private UserInfoDto mappingUser(User user) {
-
-        UserInfoDto userInfoDto = new UserInfoDto();
+        UserInfoResponse userInfoDto = new UserInfoResponse();
         userInfoDto.setId(user.getId());
         userInfoDto.setFullName(user.getFullName());
         userInfoDto.setEmail(user.getEmail());
@@ -384,14 +373,14 @@ public class UserServiceImpl implements UserService {
         userInfoDto.setUpdatedAt(user.getUpdatedAt());
         userInfoDto.setDeletedAt(user.getDeletedAt());
 
-        TypeMap<User, UserInfoDto> userTypeMap = modelMapper
-                .typeMap(User.class, UserInfoDto.class)
+        TypeMap<User, UserInfoResponse> userTypeMap = modelMapper
+                .typeMap(User.class, UserInfoResponse.class)
                 .addMappings(mapper -> {
-                    mapper.map(User::getCreatedBy, UserInfoDto::setCreatedBy);
-                    mapper.map(User::getUpdatedBy, UserInfoDto::setUpdatedBy);
-                    mapper.map(User::getDeletedBy, UserInfoDto::setDeletedBy);
-                    mapper.map(User::getCompany, UserInfoDto::setCompany);
-                    mapper.map(User::getRoles, UserInfoDto::setRoles);
+                    mapper.map(User::getCreatedBy, UserInfoResponse::setCreatedBy);
+                    mapper.map(User::getUpdatedBy, UserInfoResponse::setUpdatedBy);
+                    mapper.map(User::getDeletedBy, UserInfoResponse::setDeletedBy);
+                    mapper.map(User::getCompany, UserInfoResponse::setCompany);
+                    mapper.map(User::getRoles, UserInfoResponse::setRoles);
 //                    mapper.map(User::getResumes, UserInfoDto::setResumes);
                 });
 
@@ -407,7 +396,7 @@ public class UserServiceImpl implements UserService {
         if (user.getRoles() != null) {
             userTypeMap.addMappings(mapper -> mapper.map(
                     src -> user.getRoles().stream().map(role -> roleTypeMap.map(role))
-                            .collect(Collectors.toList()), UserInfoDto::setRoles));
+                            .collect(Collectors.toList()), UserInfoResponse::setRoles));
         }
         return userTypeMap.map(user);
 

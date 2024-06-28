@@ -1,6 +1,7 @@
-package com.frankie.workdev.dto.subscriber;
+package com.frankie.workdev.dto.subscriber.response;
 
 import com.frankie.workdev.dto.skill.SkillDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -10,20 +11,25 @@ import lombok.Setter;
 
 import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateSubscriberDto {
+@Schema(description = "Update subscriber response")
+public class UpdateSubscriberResponse {
+    @Schema(description = "Subscriber Id")
     private String id;
 
-    @Email(message = "Email should be valid")
-    @NotEmpty(message = "Email should not be empty")
-    private String email;
-
+    @Schema(description = "Subscriber name")
     @NotEmpty(message = "Name should not be empty")
     private String name;
 
+    @Schema(description = "Subscriber email")
+    @NotEmpty(message = "Email should not be empty")
+    @Email(message = "Email should be valid")
+    private String email;
+
+    @Schema(description = "Subscriber skills")
     @NotEmpty(message = "Skills should not be empty")
     private List<SkillDto> skills;
 }

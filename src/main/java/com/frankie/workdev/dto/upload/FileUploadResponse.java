@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.upload;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Schema(description = "File Upload Response")
 public class FileUploadResponse {
+
+    @Schema(description = "File upload metadata")
     private MetaData meta;
+
+    @Schema(description = "File Upload Data")
     private List<FileUploadDto> data;
 }
