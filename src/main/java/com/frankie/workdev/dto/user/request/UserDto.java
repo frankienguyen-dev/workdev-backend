@@ -26,10 +26,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "User DTO")
-public class UserDto extends BaseUser<FileUploadDto, RoleDto> {
-    @Schema(description = "User company")
-    private CompanyInfo company;
-
+public class UserDto extends BaseUser<FileUploadDto, RoleDto, CompanyInfo> {
     @Schema(description = "User password")
     private String password;
 
@@ -40,67 +37,17 @@ public class UserDto extends BaseUser<FileUploadDto, RoleDto> {
     }
 
     @Override
-    public String getFullName() {
-        return super.getFullName();
-    }
-
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
-    public String getAddress() {
-        return super.getAddress();
-    }
-
-    @Override
-    public String getPhoneNumber() {
-        return super.getPhoneNumber();
-    }
-
-    @Override
-    public String getGender() {
-        return super.getGender();
-    }
-
-    @Override
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    @Override
-    public String getEducation() {
-        return super.getEducation();
-    }
-
-    @Override
-    public String getExperience() {
-        return super.getExperience();
-    }
-
-    @Override
     public FileUploadDto getAvatar() {
         return super.getAvatar();
     }
 
     @Override
-    public String getBiography() {
-        return super.getBiography();
-    }
-
-    @Override
-    public String getCoverLetter() {
-        return super.getCoverLetter();
-    }
-
-    @Override
-    public int getAge() {
-        return super.getAge();
-    }
-
-    @Override
     public List<RoleDto> getRoles() {
         return super.getRoles();
+    }
+
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
     }
 }

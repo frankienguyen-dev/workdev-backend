@@ -20,13 +20,25 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Update User Response")
-public class UpdateUserResponse extends BaseUser<UploadFileResponse, RoleResponse> {
-    @Schema(description = "User company")
-    private CompanyInfoResponse company;
-
+public class UpdateUserResponse extends BaseUser<UploadFileResponse, RoleResponse, CompanyInfoResponse> {
     @Schema(description = "User updated by")
     private JwtUserInfo updatedBy;
 
     @Schema(description = "User updated at")
     private LocalDateTime updatedAt;
+
+    @Override
+    public UploadFileResponse getAvatar() {
+        return super.getAvatar();
+    }
+
+    @Override
+    public List<RoleResponse> getRoles() {
+        return super.getRoles();
+    }
+
+    @Override
+    public CompanyInfoResponse getCompany() {
+        return super.getCompany();
+    }
 }

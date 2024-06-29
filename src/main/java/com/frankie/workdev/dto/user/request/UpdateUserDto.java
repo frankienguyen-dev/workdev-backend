@@ -22,57 +22,12 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Update User Dto Request")
-public class UpdateUserDto extends BaseUser<FileUploadDto, RoleDto> {
-    @Schema(description = "User company")
-    private CompanyInfo company;
-
+public class UpdateUserDto extends BaseUser<FileUploadDto, RoleDto, CompanyInfo> {
     @Schema(hidden = true)
     @Override
     public String getId() {
         return super.getId();
-    }
-
-    @Override
-    public String getFullName() {
-        return super.getFullName();
-    }
-
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
-    public String getAddress() {
-        return super.getAddress();
-    }
-
-    @Override
-    public String getPhoneNumber() {
-        return super.getPhoneNumber();
-    }
-
-    @Override
-    public String getGender() {
-        return super.getGender();
-    }
-
-    @Override
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    @Override
-    public String getEducation() {
-        return super.getEducation();
-    }
-
-    @Override
-    public String getExperience() {
-        return super.getExperience();
     }
 
     @Override
@@ -81,22 +36,12 @@ public class UpdateUserDto extends BaseUser<FileUploadDto, RoleDto> {
     }
 
     @Override
-    public String getBiography() {
-        return super.getBiography();
-    }
-
-    @Override
-    public String getCoverLetter() {
-        return super.getCoverLetter();
-    }
-
-    @Override
-    public int getAge() {
-        return super.getAge();
-    }
-
-    @Override
     public List<RoleDto> getRoles() {
         return super.getRoles();
+    }
+
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
     }
 }
