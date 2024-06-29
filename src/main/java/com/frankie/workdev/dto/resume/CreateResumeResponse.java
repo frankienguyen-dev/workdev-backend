@@ -12,14 +12,12 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Resume Info DTO")
-public class ResumeResponse extends BaseResume<UploadFileResponse, CompanyInfoResponse> {
-
+@Schema(description = "Create Resume Response")
+public class CreateResumeResponse extends BaseResume<UploadFileResponse, CompanyInfoResponse>{
     @Schema(description = "Resume job")
     private JobInfo job;
 
@@ -28,21 +26,6 @@ public class ResumeResponse extends BaseResume<UploadFileResponse, CompanyInfoRe
 
     @Schema(description = "Resume created at")
     private LocalDateTime createdAt;
-
-    @Schema(description = "Resume updated by")
-    private JwtUserInfo updatedBy;
-
-    @Schema(description = "Resume updated at")
-    private LocalDateTime updatedAt;
-
-    @Schema(description = "Resume deleted by")
-    private JwtUserInfo deletedBy;
-
-    @Schema(description = "Resume deleted at")
-    private LocalDateTime deletedAt;
-
-    @Schema(description = "Resume is deleted")
-    private Boolean isDeleted;
 
     @Override
     public CompanyInfoResponse getCompany() {

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @Schema(description = "File Upload DTO")
 public class FileUploadDto extends BaseFileUpload {
+    @NotEmpty(message = "File name should not be empty")
     @Override
     public String getId() {
         return super.getId();

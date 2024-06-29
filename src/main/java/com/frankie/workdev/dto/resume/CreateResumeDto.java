@@ -1,7 +1,10 @@
 package com.frankie.workdev.dto.resume;
 
 import com.frankie.workdev.dto.company.CompanyInfo;
+import com.frankie.workdev.dto.company.CompanyInfoResponse;
+import com.frankie.workdev.dto.job.JobId;
 import com.frankie.workdev.dto.job.JobInfo;
+import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,35 +22,42 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Create Resume DTO request")
-public class CreateResumeDto {
-    @Schema(description = "Resume Id")
-    private String id;
+public class CreateResumeDto extends BaseResume<FileUploadDto, CompanyInfo>{
 
-    @Schema(description = "Resume File")
-    @NotNull(message = "Resume should not be empty")
-    private FileUploadDto resume;
-
-    @Schema(description = "Resume Url")
-    private String url;
-
-    @Schema(description = "Company Info")
-    @NotNull(message = "Company should not be empty")
-    private CompanyInfo company;
-
-    @Schema(description = "Job Info")
-    @Valid
     @NotNull(message = "Job should not be empty")
-    private JobInfo job;
+    @Valid
+    @Schema(description = "Resume job")
+    private JobId job;
 
-    @Schema(description = "User Info")
-    private JwtUserInfo user;
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Resume status")
-    private String status = "PENDING";
+    @Schema(hidden = true)
+    @Override
+    public JwtUserInfo getUser() {
+        return super.getUser();
+    }
 
-    @Schema(description = "Resume created at")
-    private LocalDateTime createdAt;
+    @NotNull(message = "Company should not be empty")
+    @Valid
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
+    }
 
-    @Schema(description = "Resume created by")
-    private JwtUserInfo createdBy;
+    @Schema(hidden = true)
+    @Override
+    public String getStatus() {
+        return super.getStatus();
+    }
+
+    @NotNull(message = "Resume should not be empty")
+    @Valid
+    @Override
+    public FileUploadDto getResume() {
+        return super.getResume();
+    }
 }

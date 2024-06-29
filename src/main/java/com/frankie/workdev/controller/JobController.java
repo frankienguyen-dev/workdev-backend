@@ -25,7 +25,7 @@ public class JobController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<JobResponse>> getAllJobs(
+    public ResponseEntity<ApiResponse<JobListResponse>> getAllJobs(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -35,7 +35,7 @@ public class JobController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<JobResponse> getAllJobs = jobService.getAllJobs(
+        ApiResponse<JobListResponse> getAllJobs = jobService.getAllJobs(
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllJobs, HttpStatus.OK);
     }
@@ -61,7 +61,7 @@ public class JobController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<JobResponse>> searchJob(
+    public ResponseEntity<ApiResponse<JobListResponse>> searchJob(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -75,7 +75,7 @@ public class JobController {
             @RequestParam(value = "salary", required = false) Long salary
 //            @RequestParam(value = "companyName", required = false) String companyName
     ) {
-        ApiResponse<JobResponse> searchJob = jobService.searchJob(name, location, salary,
+        ApiResponse<JobListResponse> searchJob = jobService.searchJob(name, location, salary,
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchJob, HttpStatus.OK);
     }
@@ -87,7 +87,7 @@ public class JobController {
     }
 
     @GetMapping("/my-favorite-job")
-    public ResponseEntity<ApiResponse<JobResponse>> getFavoriteJobs(
+    public ResponseEntity<ApiResponse<JobListResponse>> getFavoriteJobs(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -97,13 +97,13 @@ public class JobController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<JobResponse> getFavoriteJobs = jobService.getFavoriteJobs(
+        ApiResponse<JobListResponse> getFavoriteJobs = jobService.getFavoriteJobs(
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getFavoriteJobs, HttpStatus.OK);
     }
 
     @GetMapping("/my-list-job")
-    public ResponseEntity<ApiResponse<JobResponse>> getJobListByUser(
+    public ResponseEntity<ApiResponse<JobListResponse>> getJobListByUser(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -113,13 +113,13 @@ public class JobController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<JobResponse> myJobList = jobService.getJobListByUser(
+        ApiResponse<JobListResponse> myJobList = jobService.getJobListByUser(
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(myJobList, HttpStatus.OK);
     }
 
     @GetMapping("/companyjob/{companyId}")
-    public ResponseEntity<ApiResponse<JobResponse>> getJobListByCompanyId(
+    public ResponseEntity<ApiResponse<JobListResponse>> getJobListByCompanyId(
             @PathVariable(value = "companyId", required = false) String companyId,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -130,7 +130,7 @@ public class JobController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<JobResponse> jobListByCompanyId = jobService.getAllJobByCompanyId(
+        ApiResponse<JobListResponse> jobListByCompanyId = jobService.getAllJobByCompanyId(
                 companyId, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(jobListByCompanyId, HttpStatus.OK);
     }

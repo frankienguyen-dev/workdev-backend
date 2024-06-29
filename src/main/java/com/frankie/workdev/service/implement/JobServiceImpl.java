@@ -97,8 +97,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> getAllJobs(int pageNo, int pageSize,
-                                               String sortBy, String sortDir) {
+    public ApiResponse<JobListResponse> getAllJobs(int pageNo, int pageSize,
+                                                   String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -121,7 +121,7 @@ public class JobServiceImpl implements JobService {
         metaData.setTotalElements(jobs.getTotalElements());
         metaData.setTotalPages(jobs.getTotalPages());
         metaData.setLastPage(jobs.isLast());
-        JobResponse jobResponse = new JobResponse();
+        JobListResponse jobResponse = new JobListResponse();
         jobResponse.setMeta(metaData);
         jobResponse.setData(jobDtoList);
         return ApiResponse.success(
@@ -228,9 +228,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> searchJob(String name, String location, Long salary,
-                                              int pageNo, int pageSize,
-                                              String sortBy, String sortDir) {
+    public ApiResponse<JobListResponse> searchJob(String name, String location, Long salary,
+                                                  int pageNo, int pageSize,
+                                                  String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -254,7 +254,7 @@ public class JobServiceImpl implements JobService {
         metaData.setTotalElements(jobs.getTotalElements());
         metaData.setTotalPages(jobs.getTotalPages());
         metaData.setLastPage(jobs.isLast());
-        JobResponse jobResponse = new JobResponse();
+        JobListResponse jobResponse = new JobListResponse();
         jobResponse.setData(jobList);
         jobResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -301,8 +301,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> getFavoriteJobs(int pageNo, int pageSize,
-                                                    String sortBy, String sortDir) {
+    public ApiResponse<JobListResponse> getFavoriteJobs(int pageNo, int pageSize,
+                                                        String sortBy, String sortDir) {
         JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
@@ -327,7 +327,7 @@ public class JobServiceImpl implements JobService {
         metaData.setTotalElements(jobs.getTotalElements());
         metaData.setTotalPages(jobs.getTotalPages());
         metaData.setLastPage(jobs.isLast());
-        JobResponse jobResponse = new JobResponse();
+        JobListResponse jobResponse = new JobListResponse();
         jobResponse.setData(jobList);
         jobResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -338,8 +338,8 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> getJobListByUser(int pageNo, int pageSize,
-                                                     String sortBy, String sortDir) {
+    public ApiResponse<JobListResponse> getJobListByUser(int pageNo, int pageSize,
+                                                         String sortBy, String sortDir) {
         JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
@@ -364,7 +364,7 @@ public class JobServiceImpl implements JobService {
         metaData.setTotalElements(jobs.getTotalElements());
         metaData.setTotalPages(jobs.getTotalPages());
         metaData.setLastPage(jobs.isLast());
-        JobResponse jobResponse = new JobResponse();
+        JobListResponse jobResponse = new JobListResponse();
         jobResponse.setData(jobList);
         jobResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -375,9 +375,9 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobResponse> getAllJobByCompanyId(String companyId, int pageNo,
-                                                         int pageSize, String sortBy,
-                                                         String sortDir) {
+    public ApiResponse<JobListResponse> getAllJobByCompanyId(String companyId, int pageNo,
+                                                             int pageSize, String sortBy,
+                                                             String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -400,7 +400,7 @@ public class JobServiceImpl implements JobService {
         metaData.setTotalElements(jobs.getTotalElements());
         metaData.setTotalPages(jobs.getTotalPages());
         metaData.setLastPage(jobs.isLast());
-        JobResponse jobResponse = new JobResponse();
+        JobListResponse jobResponse = new JobListResponse();
         jobResponse.setData(jobList);
         jobResponse.setMeta(metaData);
         return ApiResponse.success(

@@ -3,7 +3,7 @@ package com.frankie.workdev.service.implement;
 import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import com.frankie.workdev.dto.upload.FileUploadDto;
-import com.frankie.workdev.dto.upload.FileUploadResponse;
+import com.frankie.workdev.dto.upload.OrphanFileListResponse;
 import com.frankie.workdev.dto.upload.UploadFileResponse;
 import com.frankie.workdev.entity.FileEntity;
 import com.frankie.workdev.exception.ResourceNotFoundException;
@@ -122,7 +122,7 @@ public class UploadFileServiceImpl implements UploadFileService {
     }
 
     @Override
-    public ApiResponse<FileUploadResponse> getOrphanFiles(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public ApiResponse<OrphanFileListResponse> getOrphanFiles(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -130,10 +130,10 @@ public class UploadFileServiceImpl implements UploadFileService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<FileEntity> files = fileRepository.getOrphanFiles(pageable);
         List<FileEntity> fileEntities = files.getContent();
-        List<FileUploadDto> fileUploadDtoList = fileEntities.stream().map(
+        List<UploadFileResponse> fileUploadDtoList = fileEntities.stream().map(
                 file -> {
                     try {
-                        return modelMapper.map(file, FileUploadDto.class);
+                        return modelMapper.map(file, UploadFileResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -146,7 +146,7 @@ public class UploadFileServiceImpl implements UploadFileService {
         metaData.setTotalElements(files.getTotalElements());
         metaData.setPageSize(files.getSize());
         metaData.setTotalPages(files.getTotalPages());
-        FileUploadResponse fileUploadResponse = new FileUploadResponse();
+        OrphanFileListResponse fileUploadResponse = new OrphanFileListResponse();
         fileUploadResponse.setMeta(metaData);
         fileUploadResponse.setData(fileUploadDtoList);
         return ApiResponse.success(

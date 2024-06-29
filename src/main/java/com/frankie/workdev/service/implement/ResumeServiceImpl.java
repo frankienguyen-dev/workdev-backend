@@ -35,12 +35,14 @@ public class ResumeServiceImpl implements ResumeService {
     private UserInfoUtils userInfoUtils;
 
     @Override
-    public ApiResponse<CreateResumeDto> createResume(CreateResumeDto createResumeDto) {
+    public ApiResponse<CreateResumeResponse> createResume(CreateResumeDto createResumeDto) {
         JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfo.getEmail());
-        Company findCompany = companyRepository.findById(createResumeDto.getCompany().getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Company", "id",
-                        createResumeDto.getCompany().getId()));
+        Company findCompany = companyRepository.findByName(createResumeDto.getCompany().getName());
+        if(findCompany == null) {
+            throw new ResourceNotFoundException("Company", "name",
+                    createResumeDto.getCompany().getName());
+        }
         Job findJob = jobRepository.findById(createResumeDto.getJob().getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Job", "id",
                         createResumeDto.getJob().getId()));
@@ -57,7 +59,8 @@ public class ResumeServiceImpl implements ResumeService {
         createResume.setResume(resume);
         createResume.setUser(createdByUser);
         Resume saveResume = resumeRepository.save(createResume);
-        CreateResumeDto createResumeResponse = modelMapper.map(saveResume, CreateResumeDto.class);
+        CreateResumeResponse createResumeResponse = modelMapper
+                .map(saveResume, CreateResumeResponse.class);
         createResumeResponse.setCreatedBy(getUserInfo);
         createResumeResponse.setUser(getUserInfo);
         createResumeResponse.setCreatedAt(saveResume.getCreatedAt());
@@ -69,8 +72,8 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<ResumeResponse> getAllResumes(int pageNo, int pageSize,
-                                                     String sortBy, String sortDir) {
+    public ApiResponse<ResumeListResponse> getAllResumes(int pageNo, int pageSize,
+                                                         String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -78,7 +81,7 @@ public class ResumeServiceImpl implements ResumeService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Resume> resumes = resumeRepository.findAll(pageable);
         List<Resume> resumeContentList = resumes.getContent();
-        List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream()
+        List<ResumeResponse> resumeInfoDtoList = resumeContentList.stream()
                 .map(resume -> {
                     try {
 //                        User user = resume.getUser();
@@ -89,7 +92,7 @@ public class ResumeServiceImpl implements ResumeService {
 //                        resumeInfoDto.setUser(jwtUserInfo);
 //                        return resumeInfoDto;
 
-                        return modelMapper.map(resume, ResumeInfoDto.class);
+                        return modelMapper.map(resume, ResumeResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -101,7 +104,7 @@ public class ResumeServiceImpl implements ResumeService {
         metaData.setPageSize(resumes.getSize());
         metaData.setPageNo(resumes.getNumber());
         metaData.setLastPage(resumes.isLast());
-        ResumeResponse resumeResponse = new ResumeResponse();
+        ResumeListResponse resumeResponse = new ResumeListResponse();
         resumeResponse.setData(resumeInfoDtoList);
         resumeResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -112,11 +115,11 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<ResumeInfoDto> getResumeById(String id) {
+    public ApiResponse<ResumeResponse> getResumeById(String id) {
         Resume findResume = resumeRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Resume", "id", id)
         );
-        ResumeInfoDto resumeInfoDto = modelMapper.map(findResume, ResumeInfoDto.class);
+        ResumeResponse resumeInfoDto = modelMapper.map(findResume, ResumeResponse.class);
         return ApiResponse.success(
                 "Fetch resume successfully",
                 HttpStatus.OK,
@@ -125,7 +128,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<UpdateResumeDto> updateResumeById(String id, UpdateResumeDto updateResumeDto) {
+    public ApiResponse<UpdateResumeResponse> updateResumeById(String id, UpdateResumeDto updateResumeDto) {
         JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfo.getEmail());
         Resume findResume = resumeRepository.findById(id).orElseThrow(
@@ -135,7 +138,8 @@ public class ResumeServiceImpl implements ResumeService {
         findResume.setUpdatedBy(updatedByUser);
         findResume.setUpdatedAt(LocalDateTime.now());
         Resume saveUpdate = resumeRepository.save(findResume);
-        UpdateResumeDto updateResumeResponse = modelMapper.map(saveUpdate, UpdateResumeDto.class);
+        UpdateResumeResponse updateResumeResponse = modelMapper
+                .map(saveUpdate, UpdateResumeResponse.class);
         updateResumeResponse.setUpdatedBy(getUserInfo);
         updateResumeResponse.setUpdatedAt(saveUpdate.getUpdatedAt());
         return ApiResponse.success(
@@ -167,8 +171,8 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<ResumeResponse> getResumeByUser(int pageNo, int pageSize,
-                                                       String sortBy, String sortDir) {
+    public ApiResponse<ResumeListResponse> getResumeByUser(int pageNo, int pageSize,
+                                                           String sortBy, String sortDir) {
         JwtUserInfo getUserInfo = userInfoUtils.getJwtUserInfo();
         User user = userRepository.findByEmail(getUserInfo.getEmail());
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
@@ -178,10 +182,10 @@ public class ResumeServiceImpl implements ResumeService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Resume> resumes = resumeRepository.findResumeByUserId(user.getId(), pageable);
         List<Resume> resumeContentList = resumes.getContent();
-        List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream()
+        List<ResumeResponse> resumeInfoDtoList = resumeContentList.stream()
                 .map(resume -> {
                     try {
-                        return modelMapper.map(resume, ResumeInfoDto.class);
+                        return modelMapper.map(resume, ResumeResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -194,7 +198,7 @@ public class ResumeServiceImpl implements ResumeService {
         metaData.setPageSize(resumes.getSize());
         metaData.setPageNo(resumes.getNumber());
         metaData.setLastPage(resumes.isLast());
-        ResumeResponse resumeResponse = new ResumeResponse();
+        ResumeListResponse resumeResponse = new ResumeListResponse();
         resumeResponse.setData(resumeInfoDtoList);
         resumeResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -205,7 +209,7 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<ResumeResponse> searchResumeByEmail
+    public ApiResponse<ResumeListResponse> searchResumeByEmail
             (String email, int pageNo, int pageSize,
              String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
@@ -215,10 +219,10 @@ public class ResumeServiceImpl implements ResumeService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Resume> resumes = resumeRepository.searchResumeByEmail(email, pageable);
         List<Resume> resumeContentList = resumes.getContent();
-        List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream().map(
+        List<ResumeResponse> resumeInfoDtoList = resumeContentList.stream().map(
                 resume -> {
                     try {
-                        return modelMapper.map(resume, ResumeInfoDto.class);
+                        return modelMapper.map(resume, ResumeResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -231,7 +235,7 @@ public class ResumeServiceImpl implements ResumeService {
         metaData.setPageSize(resumes.getSize());
         metaData.setPageNo(resumes.getNumber());
         metaData.setLastPage(resumes.isLast());
-        ResumeResponse resumeResponse = new ResumeResponse();
+        ResumeListResponse resumeResponse = new ResumeListResponse();
         resumeResponse.setData(resumeInfoDtoList);
         resumeResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -242,8 +246,8 @@ public class ResumeServiceImpl implements ResumeService {
     }
 
     @Override
-    public ApiResponse<ResumeResponse> getAllResumesByJobId(String jobId, int pageNo, int pageSize,
-                                                            String sortBy, String sortDir) {
+    public ApiResponse<ResumeListResponse> getAllResumesByJobId(String jobId, int pageNo, int pageSize,
+                                                                String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -251,10 +255,10 @@ public class ResumeServiceImpl implements ResumeService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Resume> resumes = resumeRepository.getAllResumeByJobId(jobId, pageable);
         List<Resume> resumeContentList = resumes.getContent();
-        List<ResumeInfoDto> resumeInfoDtoList = resumeContentList.stream().map(
+        List<ResumeResponse> resumeInfoDtoList = resumeContentList.stream().map(
                 resume -> {
                     try {
-                        return modelMapper.map(resume, ResumeInfoDto.class);
+                        return modelMapper.map(resume, ResumeResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -267,7 +271,7 @@ public class ResumeServiceImpl implements ResumeService {
         metaData.setPageSize(resumes.getSize());
         metaData.setPageNo(resumes.getNumber());
         metaData.setLastPage(resumes.isLast());
-        ResumeResponse resumeResponse = new ResumeResponse();
+        ResumeListResponse resumeResponse = new ResumeListResponse();
         resumeResponse.setData(resumeInfoDtoList);
         resumeResponse.setMeta(metaData);
         return ApiResponse.success(
