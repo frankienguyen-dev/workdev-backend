@@ -23,13 +23,26 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Create User DTO Response")
-public class CreateUserResponse extends BaseUser<UploadFileResponse, RoleResponse> {
-    @Schema(description = "User company")
-    private CompanyInfoResponse company;
+public class CreateUserResponse extends BaseUser<UploadFileResponse, RoleResponse, CompanyInfoResponse> {
 
     @Schema(description = "User created by")
     private JwtUserInfo createdBy;
 
     @Schema(description = "User created at")
     private LocalDateTime createdAt;
+
+    @Override
+    public UploadFileResponse getAvatar() {
+        return super.getAvatar();
+    }
+
+    @Override
+    public List<RoleResponse> getRoles() {
+        return super.getRoles();
+    }
+
+    @Override
+    public CompanyInfoResponse getCompany() {
+        return super.getCompany();
+    }
 }

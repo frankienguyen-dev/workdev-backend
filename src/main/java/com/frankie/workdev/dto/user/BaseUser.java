@@ -1,11 +1,13 @@
 package com.frankie.workdev.dto.user;
 
 import com.frankie.workdev.dto.company.BaseCompany;
+import com.frankie.workdev.dto.company.CompanyInfoResponse;
 import com.frankie.workdev.dto.permission.BasePermission;
 import com.frankie.workdev.dto.role.BaseRole;
 import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BaseUser<T extends BaseFileUpload,
-        K extends BaseRole<? extends BasePermission>> {
+        K extends BaseRole<? extends BasePermission>, R> {
     @Schema(description = "User Id")
     private String id;
 
@@ -76,4 +78,9 @@ public abstract class BaseUser<T extends BaseFileUpload,
     @Schema(description = "User roles")
     @NotEmpty(message = "Roles should not be empty")
     private List<K> roles;
+
+    @Schema(description = "User company")
+    @NotNull(message = "Company should not be empty")
+    @Valid
+    private R company;
 }

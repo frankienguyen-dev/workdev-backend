@@ -20,9 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "User Info DTO")
-public class UserInfoResponse extends BaseUser<UploadFileResponse, RoleResponse> {
-    @Schema(description = "User company")
-    private CompanyInfoResponse company;
+public class UserInfoResponse extends BaseUser<UploadFileResponse, RoleResponse, CompanyInfoResponse> {
 
     @Schema(description = "User created by")
     private JwtUserInfo createdBy;
@@ -46,72 +44,17 @@ public class UserInfoResponse extends BaseUser<UploadFileResponse, RoleResponse>
     private Boolean isDeleted;
 
     @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
-    public String getFullName() {
-        return super.getFullName();
-    }
-
-    @Override
-    public String getEmail() {
-        return super.getEmail();
-    }
-
-    @Override
-    public String getAddress() {
-        return super.getAddress();
-    }
-
-    @Override
-    public String getPhoneNumber() {
-        return super.getPhoneNumber();
-    }
-
-    @Override
-    public String getGender() {
-        return super.getGender();
-    }
-
-    @Override
-    public String getTitle() {
-        return super.getTitle();
-    }
-
-    @Override
-    public String getEducation() {
-        return super.getEducation();
-    }
-
-    @Override
-    public String getExperience() {
-        return super.getExperience();
-    }
-
-    @Override
     public UploadFileResponse getAvatar() {
         return super.getAvatar();
     }
 
     @Override
-    public String getBiography() {
-        return super.getBiography();
-    }
-
-    @Override
-    public String getCoverLetter() {
-        return super.getCoverLetter();
-    }
-
-    @Override
-    public int getAge() {
-        return super.getAge();
-    }
-
-    @Override
     public List<RoleResponse> getRoles() {
         return super.getRoles();
+    }
+
+    @Override
+    public CompanyInfoResponse getCompany() {
+        return super.getCompany();
     }
 }
