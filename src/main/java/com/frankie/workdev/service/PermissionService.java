@@ -6,7 +6,7 @@ import com.frankie.workdev.dto.permission.*;
 public interface PermissionService {
     ApiResponse<CreatePermissionDto> createNewPermission(CreatePermissionDto createPermissionDto);
 
-    ApiResponse<ListPermissionResponse> getAllPermissions(int pageNo, int pageSize,
+    ApiResponse<PermissionListResponse> getAllPermissions(int pageNo, int pageSize,
                                                           String sortBy, String sortDir);
 
     ApiResponse<PermissionInfo> getPermissionById(String id);
@@ -16,6 +16,6 @@ public interface PermissionService {
 
     ApiResponse<DeletePermissionDto> softDeletePermissionById(String id);
 
-    ApiResponse<ListPermissionResponse> searchPermission(String name, int pageNo, int pageSize,
+    ApiResponse<PermissionListResponse> searchPermission(String name, int pageNo, int pageSize,
                                                          String sortBy, String sortDir);
 }

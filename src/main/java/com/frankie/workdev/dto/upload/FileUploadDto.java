@@ -11,24 +11,34 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "File Upload DTO")
-public class FileUploadDto {
+public class FileUploadDto extends BaseFileUpload {
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "File id")
-    @NotEmpty(message = "File id should not be empty")
-    private String id;
+    @Schema(hidden = true)
+    @Override
+    public String getFileName() {
+        return super.getFileName();
+    }
 
-    @Schema(description = "File name", hidden = true)
-    private String fileName;
+    @Schema(hidden = true)
+    @Override
+    public String getFileType() {
+        return super.getFileType();
+    }
 
-    @Schema(description = "File type", hidden = true)
-    private String fileType;
+    @Schema(hidden = true)
+    @Override
+    public long getSize() {
+        return super.getSize();
+    }
 
-    @Schema(description = "File size", hidden = true)
-    private long size;
-
-    @Schema(description = "File upload time", hidden = true)
-    private LocalDateTime uploadTime;
+    @Schema(hidden = true)
+    @Override
+    public LocalDateTime getUploadTime() {
+        return super.getUploadTime();
+    }
 }

@@ -128,8 +128,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserResponse> getAllUsers(int pageNo, int pageSize,
-                                                 String sortBy, String sortDir) {
+    public ApiResponse<UserListResponse> getAllUsers(int pageNo, int pageSize,
+                                                     String sortBy, String sortDir) {
         try {
             Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                     ? Sort.by(sortBy).ascending()
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService {
             metaData.setTotalElements(users.getTotalElements());
             metaData.setPageNo(users.getNumber());
             metaData.setPageSize(users.getSize());
-            UserResponse userResponse = new UserResponse();
+            UserListResponse userResponse = new UserListResponse();
             userResponse.setData(userList);
             userResponse.setMeta(metaData);
             return ApiResponse.success(
@@ -320,8 +320,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserResponse> searchUser(String email, int pageNo, int pageSize,
-                                                String sortBy, String sortDir) {
+    public ApiResponse<UserListResponse> searchUser(String email, int pageNo, int pageSize,
+                                                    String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -345,7 +345,7 @@ public class UserServiceImpl implements UserService {
         metaData.setTotalElements(users.getTotalElements());
         metaData.setPageNo(users.getNumber());
         metaData.setTotalPages(users.getTotalPages());
-        UserResponse userResponse = new UserResponse();
+        UserListResponse userResponse = new UserListResponse();
         userResponse.setData(userInfoDtoListSearch);
         userResponse.setMeta(metaData);
         return ApiResponse.success(

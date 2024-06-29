@@ -5,7 +5,7 @@ import com.frankie.workdev.dto.role.request.CreateRoleDto;
 import com.frankie.workdev.dto.role.request.DeleteRoleDto;
 import com.frankie.workdev.dto.role.request.UpdateRoleDto;
 import com.frankie.workdev.dto.role.response.CreateRoleResponse;
-import com.frankie.workdev.dto.role.response.ListRoleResponse;
+import com.frankie.workdev.dto.role.response.RoleListResponse;
 import com.frankie.workdev.dto.role.response.RoleResponse;
 import com.frankie.workdev.dto.role.response.UpdateRoleResponse;
 import com.frankie.workdev.service.RoleService;
@@ -57,7 +57,7 @@ public class RoleController {
             description = "Get all roles successfully"
     )
     @GetMapping
-    public ResponseEntity<ApiResponse<ListRoleResponse>> getAllRoles(
+    public ResponseEntity<ApiResponse<RoleListResponse>> getAllRoles(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -67,7 +67,7 @@ public class RoleController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ListRoleResponse> getAllRoles = roleService.getAllRoles(
+        ApiResponse<RoleListResponse> getAllRoles = roleService.getAllRoles(
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllRoles, HttpStatus.OK);
     }
@@ -130,7 +130,7 @@ public class RoleController {
             description = "Search role by name successfully"
     )
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<ListRoleResponse>> searchRole(
+    public ResponseEntity<ApiResponse<RoleListResponse>> searchRole(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -141,7 +141,7 @@ public class RoleController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ListRoleResponse> searchRole = roleService
+        ApiResponse<RoleListResponse> searchRole = roleService
                 .searchRole(name, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchRole, HttpStatus.OK);
     }

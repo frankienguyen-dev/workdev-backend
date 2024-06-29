@@ -7,7 +7,7 @@ import com.frankie.workdev.dto.user.request.UserDto;
 import com.frankie.workdev.dto.user.response.CreateUserResponse;
 import com.frankie.workdev.dto.user.response.UpdateUserResponse;
 import com.frankie.workdev.dto.user.response.UserInfoResponse;
-import com.frankie.workdev.dto.user.response.UserResponse;
+import com.frankie.workdev.dto.user.response.UserListResponse;
 import com.frankie.workdev.service.UserService;
 import com.frankie.workdev.util.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -60,8 +60,8 @@ public class UserController {
     )
 //    @PreAuthorize("hasAuthority('GET_ALL_USERS')")
     @GetMapping
-    public ResponseEntity<ApiResponse<UserResponse>> getAllUsers(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo, @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
-        ApiResponse<UserResponse> getAllUsers = userService.getAllUsers(pageNo, pageSize, sortBy, sortDir);
+    public ResponseEntity<ApiResponse<UserListResponse>> getAllUsers(@RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo, @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        ApiResponse<UserListResponse> getAllUsers = userService.getAllUsers(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllUsers, HttpStatus.OK);
     }
 
@@ -144,8 +144,8 @@ public class UserController {
             description = "Search user successfully"
     )
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<UserResponse>> searchUser(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo, @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
-        ApiResponse<UserResponse> searchUser = userService.searchUser(email, pageNo, pageSize, sortBy, sortDir);
+    public ResponseEntity<ApiResponse<UserListResponse>> searchUser(@RequestParam(value = "email", required = false) String email, @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo, @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize, @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy, @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+        ApiResponse<UserListResponse> searchUser = userService.searchUser(email, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchUser, HttpStatus.OK);
     }
 }

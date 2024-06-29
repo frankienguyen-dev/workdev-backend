@@ -102,8 +102,8 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ApiResponse<CompanyResponse> getAllCompanies(int pageNo, int pageSize,
-                                                        String sortBy, String sortDir) {
+    public ApiResponse<CompanyListResponse> getAllCompanies(int pageNo, int pageSize,
+                                                            String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -113,10 +113,10 @@ public class CompanyServiceImpl implements CompanyService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Company> companies = companyRepository.findAll(pageable);
         List<Company> companyContentList = companies.getContent();
-        List<CompanyDto> companyDtoList = companyContentList.stream()
+        List<CompanyResponse> companyDtoList = companyContentList.stream()
                 .map(company -> {
                     try {
-                        return modelMapper.map(company, CompanyDto.class);
+                        return modelMapper.map(company, CompanyResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -128,7 +128,7 @@ public class CompanyServiceImpl implements CompanyService {
         metaData.setTotalPages(companies.getTotalPages());
         metaData.setPageSize(companies.getSize());
         metaData.setPageNo(companies.getNumber());
-        CompanyResponse companyResponse = new CompanyResponse();
+        CompanyListResponse companyResponse = new CompanyListResponse();
         companyResponse.setData(companyDtoList);
         companyResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -140,12 +140,12 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public ApiResponse<CompanyDto> getCompanyById(String id) {
+    public ApiResponse<CompanyResponse> getCompanyById(String id) {
         try {
             Company findCompany = companyRepository.findById(id).orElseThrow(
                     () -> new ResourceNotFoundException("Company", "id", id)
             );
-            CompanyDto companyDto = modelMapper.map(findCompany, CompanyDto.class);
+            CompanyResponse companyDto = modelMapper.map(findCompany, CompanyResponse.class);
             return ApiResponse.success(
                     "Company fetched successfully",
                     HttpStatus.OK,
@@ -246,9 +246,9 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ApiResponse<CompanyResponse> searchCompany(String name, String address,
-                                                      int pageNo, int pageSize,
-                                                      String sortBy, String sortDir) {
+    public ApiResponse<CompanyListResponse> searchCompany(String name, String address,
+                                                          int pageNo, int pageSize,
+                                                          String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -256,10 +256,10 @@ public class CompanyServiceImpl implements CompanyService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Company> companies = companyRepository.searchCompany(name, address, pageable);
         List<Company> companyListContent = companies.getContent();
-        List<CompanyDto> companyDtoList = companyListContent.stream()
+        List<CompanyResponse> companyDtoList = companyListContent.stream()
                 .map(company -> {
                     try {
-                        return modelMapper.map(company, CompanyDto.class);
+                        return modelMapper.map(company, CompanyResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -271,7 +271,7 @@ public class CompanyServiceImpl implements CompanyService {
         metaData.setTotalPages(companies.getTotalPages());
         metaData.setTotalElements(companies.getTotalElements());
         metaData.setPageSize(companies.getSize());
-        CompanyResponse companyResponse = new CompanyResponse();
+        CompanyListResponse companyResponse = new CompanyListResponse();
         companyResponse.setData(companyDtoList);
         companyResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -283,14 +283,14 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ApiResponse<CompanyDto> getMyCompanyInfo() {
+    public ApiResponse<CompanyResponse> getMyCompanyInfo() {
         JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User findUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
         Company findCompany = findUser.getCompany();
         if (findCompany == null) {
             throw new ResourceNotFoundException("Company", "user id", findUser.getId());
         }
-        CompanyDto companyDto = modelMapper.map(findCompany, CompanyDto.class);
+        CompanyResponse companyDto = modelMapper.map(findCompany, CompanyResponse.class);
         return ApiResponse.success(
                 "Company fetched successfully",
                 HttpStatus.OK,

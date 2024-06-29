@@ -4,7 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.subscriber.request.CreateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.request.UpdateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.response.CreateSubscriberResponse;
-import com.frankie.workdev.dto.subscriber.response.ListSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.SubscriberListResponse;
 import com.frankie.workdev.dto.subscriber.response.SubscriberResponse;
 import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 
@@ -12,7 +12,7 @@ import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 public interface SubscriberService {
     ApiResponse<CreateSubscriberResponse> createSubscriber(CreateSubscriberDto subscriberDto);
 
-    ApiResponse<ListSubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
+    ApiResponse<SubscriberListResponse> getAllSubscriber(int pageNo, int pageSize,
                                                          String sortBy, String sortDir);
 
     ApiResponse<SubscriberResponse> getSubscriberById(String id);
@@ -22,6 +22,6 @@ public interface SubscriberService {
 
     void deleteSubscriberById(String id);
 
-    ApiResponse<ListSubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+    ApiResponse<SubscriberListResponse> searchSubscriberByEmail(String email, int pageNo,
                                                                 int pageSize, String sortBy, String sortDir);
 }

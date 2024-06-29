@@ -4,7 +4,7 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.subscriber.request.CreateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.request.UpdateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.response.CreateSubscriberResponse;
-import com.frankie.workdev.dto.subscriber.response.ListSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.SubscriberListResponse;
 import com.frankie.workdev.dto.subscriber.response.SubscriberResponse;
 import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 import com.frankie.workdev.service.SubscriberService;
@@ -56,7 +56,7 @@ public class SubscriberController {
             description = "Get all subscribers successfully"
     )
     @GetMapping
-    public ResponseEntity<ApiResponse<ListSubscriberResponse>> getAllSubscriber(
+    public ResponseEntity<ApiResponse<SubscriberListResponse>> getAllSubscriber(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -66,7 +66,7 @@ public class SubscriberController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ListSubscriberResponse> getAllSubscriber = subscriberService.getAllSubscriber(
+        ApiResponse<SubscriberListResponse> getAllSubscriber = subscriberService.getAllSubscriber(
                 pageNo, pageSize, sortBy, sortDir
         );
         return new ResponseEntity<>(getAllSubscriber, HttpStatus.OK);
@@ -132,7 +132,7 @@ public class SubscriberController {
             description = "Search subscriber by email successfully"
     )
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<ListSubscriberResponse>> searchSubscriber(
+    public ResponseEntity<ApiResponse<SubscriberListResponse>> searchSubscriber(
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -143,7 +143,7 @@ public class SubscriberController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ListSubscriberResponse> searchSubscriber = subscriberService.searchSubscriberByEmail(
+        ApiResponse<SubscriberListResponse> searchSubscriber = subscriberService.searchSubscriberByEmail(
                 email, pageNo, pageSize, sortBy, sortDir
         );
         return new ResponseEntity<>(searchSubscriber, HttpStatus.OK);

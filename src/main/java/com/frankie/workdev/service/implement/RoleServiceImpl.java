@@ -8,7 +8,7 @@ import com.frankie.workdev.dto.role.request.CreateRoleDto;
 import com.frankie.workdev.dto.role.request.DeleteRoleDto;
 import com.frankie.workdev.dto.role.request.UpdateRoleDto;
 import com.frankie.workdev.dto.role.response.CreateRoleResponse;
-import com.frankie.workdev.dto.role.response.ListRoleResponse;
+import com.frankie.workdev.dto.role.response.RoleListResponse;
 import com.frankie.workdev.dto.role.response.RoleResponse;
 import com.frankie.workdev.dto.role.response.UpdateRoleResponse;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
@@ -81,7 +81,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<ListRoleResponse> getAllRoles(int pageNo, int pageSize, String sortBy,
+    public ApiResponse<RoleListResponse> getAllRoles(int pageNo, int pageSize, String sortBy,
                                                      String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -105,7 +105,7 @@ public class RoleServiceImpl implements RoleService {
         metaData.setTotalPages(roles.getTotalPages());
         metaData.setPageSize(roles.getSize());
         metaData.setPageNo(roles.getNumber());
-        ListRoleResponse roleResponse = new ListRoleResponse();
+        RoleListResponse roleResponse = new RoleListResponse();
         roleResponse.setMeta(metaData);
         roleResponse.setData(roleDtoList);
         return ApiResponse.success(
@@ -193,7 +193,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public ApiResponse<ListRoleResponse> searchRole(String name, int pageNo, int pageSize,
+    public ApiResponse<RoleListResponse> searchRole(String name, int pageNo, int pageSize,
                                                     String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -217,7 +217,7 @@ public class RoleServiceImpl implements RoleService {
         metaData.setTotalElements(roles.getTotalElements());
         metaData.setPageSize(roles.getSize());
         metaData.setTotalPages(roles.getTotalPages());
-        ListRoleResponse roleResponse = new ListRoleResponse();
+        RoleListResponse roleResponse = new RoleListResponse();
         roleResponse.setData(roleDtoList);
         roleResponse.setMeta(metaData);
         return ApiResponse.success(

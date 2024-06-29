@@ -6,7 +6,7 @@ import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.subscriber.request.CreateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.request.UpdateSubscriberDto;
 import com.frankie.workdev.dto.subscriber.response.CreateSubscriberResponse;
-import com.frankie.workdev.dto.subscriber.response.ListSubscriberResponse;
+import com.frankie.workdev.dto.subscriber.response.SubscriberListResponse;
 import com.frankie.workdev.dto.subscriber.response.SubscriberResponse;
 import com.frankie.workdev.dto.subscriber.response.UpdateSubscriberResponse;
 import com.frankie.workdev.entity.Skill;
@@ -61,7 +61,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<ListSubscriberResponse> getAllSubscriber(int pageNo, int pageSize,
+    public ApiResponse<SubscriberListResponse> getAllSubscriber(int pageNo, int pageSize,
                                                                 String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -85,7 +85,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         metaData.setTotalElements(subscribers.getTotalElements());
         metaData.setTotalPages(subscribers.getTotalPages());
         metaData.setLastPage(subscribers.isLast());
-        ListSubscriberResponse subscriberResponse = new ListSubscriberResponse();
+        SubscriberListResponse subscriberResponse = new SubscriberListResponse();
         subscriberResponse.setData(subscriberDtos);
         subscriberResponse.setMeta(metaData);
         return ApiResponse.success(
@@ -146,7 +146,7 @@ public class SubscriberServiceImpl implements SubscriberService {
     }
 
     @Override
-    public ApiResponse<ListSubscriberResponse> searchSubscriberByEmail(String email, int pageNo,
+    public ApiResponse<SubscriberListResponse> searchSubscriberByEmail(String email, int pageNo,
                                                                        int pageSize, String sortBy,
                                                                        String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
@@ -172,7 +172,7 @@ public class SubscriberServiceImpl implements SubscriberService {
         metaData.setTotalElements(subscribers.getTotalElements());
         metaData.setTotalPages(subscribers.getTotalPages());
         metaData.setLastPage(subscribers.isLast());
-        ListSubscriberResponse subscriberResponse = new ListSubscriberResponse();
+        SubscriberListResponse subscriberResponse = new SubscriberListResponse();
         subscriberResponse.setData(subscriberDtoList);
         subscriberResponse.setMeta(metaData);
         return ApiResponse.success(

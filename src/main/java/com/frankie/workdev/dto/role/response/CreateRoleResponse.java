@@ -26,23 +26,23 @@ public class CreateRoleResponse extends BaseRole<PermissionResponse> {
     @Schema(description = "Role created at")
     private LocalDateTime createdAt;
 
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public Boolean getIsActive() {
-        return super.getIsActive();
-    }
-
-    @Override
-    public List<PermissionResponse> getPermissions() {
-        return super.getPermissions();
-    }
+//    @Override
+//    public String getId() {
+//        return super.getId();
+//    }
+//
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
+//
+//    @Override
+//    public Boolean getIsActive() {
+//        return super.getIsActive();
+//    }
+//
+//    @Override
+//    public List<PermissionResponse> getPermissions() {
+//        return super.getPermissions();
+//    }
 }

@@ -70,7 +70,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<ListPermissionResponse> getAllPermissions(int pageNo, int pageSize,
+    public ApiResponse<PermissionListResponse> getAllPermissions(int pageNo, int pageSize,
                                                                  String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -94,7 +94,7 @@ public class PermissionServiceImpl implements PermissionService {
         metaData.setTotalElements(permissions.getTotalElements());
         metaData.setTotalPages(permissions.getTotalPages());
         metaData.setLastPage(permissions.isLast());
-        ListPermissionResponse permissionResponse = new ListPermissionResponse();
+        PermissionListResponse permissionResponse = new PermissionListResponse();
         permissionResponse.setMeta(metaData);
         permissionResponse.setData(permissionResponses);
         return ApiResponse.success(
@@ -181,7 +181,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<ListPermissionResponse> searchPermission(String name, int pageNo, int pageSize,
+    public ApiResponse<PermissionListResponse> searchPermission(String name, int pageNo, int pageSize,
                                                                 String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
                 ? Sort.by(sortBy).ascending()
@@ -205,7 +205,7 @@ public class PermissionServiceImpl implements PermissionService {
         metaData.setTotalElements(permissions.getTotalElements());
         metaData.setTotalPages(permissions.getTotalPages());
         metaData.setLastPage(permissions.isLast());
-        ListPermissionResponse permissionResponse = new ListPermissionResponse();
+        PermissionListResponse permissionResponse = new PermissionListResponse();
         permissionResponse.setMeta(metaData);
         permissionResponse.setData(permissionInfoList);
         return ApiResponse.success(

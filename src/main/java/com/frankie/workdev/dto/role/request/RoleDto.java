@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.role.request;
 
 import com.frankie.workdev.dto.permission.PermissionInfo;
+import com.frankie.workdev.dto.role.BaseRole;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -16,20 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Role DTO")
-public class RoleDto {
-
-    @Schema(description = "Role Id", hidden = true)
-    private String id;
-
-    @Schema(description = "Role name")
-    private String name;
-
-    @Schema(description = "Role status", hidden = true)
-    private Boolean isActive;
-
-    @Schema(description = "Permissions", hidden = true)
-    private List<PermissionInfo> permissions;
-
+public class RoleDto extends BaseRole<PermissionInfo> {
     @Schema(description = "Role created by", hidden = true)
     private JwtUserInfo createdBy;
 
@@ -51,7 +39,26 @@ public class RoleDto {
     @Schema(description = "Role is deleted", hidden = true)
     private Boolean isDeleted;
 
-//    @Schema(description = "List of users in this role", hidden = true)
-//    private List<JwtUserInfo> users;
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
+
+    @Schema(hidden = true)
+    @Override
+    public Boolean getIsActive() {
+        return super.getIsActive();
+    }
+
+    @Schema(hidden = true)
+    @Override
+    public List<PermissionInfo> getPermissions() {
+        return super.getPermissions();
+    }
 }

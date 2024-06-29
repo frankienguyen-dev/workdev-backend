@@ -7,13 +7,13 @@ import com.frankie.workdev.dto.user.request.UserDto;
 import com.frankie.workdev.dto.user.response.CreateUserResponse;
 import com.frankie.workdev.dto.user.response.UpdateUserResponse;
 import com.frankie.workdev.dto.user.response.UserInfoResponse;
-import com.frankie.workdev.dto.user.response.UserResponse;
+import com.frankie.workdev.dto.user.response.UserListResponse;
 
 public interface UserService {
     ApiResponse<CreateUserResponse> createNewUser(UserDto userDto);
 
-    ApiResponse<UserResponse> getAllUsers(int pageNo, int pageSize,
-                                          String sortBy, String sortDir);
+    ApiResponse<UserListResponse> getAllUsers(int pageNo, int pageSize,
+                                              String sortBy, String sortDir);
 
     ApiResponse<UserInfoResponse> getUserById(String id);
 
@@ -23,6 +23,6 @@ public interface UserService {
 
     ApiResponse<UserInfoResponse> getProfile();
 
-    ApiResponse<UserResponse> searchUser(String email, int pageNo, int pageSize,
-                                         String sortBy, String sortDir);
+    ApiResponse<UserListResponse> searchUser(String email, int pageNo, int pageSize,
+                                             String sortBy, String sortDir);
 }

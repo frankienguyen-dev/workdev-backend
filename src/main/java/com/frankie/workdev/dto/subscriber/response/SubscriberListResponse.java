@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.role.response;
+package com.frankie.workdev.dto.subscriber.response;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "List Role Response")
-public class ListRoleResponse {
+@Schema(description = "Subscriber Response")
+public class SubscriberListResponse {
 
-    @Schema(description = "Role metadata")
+    @Schema(description = "Response metadata")
     private MetaData meta;
 
-    @Schema(description = "Role data")
-    private List<RoleResponse> data;
+    @Schema(description = "Subscriber data")
+    private List<SubscriberResponse> data;
 }
