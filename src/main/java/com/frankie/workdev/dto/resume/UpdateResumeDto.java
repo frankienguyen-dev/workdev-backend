@@ -1,8 +1,13 @@
 package com.frankie.workdev.dto.resume;
 
+import com.frankie.workdev.dto.company.CompanyInfo;
+import com.frankie.workdev.dto.job.JobId;
+import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,21 +17,42 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Update resume DTO request")
-public class UpdateResumeDto {
+public class UpdateResumeDto extends BaseResume<FileUploadDto, CompanyInfo> {
 
-    @Schema(description = "Resume Id")
-    private String id;
+    @Schema(hidden = true)
+    @Override
+    public FileUploadDto getResume() {
+        return super.getResume();
+    }
 
-    @Schema(description = "Resume status")
-    @NotEmpty(message = "Resume should not be empty")
-    private String status;
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Resume updated by")
-    private JwtUserInfo updatedBy;
+    @Schema(hidden = true)
+    @Override
+    public String getUrl() {
+        return super.getUrl();
+    }
 
-    @Schema(description = "Resume updated at")
-    private LocalDateTime updatedAt;
+    @Schema(hidden = true)
+    @Override
+    public JwtUserInfo getUser() {
+        return super.getUser();
+    }
+
+    @Schema(hidden = true)
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
+    }
+
+    @NotNull(message = "Resume status should not be empty")
+    @Override
+    public String getStatus() {
+        return super.getStatus();
+    }
 }

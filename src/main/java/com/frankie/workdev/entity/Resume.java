@@ -58,7 +58,7 @@ public class Resume {
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
     private LocalDateTime deletedAt;
-    private Boolean isDeleted;
+    private Boolean isDeleted = false;
 
 
     @PrePersist

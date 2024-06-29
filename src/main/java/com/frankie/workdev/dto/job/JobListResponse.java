@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Schema(description = "Job Response")
-public class JobResponse {
+public class JobListResponse {
 
     @Schema(description = "Job metadata")
     private MetaData meta;

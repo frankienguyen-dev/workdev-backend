@@ -17,14 +17,14 @@ public class ResumeController {
     private ResumeService resumeService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CreateResumeDto>> createResume(
+    public ResponseEntity<ApiResponse<CreateResumeResponse>> createResume(
             @RequestBody @Valid CreateResumeDto createResumeDto) {
-        ApiResponse<CreateResumeDto> createReumse = resumeService.createResume(createResumeDto);
+        ApiResponse<CreateResumeResponse> createReumse = resumeService.createResume(createResumeDto);
         return new ResponseEntity<>(createReumse, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<ResumeResponse>> getAllResumes(
+    public ResponseEntity<ApiResponse<ResumeListResponse>> getAllResumes(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -34,21 +34,21 @@ public class ResumeController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ResumeResponse> getAllResumes = resumeService
+        ApiResponse<ResumeListResponse> getAllResumes = resumeService
                 .getAllResumes(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllResumes, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ResumeInfoDto>> getResumeById(@PathVariable("id") String id) {
-        ApiResponse<ResumeInfoDto> getResumeById = resumeService.getResumeById(id);
+    public ResponseEntity<ApiResponse<ResumeResponse>> getResumeById(@PathVariable("id") String id) {
+        ApiResponse<ResumeResponse> getResumeById = resumeService.getResumeById(id);
         return new ResponseEntity<>(getResumeById, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<UpdateResumeDto>> updateResumeById(
+    public ResponseEntity<ApiResponse<UpdateResumeResponse>> updateResumeById(
             @PathVariable("id") String id, @RequestBody @Valid UpdateResumeDto updateResumeDto) {
-        ApiResponse<UpdateResumeDto> updateResume = resumeService.updateResumeById(id, updateResumeDto);
+        ApiResponse<UpdateResumeResponse> updateResume = resumeService.updateResumeById(id, updateResumeDto);
         return new ResponseEntity<>(updateResume, HttpStatus.OK);
     }
 
@@ -60,7 +60,7 @@ public class ResumeController {
     }
 
     @GetMapping("/my-resumes")
-    public ResponseEntity<ApiResponse<ResumeResponse>> getResumeByUser(
+    public ResponseEntity<ApiResponse<ResumeListResponse>> getResumeByUser(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -70,13 +70,13 @@ public class ResumeController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ResumeResponse> getResumeByUser = resumeService
+        ApiResponse<ResumeListResponse> getResumeByUser = resumeService
                 .getResumeByUser(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getResumeByUser, HttpStatus.OK);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<ResumeResponse>> searchResumeByEmail(
+    public ResponseEntity<ApiResponse<ResumeListResponse>> searchResumeByEmail(
             @RequestParam(value = "email", required = false) String email,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -87,13 +87,13 @@ public class ResumeController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<ResumeResponse> searchResume = resumeService
+        ApiResponse<ResumeListResponse> searchResume = resumeService
                 .searchResumeByEmail(email, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchResume, HttpStatus.OK);
     }
 
     @GetMapping("/all-resumes/{id}")
-    public ResponseEntity<ApiResponse<ResumeResponse>> getAllResumeByJobId(
+    public ResponseEntity<ApiResponse<ResumeListResponse>> getAllResumeByJobId(
             @PathVariable("id") String id,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -107,7 +107,7 @@ public class ResumeController {
                     required = false)
             String sortDir
     ) {
-        ApiResponse<ResumeResponse> getAllResumeByJobId = resumeService
+        ApiResponse<ResumeListResponse> getAllResumeByJobId = resumeService
                 .getAllResumesByJobId(id, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllResumeByJobId, HttpStatus.OK);
     }

@@ -14,11 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "File Upload Response")
-public class FileUploadResponse {
+public class OrphanFileListResponse {
 
     @Schema(description = "File upload metadata")
     private MetaData meta;
 
     @Schema(description = "File Upload Data")
-    private List<FileUploadDto> data;
+    private List<UploadFileResponse> data;
 }
