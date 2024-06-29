@@ -1,7 +1,7 @@
 package com.frankie.workdev.dto.job;
 
 import com.frankie.workdev.dto.category.CategoryInfo;
-import com.frankie.workdev.dto.company.CompanyDto;
+import com.frankie.workdev.dto.company.CompanyResponse;
 import com.frankie.workdev.dto.resume.ResumeInfo;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
@@ -79,7 +79,7 @@ public class JobDto {
     private LocalDateTime deletedAt;
 
     @Schema(description = "Job company")
-    private CompanyDto company;
+    private CompanyResponse company;
 
     @Schema(description = "Job start date")
     private LocalDateTime startDate;

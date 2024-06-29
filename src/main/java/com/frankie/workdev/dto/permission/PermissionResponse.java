@@ -37,29 +37,29 @@ public class PermissionResponse extends BasePermission {
     private Boolean isDeleted;
 
 
-    @Override
-    public String getId() {
-        return super.getId();
-    }
-
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public String getPath() {
-        return super.getPath();
-    }
-
-    @Override
-    public String getMethod() {
-        return super.getMethod();
-    }
-
-    @Override
-    public String getModule() {
-        return super.getModule();
-    }
+//    @Override
+//    public String getId() {
+//        return super.getId();
+//    }
+//
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
+//
+//    @Override
+//    public String getPath() {
+//        return super.getPath();
+//    }
+//
+//    @Override
+//    public String getMethod() {
+//        return super.getMethod();
+//    }
+//
+//    @Override
+//    public String getModule() {
+//        return super.getModule();
+//    }
 
 }

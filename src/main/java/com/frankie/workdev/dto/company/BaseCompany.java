@@ -1,6 +1,6 @@
 package com.frankie.workdev.dto.company;
 
-import com.frankie.workdev.dto.upload.FileUploadDto;
+import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,8 +16,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Company DTO")
-public class CompanyDto {
+@Schema(description = "Base company")
+public abstract class BaseCompany<T extends BaseFileUpload> {
     @Schema(description = "Company Id")
     private String id;
 
@@ -53,32 +53,11 @@ public class CompanyDto {
     private LocalDateTime foundedDate;
 
     @Schema(description = "Company Logo")
-    private FileUploadDto logo;
+    private T logo;
 
     @Schema(description = "Company Banner")
-    private FileUploadDto banner;
+    private T banner;
 
     @Schema(description = "Company Users")
     private List<JwtUserInfo> users;
-
-    @Schema(description = "Company Created By")
-    private JwtUserInfo createdBy;
-
-    @Schema(description = "Company Created At")
-    private LocalDateTime createdAt;
-
-    @Schema(description = "Company Updated By")
-    private JwtUserInfo updatedBy;
-
-    @Schema(description = "Company Updated At")
-    private LocalDateTime updatedAt;
-
-    @Schema(description = "Company Deleted By")
-    private JwtUserInfo deletedBy;
-
-    @Schema(description = "Company Deleted At")
-    private LocalDateTime deletedAt;
-
-    @Schema(description = "Company Is Deleted")
-    private Boolean isDeleted;
 }

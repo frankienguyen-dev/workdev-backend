@@ -1,7 +1,7 @@
 package com.frankie.workdev.dto.job;
 
 import com.frankie.workdev.dto.category.CategoryInfo;
-import com.frankie.workdev.dto.company.CompanyDto;
+import com.frankie.workdev.dto.company.CompanyResponse;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -83,7 +83,7 @@ public class CreateJobDto {
     @Schema(description = "Job company")
     @Valid
     @NotNull(message = "Company is required")
-    private CompanyDto company;
+    private CompanyResponse company;
 
     @Schema(description = "Job start date")
     @NotNull(message = "Start date is required")

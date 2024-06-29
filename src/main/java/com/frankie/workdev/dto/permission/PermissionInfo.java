@@ -21,10 +21,10 @@ public class PermissionInfo extends BasePermission {
         return super.getId();
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
 
     @Schema(hidden = true)
     @Override
@@ -43,5 +43,4 @@ public class PermissionInfo extends BasePermission {
     public String getModule() {
         return super.getModule();
     }
-
 }

@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Permission Response")
-public class ListPermissionResponse {
+public class PermissionListResponse {
     @Schema(description = "Permission metadata")
     private MetaData meta;
 

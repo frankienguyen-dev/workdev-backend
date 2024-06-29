@@ -26,18 +26,18 @@ public class CreateRoleDto extends BaseRole<PermissionInfo> {
         return super.getId();
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public Boolean getIsActive() {
-        return super.getIsActive();
-    }
-
-    @Override
-    public List<PermissionInfo> getPermissions() {
-        return super.getPermissions();
-    }
+//    @Override
+//    public String getName() {
+//        return super.getName();
+//    }
+//
+//    @Override
+//    public Boolean getIsActive() {
+//        return super.getIsActive();
+//    }
+//
+//    @Override
+//    public List<PermissionInfo> getPermissions() {
+//        return super.getPermissions();
+//    }
 }

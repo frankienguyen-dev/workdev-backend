@@ -10,8 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("api/v1/companies")
@@ -27,7 +25,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<CompanyResponse>> getAllCompanies(
+    public ResponseEntity<ApiResponse<CompanyListResponse>> getAllCompanies(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -37,15 +35,15 @@ public class CompanyController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<CompanyResponse> getAllCompanies = companyService.getAllCompanies(
+        ApiResponse<CompanyListResponse> getAllCompanies = companyService.getAllCompanies(
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllCompanies, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CompanyDto>> getCompanyById(
+    public ResponseEntity<ApiResponse<CompanyResponse>> getCompanyById(
             @PathVariable("id") String id) {
-        ApiResponse<CompanyDto> getCompanyById = companyService.getCompanyById(id);
+        ApiResponse<CompanyResponse> getCompanyById = companyService.getCompanyById(id);
         return new ResponseEntity<>(getCompanyById, HttpStatus.OK);
     }
 
@@ -67,7 +65,7 @@ public class CompanyController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<CompanyResponse>> searchCompany(
+    public ResponseEntity<ApiResponse<CompanyListResponse>> searchCompany(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "address", required = false) String address,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
@@ -79,15 +77,15 @@ public class CompanyController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<CompanyResponse> searchCompany = companyService.searchCompany(name, address,
+        ApiResponse<CompanyListResponse> searchCompany = companyService.searchCompany(name, address,
                 pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchCompany, HttpStatus.OK);
     }
 
 
     @GetMapping("/my-company")
-    public ResponseEntity<ApiResponse<CompanyDto>> getMyCompany() {
-        ApiResponse<CompanyDto> getMyCompany = companyService.getMyCompanyInfo();
+    public ResponseEntity<ApiResponse<CompanyResponse>> getMyCompany() {
+        ApiResponse<CompanyResponse> getMyCompany = companyService.getMyCompanyInfo();
         return new ResponseEntity<>(getMyCompany, HttpStatus.OK);
     }
 

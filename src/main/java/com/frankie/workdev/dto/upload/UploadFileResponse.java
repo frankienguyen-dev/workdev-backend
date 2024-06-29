@@ -10,23 +10,30 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Upload File Response")
-public class UploadFileResponse {
+public class UploadFileResponse extends BaseFileUpload {
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "File id")
-    private String id;
+    @Override
+    public String getFileName() {
+        return super.getFileName();
+    }
 
-    @Schema(description = "File name")
-    private String fileName;
+    @Override
+    public String getFileType() {
+        return super.getFileType();
+    }
 
-    @Schema(description = "File type")
-    private String fileType;
+    @Override
+    public long getSize() {
+        return super.getSize();
+    }
 
-    @Schema(description = "File size")
-    private long size;
-
-    @Schema(description = "Upload time")
-    private LocalDateTime uploadTime;
+    @Override
+    public LocalDateTime getUploadTime() {
+        return super.getUploadTime();
+    }
 }

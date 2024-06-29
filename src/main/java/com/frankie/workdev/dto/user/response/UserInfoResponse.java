@@ -3,7 +3,9 @@ package com.frankie.workdev.dto.user.response;
 import com.frankie.workdev.dto.company.CompanyInfoResponse;
 import com.frankie.workdev.dto.job.JobInfo;
 import com.frankie.workdev.dto.role.response.RoleResponse;
+import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.upload.UploadFileResponse;
+import com.frankie.workdev.dto.user.BaseUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,53 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "User Info DTO")
-public class UserInfoResponse {
-
-    @Schema(description = "User Id")
-    private String id;
-
-    @Schema(description = "User full name")
-    private String fullName;
-
-    @Schema(description = "User email")
-    private String email;
-
-    @Schema(description = "User address")
-    private String address;
-
-    @Schema(description = "User avatar")
-    private UploadFileResponse avatar;
-
-    @Schema(description = "User education")
-    private String education;
-
-    @Schema(description = "User experience")
-    private String experience;
-
-    @Schema(description = "User phone number")
-    private String phoneNumber;
-
-    @Schema(description = "User gender")
-    private String gender;
-
-    @Schema(description = "User title")
-    private String title;
-
-    @Schema(description = "User age")
-    private int age;
-
-    @Schema(description = "User biography")
-    private String biography;
-
-    @Schema(description = "User cover letter")
-    private String coverLetter;
-
-    @Schema(description = "User job list")
-    private List<JobInfo> jobs;
-
-    @Schema(description = "User roles")
-    private List<RoleResponse> roles;
-
+public class UserInfoResponse extends BaseUser<UploadFileResponse, RoleResponse> {
     @Schema(description = "User company")
     private CompanyInfoResponse company;
 
@@ -88,4 +44,74 @@ public class UserInfoResponse {
 
     @Schema(description = "User is deleted")
     private Boolean isDeleted;
+
+    @Override
+    public String getId() {
+        return super.getId();
+    }
+
+    @Override
+    public String getFullName() {
+        return super.getFullName();
+    }
+
+    @Override
+    public String getEmail() {
+        return super.getEmail();
+    }
+
+    @Override
+    public String getAddress() {
+        return super.getAddress();
+    }
+
+    @Override
+    public String getPhoneNumber() {
+        return super.getPhoneNumber();
+    }
+
+    @Override
+    public String getGender() {
+        return super.getGender();
+    }
+
+    @Override
+    public String getTitle() {
+        return super.getTitle();
+    }
+
+    @Override
+    public String getEducation() {
+        return super.getEducation();
+    }
+
+    @Override
+    public String getExperience() {
+        return super.getExperience();
+    }
+
+    @Override
+    public UploadFileResponse getAvatar() {
+        return super.getAvatar();
+    }
+
+    @Override
+    public String getBiography() {
+        return super.getBiography();
+    }
+
+    @Override
+    public String getCoverLetter() {
+        return super.getCoverLetter();
+    }
+
+    @Override
+    public int getAge() {
+        return super.getAge();
+    }
+
+    @Override
+    public List<RoleResponse> getRoles() {
+        return super.getRoles();
+    }
 }
