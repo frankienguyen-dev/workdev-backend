@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.job;
+package com.frankie.workdev.dto.category;
 
 import com.frankie.workdev.dto.apiResponse.MetaData;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Job Response")
-public class JobListResponse {
+@Schema(description = "Category response")
+public class CategoryListResponse {
 
-    @Schema(description = "Job metadata")
+    @Schema(description = "Category metadata")
     private MetaData meta;
 
-    @Schema(description = "Job data")
-    private List<JobResponse> data;
+    @Schema(description = "Category data")
+    private List<CategoryResponse> data;
 }

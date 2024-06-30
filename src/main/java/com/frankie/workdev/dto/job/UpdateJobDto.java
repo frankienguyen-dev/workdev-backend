@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.job;
 
 import com.frankie.workdev.dto.category.CategoryInfo;
+import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.company.CompanyResponse;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
@@ -18,83 +19,92 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Update Job DTO request")
-public class UpdateJobDto {
-    @Schema(description = "Job Id")
-    private String id;
+public class UpdateJobDto extends BaseJob<CompanyInfo, CategoryInfo> {
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Job name")
-    @NotEmpty(message = "Name should not be empty")
-    private String name;
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "Job description")
-    @NotEmpty(message = "Description should not be empty")
-    private String description;
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
 
-    @Schema(description = "Job responsibility")
-    @NotEmpty(message = "Responsibility should not be empty")
-    private String responsibility;
+    @Override
+    public String getResponsibility() {
+        return super.getResponsibility();
+    }
 
-    @Schema(description = "Job location")
-    @NotEmpty(message = "Location should not be empty")
-    private String location;
+    @Override
+    public String getLocation() {
+        return super.getLocation();
+    }
 
-    @Schema(description = "Job quantity")
-    @NotNull(message = "Quantity should not be empty")
-    private Integer quantity;
+    @Override
+    public Integer getQuantity() {
+        return super.getQuantity();
+    }
 
-    @Schema(description = "Job salary")
-    @NotNull(message = "Salary should not be empty")
-    private Long salary;
+    @Override
+    public Long getSalary() {
+        return super.getSalary();
+    }
 
-    @Schema(description = "Job education")
-    @NotEmpty(message = "Education should not be empty")
-    private String education;
+    @Override
+    public String getEducation() {
+        return super.getEducation();
+    }
 
-    @Schema(description = "Job type")
-    @NotEmpty(message = "Job type should not be empty")
-    private String jobType;
+    @Override
+    public String getJobType() {
+        return super.getJobType();
+    }
 
-    @Schema(description = "Job experience")
-    @NotEmpty(message = "Experience should not be empty")
-    private String experience;
+    @Override
+    public String getExperience() {
+        return super.getExperience();
+    }
 
-    @Schema(description = "Job category")
-    @NotNull(message = "Category should not be empty")
-    @Valid
-    private CategoryInfo category;
+    @Override
+    public CategoryInfo getCategory() {
+        return super.getCategory();
+    }
 
-    @Schema(description = "Job level")
-    @NotEmpty(message = "Level should not be empty")
-    private String level;
+    @Override
+    public String getLevel() {
+        return super.getLevel();
+    }
 
-    @Schema(description = "Job updated by")
-    private JwtUserInfo updatedBy;
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
+    }
 
-    @Schema(description = "Job updated at")
-    private LocalDateTime updatedAt;
+    @Override
+    public LocalDateTime getStartDate() {
+        return super.getStartDate();
+    }
 
-    @Schema(description = "Job company")
-    @Valid
-    @NotNull(message = "Company should not be empty")
-    private CompanyResponse company;
+    @Override
+    public LocalDateTime getEndDate() {
+        return super.getEndDate();
+    }
 
-    @Schema(description = "Job start date")
-    @NotNull(message = "Start date should not be empty")
-    private LocalDateTime startDate;
+    @Override
+    public List<SkillDto> getSkills() {
+        return super.getSkills();
+    }
 
-    @Schema(description = "Job end date")
-    @NotNull(message = "End date should not be empty")
-    private LocalDateTime endDate;
-
-    @Schema(description = "Job skills")
-    @NotNull(message = "Skills should not be empty")
-    @Valid
-    private List<SkillDto> skills;
-
-    @Schema(description = "Job status")
     @NotNull(message = "Job status is required")
-    private Boolean isActive;
+    @Override
+    public Boolean getIsActive() {
+        return super.getIsActive();
+    }
 }

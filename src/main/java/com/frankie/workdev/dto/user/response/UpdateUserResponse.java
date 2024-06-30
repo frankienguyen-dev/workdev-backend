@@ -1,9 +1,7 @@
 package com.frankie.workdev.dto.user.response;
 
 import com.frankie.workdev.dto.company.CompanyInfoResponse;
-import com.frankie.workdev.dto.job.JobDto;
 import com.frankie.workdev.dto.role.response.RoleResponse;
-import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.upload.UploadFileResponse;
 import com.frankie.workdev.dto.user.BaseUser;
 import io.swagger.v3.oas.annotations.media.Schema;

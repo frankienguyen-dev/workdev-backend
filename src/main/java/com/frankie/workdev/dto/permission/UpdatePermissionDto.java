@@ -1,44 +1,42 @@
 package com.frankie.workdev.dto.permission;
 
-import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Update permission DTO request")
-public class UpdatePermissionDto {
+public class UpdatePermissionDto extends BasePermission {
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Permission Id")
-    private String id;
-
-    @Schema(description = "Permission name")
     @NotEmpty(message = "name must not be empty")
-    private String name;
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "Permission module")
     @NotEmpty(message = "path must not be empty")
-    private String module;
+    @Override
+    public String getPath() {
+        return super.getPath();
+    }
 
-    @Schema(description = "Permission method")
     @NotEmpty(message = "method must not be empty")
-    private String method;
+    @Override
+    public String getMethod() {
+        return super.getMethod();
+    }
 
-    @Schema(description = "Permission path")
     @NotEmpty(message = "path must not be empty")
-    private String path;
-
-    @Schema(description = "Permission updated by")
-    private JwtUserInfo updatedBy;
-
-    @Schema(description = "Permission updated at")
-    private LocalDateTime updatedAt;
+    @Override
+    public String getModule() {
+        return super.getModule();
+    }
 }

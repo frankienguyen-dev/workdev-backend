@@ -21,11 +21,6 @@ public class PermissionInfo extends BasePermission {
         return super.getId();
     }
 
-//    @Override
-//    public String getName() {
-//        return super.getName();
-//    }
-
     @Schema(hidden = true)
     @Override
     public String getPath() {

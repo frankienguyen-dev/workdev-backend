@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(
-        name = "CRUD operations for subscriber controller",
+        name = "CRUD operations for subscriber",
         description = "CRUD operations for subscriber controller: Create new subscriber, " +
                 "Get all subscribers, Get subscriber by id, Update subscriber by id, " +
                 "Soft delete subscriber by id, Search subscriber.")

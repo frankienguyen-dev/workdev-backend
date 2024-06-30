@@ -4,14 +4,14 @@ import com.frankie.workdev.dto.apiResponse.ApiResponse;
 import com.frankie.workdev.dto.permission.*;
 
 public interface PermissionService {
-    ApiResponse<CreatePermissionDto> createNewPermission(CreatePermissionDto createPermissionDto);
+    ApiResponse<CreatePermissionResponse> createNewPermission(CreatePermissionDto createPermissionDto);
 
     ApiResponse<PermissionListResponse> getAllPermissions(int pageNo, int pageSize,
                                                           String sortBy, String sortDir);
 
-    ApiResponse<PermissionInfo> getPermissionById(String id);
+    ApiResponse<PermissionResponse> getPermissionById(String id);
 
-    ApiResponse<UpdatePermissionDto> updatePermissionById(
+    ApiResponse<UpdatePermissionResponse> updatePermissionById(
             String id, UpdatePermissionDto updatePermissionDto);
 
     ApiResponse<DeletePermissionDto> softDeletePermissionById(String id);

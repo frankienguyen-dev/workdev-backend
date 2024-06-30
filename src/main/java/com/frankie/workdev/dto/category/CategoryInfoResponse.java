@@ -1,4 +1,4 @@
-package com.frankie.workdev.dto.company;
+package com.frankie.workdev.dto.category;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -8,13 +8,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Schema(description = "Company Info Response")
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyInfoResponse {
-    @Schema(description = "Company Id")
+@Schema(description = "Category information response")
+public class CategoryInfoResponse {
+    @Schema(description = "Category id")
     private String id;
 
-    @Schema(description = "Company Name")
+    @Schema(description = "Category name")
     private String name;
 }
