@@ -19,5 +19,5 @@ public class PermissionListResponse {
     private MetaData meta;
 
     @Schema(description = "Permission data")
-    private List<PermissionInfo> data;
+    private List<PermissionResponse> data;
 }

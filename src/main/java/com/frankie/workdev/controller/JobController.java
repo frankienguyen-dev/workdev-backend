@@ -18,9 +18,9 @@ public class JobController {
     private JobService jobService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<CreateJobDto>> createJob(
+    public ResponseEntity<ApiResponse<CreateJobResponse>> createJob(
             @RequestBody @Valid CreateJobDto createJobDto) {
-        ApiResponse<CreateJobDto> createJob = jobService.createJob(createJobDto);
+        ApiResponse<CreateJobResponse> createJob = jobService.createJob(createJobDto);
         return new ResponseEntity<>(createJob, HttpStatus.CREATED);
     }
 
@@ -41,15 +41,15 @@ public class JobController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<JobDto>> getJobById(@PathVariable("id") String id) {
-        ApiResponse<JobDto> getJobById = jobService.getJobById(id);
+    public ResponseEntity<ApiResponse<JobResponse>> getJobById(@PathVariable("id") String id) {
+        ApiResponse<JobResponse> getJobById = jobService.getJobById(id);
         return new ResponseEntity<>(getJobById, HttpStatus.OK);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse<UpdateJobDto>> updateJobById(
+    public ResponseEntity<ApiResponse<UpdateJobResponse>> updateJobById(
             @PathVariable("id") String id, @RequestBody @Valid UpdateJobDto updateJobDto) {
-        ApiResponse<UpdateJobDto> updateJob = jobService.updateJobById(id, updateJobDto);
+        ApiResponse<UpdateJobResponse> updateJob = jobService.updateJobById(id, updateJobDto);
         return new ResponseEntity<>(updateJob, HttpStatus.OK);
     }
 
@@ -81,8 +81,8 @@ public class JobController {
     }
 
     @PostMapping("/favorite/{id}")
-    public ResponseEntity<ApiResponse<JobDto>> favoriteJob(@PathVariable("id") String id) {
-        ApiResponse<JobDto> favoriteJob = jobService.favoriteJob(id);
+    public ResponseEntity<ApiResponse<JobResponse>> favoriteJob(@PathVariable("id") String id) {
+        ApiResponse<JobResponse> favoriteJob = jobService.favoriteJob(id);
         return new ResponseEntity<>(favoriteJob, HttpStatus.OK);
     }
 

@@ -19,9 +19,9 @@ public class CategoryInfo {
     @NotEmpty(message = "Category id is required")
     private String id;
 
-    @Schema(description = "Category name")
+    @Schema(description = "Category name", hidden = true)
     private String name;
 
-    @Schema(description = "Category description")
+    @Schema(description = "Category description", hidden = true)
     private String description;
 }

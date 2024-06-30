@@ -24,7 +24,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<CategoryResponse>> getAllCategories(
+    public ResponseEntity<ApiResponse<CategoryListResponse>> getAllCategories(
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE,
@@ -34,14 +34,14 @@ public class CategoryController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<CategoryResponse> getAllCategories = categoryService
+        ApiResponse<CategoryListResponse> getAllCategories = categoryService
                 .getAllCategories(pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(getAllCategories, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<CategoryDto>> getCategoryById(@PathVariable("id") String id) {
-        ApiResponse<CategoryDto> getCategoryById = categoryService.getCategoryById(id);
+    public ResponseEntity<ApiResponse<CategoryResponse>> getCategoryById(@PathVariable("id") String id) {
+        ApiResponse<CategoryResponse> getCategoryById = categoryService.getCategoryById(id);
         return new ResponseEntity<>(getCategoryById, HttpStatus.OK);
     }
 
@@ -60,7 +60,7 @@ public class CategoryController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<CategoryResponse>> searchCategoryByName(
+    public ResponseEntity<ApiResponse<CategoryListResponse>> searchCategoryByName(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER,
                     required = false) int pageNo,
@@ -71,7 +71,7 @@ public class CategoryController {
             @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION,
                     required = false) String sortDir
     ) {
-        ApiResponse<CategoryResponse> searchCategory = categoryService
+        ApiResponse<CategoryListResponse> searchCategory = categoryService
                 .searchCategoryByName(name, pageNo, pageSize, sortBy, sortDir);
         return new ResponseEntity<>(searchCategory, HttpStatus.OK);
     }

@@ -1,6 +1,8 @@
 package com.frankie.workdev.dto.job;
+
 import com.frankie.workdev.dto.category.CategoryInfoResponse;
 import com.frankie.workdev.dto.company.CompanyInfoResponse;
+import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,20 +11,17 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "Job Info")
-public class JobInfo extends BaseJob<CompanyInfoResponse, CategoryInfoResponse> {
-    @Schema(description = "Job is deleted")
-    private Boolean isDeleted;
+@Schema(description = "Create job response")
+public class CreateJobResponse extends BaseJob<CompanyInfoResponse, CategoryInfoResponse> {
+    @Schema(description = "Job created by")
+    private JwtUserInfo createdBy;
 
-    @Override
-    public String getLocation() {
-        return super.getLocation();
-    }
+    @Schema(description = "Job created at")
+    private LocalDateTime createdAt;
 
     @Override
     public CategoryInfoResponse getCategory() {

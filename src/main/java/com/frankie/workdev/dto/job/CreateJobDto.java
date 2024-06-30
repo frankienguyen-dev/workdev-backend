@@ -1,6 +1,7 @@
 package com.frankie.workdev.dto.job;
 
 import com.frankie.workdev.dto.category.CategoryInfo;
+import com.frankie.workdev.dto.company.CompanyInfo;
 import com.frankie.workdev.dto.company.CompanyResponse;
 import com.frankie.workdev.dto.skill.SkillDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
@@ -22,85 +23,95 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "Create job DTO request")
-public class CreateJobDto {
-    @Schema(description = "Job Id")
-    private String id;
+public class CreateJobDto extends BaseJob<CompanyInfo, CategoryInfo> {
 
-    @Schema(description = "Job name")
-    @NotEmpty(message = "Name is required")
-    private String name;
-
-    @Schema(description = "Job description")
-    @NotEmpty(message = "Description is required")
-    private String description;
-
-    @Schema(description = "Job responsibility")
-    @NotEmpty(message = "Responsibility is required")
-    private String responsibility;
-
-    @Schema(description = "Job location")
-    @NotEmpty(message = "Location is required")
-    private String location;
-
-    @Schema(description = "Job quantity")
-    @NotNull(message = "Quantity is required")
-    private Integer quantity;
-
-    @Schema(description = "Job salary")
-    @NotNull(message = "Salary is required")
-    private Long salary;
-
-    @Schema(description = "Job education")
-    @NotEmpty(message = "Education is required")
-    private String education;
-
-    @Schema(description = "Job type")
-    @NotEmpty(message = "Job type is required")
-    private String jobType;
-
-    @Schema(description = "Job experience")
-    @NotEmpty(message = "Experience is required")
-    private String experience;
-
-    @Schema(description = "Job category")
-    @NotNull(message = "Category is required")
-    @Valid
-    private CategoryInfo category;
-
-    @Schema(description = "Job user")
+    @Schema(description = "Job user", hidden = true)
     private JwtUserInfo user;
 
-    @Schema(description = "Job level")
-    @NotEmpty(message = "Level is required")
-    private String level;
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Job created by")
-    private JwtUserInfo createdBy;
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "Job created at")
-    private LocalDateTime createdAt;
+    @Override
+    public String getDescription() {
+        return super.getDescription();
+    }
 
-    @Schema(description = "Job company")
-    @Valid
-    @NotNull(message = "Company is required")
-    private CompanyResponse company;
+    @Override
+    public String getResponsibility() {
+        return super.getResponsibility();
+    }
 
-    @Schema(description = "Job start date")
-    @NotNull(message = "Start date is required")
-    @FutureOrPresent(message = "Start date must be in the future or present")
-    private LocalDateTime startDate;
+    @Override
+    public String getLocation() {
+        return super.getLocation();
+    }
 
-    @Schema(description = "Job end date")
-    @NotNull(message = "End date is required")
-    @FutureOrPresent(message = "End date must be in the future or present")
-    private LocalDateTime endDate;
+    @Override
+    public Integer getQuantity() {
+        return super.getQuantity();
+    }
 
-    @Schema(description = "Job skills")
-    @NotEmpty(message = "Skills is required")
-    @Valid
-    private List<SkillDto> skills;
+    @Override
+    public Long getSalary() {
+        return super.getSalary();
+    }
 
-    @Schema(description = "Job status")
+    @Override
+    public String getEducation() {
+        return super.getEducation();
+    }
+
+    @Override
+    public String getJobType() {
+        return super.getJobType();
+    }
+
+    @Override
+    public String getExperience() {
+        return super.getExperience();
+    }
+
+    @Override
+    public CategoryInfo getCategory() {
+        return super.getCategory();
+    }
+
+    @Override
+    public String getLevel() {
+        return super.getLevel();
+    }
+
+    @Override
+    public CompanyInfo getCompany() {
+        return super.getCompany();
+    }
+
+    @Override
+    public LocalDateTime getStartDate() {
+        return super.getStartDate();
+    }
+
+    @Override
+    public LocalDateTime getEndDate() {
+        return super.getEndDate();
+    }
+
+    @Override
+    public List<SkillDto> getSkills() {
+        return super.getSkills();
+    }
+
     @NotNull(message = "Job status is required")
-    private Boolean isActive;
+    @Override
+    public Boolean getIsActive() {
+        return super.getIsActive();
+    }
 }

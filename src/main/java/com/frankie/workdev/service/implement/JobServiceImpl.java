@@ -42,7 +42,7 @@ public class JobServiceImpl implements JobService {
     private UserInfoUtils userInfoUtils;
 
     @Override
-    public ApiResponse<CreateJobDto> createJob(CreateJobDto createJobDto) {
+    public ApiResponse<CreateJobResponse> createJob(CreateJobDto createJobDto) {
         try {
             JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
@@ -84,11 +84,11 @@ public class JobServiceImpl implements JobService {
             createdByUser.getJobs().add(newJob);
             Job savedJob = jobRepository.save(newJob);
 //            User userTest = userRepository.save(createdByUser);
-            CreateJobDto createJobDtoResponse = modelMapper.map(savedJob, CreateJobDto.class);
+            CreateJobResponse createJobResponse = modelMapper.map(savedJob, CreateJobResponse.class);
             return ApiResponse.success(
                     "Job created successfully",
                     HttpStatus.CREATED,
-                    createJobDtoResponse
+                    createJobResponse
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,10 +106,10 @@ public class JobServiceImpl implements JobService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.findAll(pageable);
         List<Job> jobContentList = jobs.getContent();
-        List<JobDto> jobDtoList = jobContentList.stream()
+        List<JobResponse> jobDtoList = jobContentList.stream()
                 .map(job -> {
                     try {
-                        return modelMapper.map(job, JobDto.class);
+                        return modelMapper.map(job, JobResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -132,11 +132,11 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobDto> getJobById(String id) {
+    public ApiResponse<JobResponse> getJobById(String id) {
         Job findJob = jobRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Job", "id", id)
         );
-        JobDto JobResponse = modelMapper.map(findJob, JobDto.class);
+        JobResponse JobResponse = modelMapper.map(findJob, com.frankie.workdev.dto.job.JobResponse.class);
 
         return ApiResponse.success(
                 "Job fetched successfully",
@@ -146,7 +146,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<UpdateJobDto> updateJobById(String id, UpdateJobDto updateJobDto) {
+    public ApiResponse<UpdateJobResponse> updateJobById(String id, UpdateJobDto updateJobDto) {
         try {
             JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
             User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
@@ -192,11 +192,11 @@ public class JobServiceImpl implements JobService {
             List<Skill> skills = getSkills(updateJobDto.getSkills());
             findJob.setSkills(skills);
             Job savedJob = jobRepository.save(findJob);
-            UpdateJobDto updateJobDtoResponse = modelMapper.map(savedJob, UpdateJobDto.class);
+            UpdateJobResponse updateJobResponse = modelMapper.map(savedJob, UpdateJobResponse.class);
             return ApiResponse.success(
                     "Job updated successfully",
                     HttpStatus.OK,
-                    updateJobDtoResponse
+                    updateJobResponse
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,10 +239,10 @@ public class JobServiceImpl implements JobService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.searchJob(name, location, salary, pageable);
         List<Job> jobContentList = jobs.getContent();
-        List<JobDto> jobList = jobContentList.stream()
+        List<JobResponse> jobList = jobContentList.stream()
                 .map(job -> {
                     try {
-                        return modelMapper.map(job, JobDto.class);
+                        return modelMapper.map(job, JobResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -266,7 +266,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public ApiResponse<JobDto> favoriteJob(String id) {
+    public ApiResponse<JobResponse> favoriteJob(String id) {
         JwtUserInfo getInfoUser = userInfoUtils.getJwtUserInfo();
         Job findJob = jobRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Job", "id", id)
@@ -279,7 +279,7 @@ public class JobServiceImpl implements JobService {
             findJob.getUserFavoriteJob().remove(findUser);
             userRepository.save(findUser);
             jobRepository.save(findJob);
-            JobDto response = modelMapper.map(findJob, JobDto.class);
+            JobResponse response = modelMapper.map(findJob, JobResponse.class);
             return ApiResponse.success(
                     "Job removed from favorite successfully",
                     HttpStatus.OK,
@@ -290,7 +290,7 @@ public class JobServiceImpl implements JobService {
             userRepository.save(findUser);
             findJob.getUserFavoriteJob().add(findUser);
             Job saveJob = jobRepository.save(findJob);
-            JobDto response = modelMapper.map(saveJob, JobDto.class);
+            JobResponse response = modelMapper.map(saveJob, JobResponse.class);
             return ApiResponse.success(
                     "Job added to favorite successfully",
                     HttpStatus.OK,
@@ -312,10 +312,10 @@ public class JobServiceImpl implements JobService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.findAllFavoriteJobsByUserId(user.getId(), pageable);
         List<Job> jobContentList = jobs.getContent();
-        List<JobDto> jobList = jobContentList.stream()
+        List<JobResponse> jobList = jobContentList.stream()
                 .map(job -> {
                     try {
-                        return modelMapper.map(job, JobDto.class);
+                        return modelMapper.map(job, JobResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -349,10 +349,10 @@ public class JobServiceImpl implements JobService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.findListJobByUserId(user.getId(), pageable);
         List<Job> jobContentList = jobs.getContent();
-        List<JobDto> jobList = jobContentList.stream()
+        List<JobResponse> jobList = jobContentList.stream()
                 .map(job -> {
                     try {
-                        return modelMapper.map(job, JobDto.class);
+                        return modelMapper.map(job, JobResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -385,10 +385,10 @@ public class JobServiceImpl implements JobService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Job> jobs = jobRepository.getAllJobByCompanyId(companyId, pageable);
         List<Job> jobContentList = jobs.getContent();
-        List<JobDto> jobList = jobContentList.stream()
+        List<JobResponse> jobList = jobContentList.stream()
                 .map(job -> {
                     try {
-                        return modelMapper.map(job, JobDto.class);
+                        return modelMapper.map(job, JobResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;

@@ -35,7 +35,7 @@ public class PermissionServiceImpl implements PermissionService {
     private UserInfoUtils userInfoUtils;
 
     @Override
-    public ApiResponse<CreatePermissionDto> createNewPermission(
+    public ApiResponse<CreatePermissionResponse> createNewPermission(
             CreatePermissionDto createPermissionDto) {
         JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User createdByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
@@ -54,18 +54,18 @@ public class PermissionServiceImpl implements PermissionService {
         newPermission.setCreatedBy(createdByUser);
         newPermission.setCreatedAt(LocalDateTime.now());
         Permission saveNewPermission = permissionRepository.save(newPermission);
-        CreatePermissionDto createPermissionDtoResponse = new CreatePermissionDto();
-        createPermissionDtoResponse.setId(saveNewPermission.getId());
-        createPermissionDtoResponse.setName(saveNewPermission.getName());
-        createPermissionDtoResponse.setPath(saveNewPermission.getPath());
-        createPermissionDtoResponse.setMethod(saveNewPermission.getMethod());
-        createPermissionDtoResponse.setModule(saveNewPermission.getModule());
-        createPermissionDtoResponse.setCreatedBy(getUserInfoFromToken);
-        createPermissionDtoResponse.setCreatedAt(saveNewPermission.getCreatedAt());
+        CreatePermissionResponse createPermissionResponse = new CreatePermissionResponse();
+        createPermissionResponse.setId(saveNewPermission.getId());
+        createPermissionResponse.setName(saveNewPermission.getName());
+        createPermissionResponse.setPath(saveNewPermission.getPath());
+        createPermissionResponse.setMethod(saveNewPermission.getMethod());
+        createPermissionResponse.setModule(saveNewPermission.getModule());
+        createPermissionResponse.setCreatedBy(getUserInfoFromToken);
+        createPermissionResponse.setCreatedAt(saveNewPermission.getCreatedAt());
         return ApiResponse.success(
                 "Create new permission successfully",
                 HttpStatus.CREATED,
-                createPermissionDtoResponse
+                createPermissionResponse
         );
     }
 
@@ -79,10 +79,10 @@ public class PermissionServiceImpl implements PermissionService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Permission> permissions = permissionRepository.findAll(pageable);
         List<Permission> permissionContentList = permissions.getContent();
-        List<PermissionInfo> permissionResponses = permissionContentList
+        List<PermissionResponse> permissionResponses = permissionContentList
                 .stream().map(permission -> {
                     try {
-                        return modelMapper.map(permission, PermissionInfo.class);
+                        return modelMapper.map(permission, PermissionResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;
@@ -105,11 +105,11 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<PermissionInfo> getPermissionById(String id) {
+    public ApiResponse<PermissionResponse> getPermissionById(String id) {
         Permission findPermission = permissionRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Permission", "id", id)
         );
-        PermissionInfo permissionInfo = modelMapper.map(findPermission, PermissionInfo.class);
+        PermissionResponse permissionInfo = modelMapper.map(findPermission, PermissionResponse.class);
         return ApiResponse.success(
                 "Get permission by id successfully",
                 HttpStatus.OK,
@@ -118,7 +118,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public ApiResponse<UpdatePermissionDto> updatePermissionById(
+    public ApiResponse<UpdatePermissionResponse> updatePermissionById(
             String id, UpdatePermissionDto updatePermissionDto) {
         JwtUserInfo getUserInfoFromToken = userInfoUtils.getJwtUserInfo();
         User updatedByUser = userRepository.findByEmail(getUserInfoFromToken.getEmail());
@@ -142,18 +142,18 @@ public class PermissionServiceImpl implements PermissionService {
         findPermission.setUpdatedBy(updatedByUser);
         findPermission.setUpdatedAt(LocalDateTime.now());
         Permission saveUpdatePermission = permissionRepository.save(findPermission);
-        UpdatePermissionDto updatePermissionDtoResponse = new UpdatePermissionDto();
-        updatePermissionDtoResponse.setId(saveUpdatePermission.getId());
-        updatePermissionDtoResponse.setName(saveUpdatePermission.getName());
-        updatePermissionDtoResponse.setPath(saveUpdatePermission.getPath());
-        updatePermissionDtoResponse.setMethod(saveUpdatePermission.getMethod());
-        updatePermissionDtoResponse.setModule(saveUpdatePermission.getModule());
-        updatePermissionDtoResponse.setUpdatedBy(getUserInfoFromToken);
-        updatePermissionDtoResponse.setUpdatedAt(saveUpdatePermission.getUpdatedAt());
+        UpdatePermissionResponse updatePermissionResponse = new UpdatePermissionResponse();
+        updatePermissionResponse.setId(saveUpdatePermission.getId());
+        updatePermissionResponse.setName(saveUpdatePermission.getName());
+        updatePermissionResponse.setPath(saveUpdatePermission.getPath());
+        updatePermissionResponse.setMethod(saveUpdatePermission.getMethod());
+        updatePermissionResponse.setModule(saveUpdatePermission.getModule());
+        updatePermissionResponse.setUpdatedBy(getUserInfoFromToken);
+        updatePermissionResponse.setUpdatedAt(saveUpdatePermission.getUpdatedAt());
         return ApiResponse.success(
                 "Update permission by id successfully",
                 HttpStatus.OK,
-                updatePermissionDtoResponse
+                updatePermissionResponse
         );
     }
 
@@ -190,10 +190,10 @@ public class PermissionServiceImpl implements PermissionService {
         Pageable pageable = PageRequest.of(adjustedPageNo, pageSize, sort);
         Page<Permission> permissions = permissionRepository.searchPermission(name, pageable);
         List<Permission> permissionContentList = permissions.getContent();
-        List<PermissionInfo> permissionInfoList = permissionContentList.stream()
+        List<PermissionResponse> permissionInfoList = permissionContentList.stream()
                 .map(permission -> {
                     try {
-                        return modelMapper.map(permission, PermissionInfo.class);
+                        return modelMapper.map(permission, PermissionResponse.class);
                     } catch (Exception e) {
                         e.printStackTrace();
                         throw e;

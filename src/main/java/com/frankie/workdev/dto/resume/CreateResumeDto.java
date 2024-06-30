@@ -1,10 +1,7 @@
 package com.frankie.workdev.dto.resume;
 
 import com.frankie.workdev.dto.company.CompanyInfo;
-import com.frankie.workdev.dto.company.CompanyInfoResponse;
 import com.frankie.workdev.dto.job.JobId;
-import com.frankie.workdev.dto.job.JobInfo;
-import com.frankie.workdev.dto.upload.BaseFileUpload;
 import com.frankie.workdev.dto.upload.FileUploadDto;
 import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

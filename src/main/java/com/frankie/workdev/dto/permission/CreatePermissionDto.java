@@ -1,43 +1,42 @@
 package com.frankie.workdev.dto.permission;
 
-import com.frankie.workdev.dto.user.response.JwtUserInfo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Schema(description = "Create permission DTO request")
-public class CreatePermissionDto {
-    @Schema(description = "Permission Id")
-    private String id;
+public class CreatePermissionDto extends BasePermission {
+    @Schema(hidden = true)
+    @Override
+    public String getId() {
+        return super.getId();
+    }
 
-    @Schema(description = "Permission name")
-    @NotEmpty(message = "name must not be empty")
-    private String name;
+    @NotEmpty(message = "Permission name must not be empty")
+    @Override
+    public String getName() {
+        return super.getName();
+    }
 
-    @Schema(description = "Permission path")
-    @NotEmpty(message = "path must not be empty")
-    private String path;
+    @NotEmpty(message = "Permission path must not be empty")
+    @Override
+    public String getPath() {
+        return super.getPath();
+    }
 
-    @Schema(description = "Permission method")
-    @NotEmpty(message = "method must not be empty")
-    private String method;
+    @NotEmpty(message = "Permission method must not be empty")
+    @Override
+    public String getMethod() {
+        return super.getMethod();
+    }
 
-    @Schema(description = "Permission module")
-    @NotEmpty(message = "module must not be empty")
-    private String module;
-
-    @Schema(description = "Permission created by")
-    private JwtUserInfo createdBy;
-
-    @Schema(description = "Permission created at")
-    private LocalDateTime createdAt;
+    @NotEmpty(message = "Permission module must not be empty")
+    @Override
+    public String getModule() {
+        return super.getModule();
+    }
 }
